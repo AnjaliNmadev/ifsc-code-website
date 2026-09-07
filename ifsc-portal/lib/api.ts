@@ -67,9 +67,10 @@ export class IfscLookupError extends Error {
  * Resolves full branch details for an IFSC code.
  * Order of resolution:
  *   1. Session cache (instant, no network).
- *   2. Local bundled dataset (instant, works offline, powers the money pages).
- *   3. Live Razorpay IFSC API (https://ifsc.razorpay.com/{code}) as the
- *      canonical public source for any code not in the local dataset.
+ *   2. Supabase database (the full ~180,000+ branch national dataset — see
+ *      /supabase/schema.sql).
+ *   3. Live Razorpay IFSC API (https://ifsc.razorpay.com/{code}) as a
+ *      fallback for any brand-new code not yet in the database.
  * Any network failure degrades to a clean, typed error instead of throwing
  * an unhandled exception, so the UI can always render a friendly state.
  */
@@ -79,7 +80,7 @@ export async function lookupIfsc(rawCode: string): Promise<BranchRecord> {
   const cached = readFromClientCache(code);
   if (cached) return cached;
 
-  const local = getBranchByIfsc(code);
+  const local = await getBranchByIfsc(code);
   if (local) {
     writeToClientCache(code, local);
     return local;

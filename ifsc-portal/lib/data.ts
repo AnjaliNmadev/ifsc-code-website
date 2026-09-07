@@ -1,135 +1,161 @@
-import rawBranches from '@/data/branches.json';
+import { supabase, isSupabaseConfigured } from './supabase';
 import type { BankSummary, BranchRecord, DistrictSummary, StateSummary } from './types';
-import { slugify } from './utils';
 
 /**
- * DATA ENGINE
- * -----------
- * This app ships with a small, real-shaped SAMPLE dataset (data/branches.json)
- * covering a handful of banks/states/districts/branches, so the entire site
- * — routing, static generation, the cascading dropdowns, and SEO pages — is
- * fully wired and works out of the box with zero backend.
+ * DATA ENGINE (Supabase-backed)
+ * ------------------------------
+ * All functions here read from the Supabase Postgres database set up by
+ * /supabase/schema.sql, which holds the full national IFSC dataset
+ * (~180,000+ branches from the razorpay/ifsc public dataset).
  *
- * There is no free, public, hierarchical "list all branches" API for Indian
- * banks (only reverse single-code lookup APIs like Razorpay's exist — see
- * lib/api.ts). To scale this to the full national dataset without adding a
- * backend server, replace data/branches.json with a full IFSC dataset
- * (several open-source JSON/CSV IFSC datasets exist on GitHub) — the shape
- * only needs to match BranchRecord below. Everything in this file is
- * dataset-size agnostic and will keep working unchanged.
+ * Every function fails soft: if Supabase isn't configured yet (no env vars)
+ * or a query errors, it logs a warning and returns an empty result instead
+ * of crashing the page — so the site still renders (just with no listings)
+ * until the database is connected.
  */
 
-const branches: BranchRecord[] = (rawBranches as any[]).map((b) => ({
-  ifsc: b.ifsc,
-  bankName: b.bankName,
-  bankSlug: slugify(b.bankName),
-  branch: b.branch,
-  branchSlug: `${slugify(b.branch)}-${b.ifsc.toLowerCase()}`,
-  address: b.address,
-  city: b.city,
-  district: b.district,
-  districtSlug: slugify(b.district),
-  state: b.state,
-  stateSlug: slugify(b.state),
-  contact: b.contact,
-  micr: b.micr ?? null,
-  upi: Boolean(b.upi),
-  neft: Boolean(b.neft),
-  rtgs: Boolean(b.rtgs),
-  imps: Boolean(b.imps),
-}));
-
-export function getAllBranches(): BranchRecord[] {
-  return branches;
+function mapRow(row: any): BranchRecord {
+  return {
+    ifsc: row.ifsc,
+    bankName: row.bank_name,
+    bankSlug: row.bank_slug,
+    branch: row.branch,
+    branchSlug: row.branch_slug,
+    address: row.address ?? '',
+    city: row.city ?? '',
+    district: row.district,
+    districtSlug: row.district_slug,
+    state: row.state,
+    stateSlug: row.state_slug,
+    contact: row.contact || 'Not available',
+    micr: row.micr,
+    upi: Boolean(row.upi),
+    neft: Boolean(row.neft),
+    rtgs: Boolean(row.rtgs),
+    imps: Boolean(row.imps),
+  };
 }
 
-export function getAllBanks(): BankSummary[] {
-  const map = new Map<string, BankSummary>();
-  for (const b of branches) {
-    const existing = map.get(b.bankSlug);
-    if (existing) {
-      existing.branchCount += 1;
-    } else {
-      map.set(b.bankSlug, { name: b.bankName, slug: b.bankSlug, branchCount: 1 });
-    }
+function warnIfUnconfigured(fn: string) {
+  if (!isSupabaseConfigured) {
+    console.warn(
+      `[data] ${fn}() called but Supabase is not configured — set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.`
+    );
   }
-  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function getBank(bankSlug: string): BankSummary | null {
-  return getAllBanks().find((b) => b.slug === bankSlug) ?? null;
-}
-
-export function getStatesForBank(bankSlug: string): StateSummary[] {
-  const map = new Map<string, StateSummary>();
-  for (const b of branches) {
-    if (b.bankSlug !== bankSlug) continue;
-    const existing = map.get(b.stateSlug);
-    if (existing) {
-      existing.branchCount += 1;
-    } else {
-      map.set(b.stateSlug, { name: b.state, slug: b.stateSlug, branchCount: 1 });
-    }
+export async function getAllBanks(): Promise<BankSummary[]> {
+  warnIfUnconfigured('getAllBanks');
+  const { data, error } = await supabase.from('bank_summary').select('*').order('name');
+  if (error || !data) {
+    if (error) console.error('getAllBanks error:', error.message);
+    return [];
   }
-  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+  return data.map((r) => ({ name: r.name, slug: r.slug, branchCount: r.branch_count }));
 }
 
-export function getState(bankSlug: string, stateSlug: string): StateSummary | null {
-  return getStatesForBank(bankSlug).find((s) => s.slug === stateSlug) ?? null;
+export async function getBank(bankSlug: string): Promise<BankSummary | null> {
+  const { data, error } = await supabase
+    .from('bank_summary')
+    .select('*')
+    .eq('slug', bankSlug)
+    .maybeSingle();
+  if (error || !data) return null;
+  return { name: data.name, slug: data.slug, branchCount: data.branch_count };
 }
 
-export function getDistrictsForState(bankSlug: string, stateSlug: string): DistrictSummary[] {
-  const map = new Map<string, DistrictSummary>();
-  for (const b of branches) {
-    if (b.bankSlug !== bankSlug || b.stateSlug !== stateSlug) continue;
-    const existing = map.get(b.districtSlug);
-    if (existing) {
-      existing.branchCount += 1;
-    } else {
-      map.set(b.districtSlug, { name: b.district, slug: b.districtSlug, branchCount: 1 });
-    }
-  }
-  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
+export async function getStatesForBank(bankSlug: string): Promise<StateSummary[]> {
+  const { data, error } = await supabase
+    .from('state_summary')
+    .select('*')
+    .eq('bank_slug', bankSlug)
+    .order('name');
+  if (error || !data) return [];
+  return data.map((r) => ({ name: r.name, slug: r.slug, branchCount: r.branch_count }));
 }
 
-export function getDistrict(
+export async function getState(bankSlug: string, stateSlug: string): Promise<StateSummary | null> {
+  const { data, error } = await supabase
+    .from('state_summary')
+    .select('*')
+    .eq('bank_slug', bankSlug)
+    .eq('slug', stateSlug)
+    .maybeSingle();
+  if (error || !data) return null;
+  return { name: data.name, slug: data.slug, branchCount: data.branch_count };
+}
+
+export async function getDistrictsForState(
+  bankSlug: string,
+  stateSlug: string
+): Promise<DistrictSummary[]> {
+  const { data, error } = await supabase
+    .from('district_summary')
+    .select('*')
+    .eq('bank_slug', bankSlug)
+    .eq('state_slug', stateSlug)
+    .order('name');
+  if (error || !data) return [];
+  return data.map((r) => ({ name: r.name, slug: r.slug, branchCount: r.branch_count }));
+}
+
+export async function getDistrict(
   bankSlug: string,
   stateSlug: string,
   districtSlug: string
-): DistrictSummary | null {
-  return getDistrictsForState(bankSlug, stateSlug).find((d) => d.slug === districtSlug) ?? null;
+): Promise<DistrictSummary | null> {
+  const { data, error } = await supabase
+    .from('district_summary')
+    .select('*')
+    .eq('bank_slug', bankSlug)
+    .eq('state_slug', stateSlug)
+    .eq('slug', districtSlug)
+    .maybeSingle();
+  if (error || !data) return null;
+  return { name: data.name, slug: data.slug, branchCount: data.branch_count };
 }
 
-export function getBranchesForDistrict(
+export async function getBranchesForDistrict(
   bankSlug: string,
   stateSlug: string,
   districtSlug: string
-): BranchRecord[] {
-  return branches
-    .filter(
-      (b) => b.bankSlug === bankSlug && b.stateSlug === stateSlug && b.districtSlug === districtSlug
-    )
-    .sort((a, b) => a.branch.localeCompare(b.branch));
+): Promise<BranchRecord[]> {
+  const { data, error } = await supabase
+    .from('branches')
+    .select('*')
+    .eq('bank_slug', bankSlug)
+    .eq('state_slug', stateSlug)
+    .eq('district_slug', districtSlug)
+    .order('branch');
+  if (error || !data) return [];
+  return data.map(mapRow);
 }
 
-export function getBranch(
+export async function getBranch(
   bankSlug: string,
   stateSlug: string,
   districtSlug: string,
   branchSlug: string
-): BranchRecord | null {
-  return (
-    branches.find(
-      (b) =>
-        b.bankSlug === bankSlug &&
-        b.stateSlug === stateSlug &&
-        b.districtSlug === districtSlug &&
-        b.branchSlug === branchSlug
-    ) ?? null
-  );
+): Promise<BranchRecord | null> {
+  const { data, error } = await supabase
+    .from('branches')
+    .select('*')
+    .eq('bank_slug', bankSlug)
+    .eq('state_slug', stateSlug)
+    .eq('district_slug', districtSlug)
+    .eq('branch_slug', branchSlug)
+    .maybeSingle();
+  if (error || !data) return null;
+  return mapRow(data);
 }
 
-export function getBranchByIfsc(ifsc: string): BranchRecord | null {
+export async function getBranchByIfsc(ifsc: string): Promise<BranchRecord | null> {
   const normalized = ifsc.trim().toUpperCase();
-  return branches.find((b) => b.ifsc === normalized) ?? null;
+  const { data, error } = await supabase
+    .from('branches')
+    .select('*')
+    .eq('ifsc', normalized)
+    .maybeSingle();
+  if (error || !data) return null;
+  return mapRow(data);
 }

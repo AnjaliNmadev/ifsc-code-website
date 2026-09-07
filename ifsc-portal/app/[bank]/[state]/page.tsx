@@ -5,7 +5,7 @@ import { Building } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import AdSlot from '@/components/AdSlot';
-import { getAllBanks, getBank, getStatesForBank, getState, getDistrictsForState } from '@/lib/data';
+import { getBank, getState, getDistrictsForState } from '@/lib/data';
 import { stateMetadata } from '@/lib/seo';
 import { breadcrumbSchema } from '@/lib/schema';
 
@@ -13,26 +13,29 @@ interface PageProps {
   params: { bank: string; state: string };
 }
 
-export function generateStaticParams() {
-  return getAllBanks().flatMap((bank) =>
-    getStatesForBank(bank.slug).map((state) => ({ bank: bank.slug, state: state.slug }))
-  );
+// State-level pages are numerous (bank × state combinations) — generate on
+// first visit and cache, rather than building all of them up front.
+export async function generateStaticParams() {
+  return [];
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const bank = getBank(params.bank);
-  const state = bank ? getState(bank.slug, params.state) : null;
+export const dynamicParams = true;
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const bank = await getBank(params.bank);
+  const state = bank ? await getState(bank.slug, params.state) : null;
   if (!bank || !state) return {};
   return stateMetadata(bank.name, state.name, bank.slug, state.slug, state.branchCount);
 }
 
-export default function StatePage({ params }: PageProps) {
-  const bank = getBank(params.bank);
+export default async function StatePage({ params }: PageProps) {
+  const bank = await getBank(params.bank);
   if (!bank) notFound();
-  const state = getState(bank.slug, params.state);
+  const state = await getState(bank.slug, params.state);
   if (!state) notFound();
 
-  const districts = getDistrictsForState(bank.slug, state.slug);
+  const districts = await getDistrictsForState(bank.slug, state.slug);
   const crumbs = breadcrumbSchema([
     { name: 'Home', path: [] },
     { name: bank.name, path: [bank.slug] },
@@ -53,7 +56,7 @@ export default function StatePage({ params }: PageProps) {
         {bank.name} IFSC Codes in {state.name}
       </h1>
       <p className="mt-2 max-w-2xl text-sm text-ink-500">
-        {state.branchCount} branch{state.branchCount === 1 ? '' : 'es'} across {districts.length}{' '}
+        {state.branchCount.toLocaleString('en-IN')} branch{state.branchCount === 1 ? '' : 'es'} across {districts.length}{' '}
         district{districts.length === 1 ? '' : 's'} in {state.name}.
       </p>
 
@@ -69,7 +72,7 @@ export default function StatePage({ params }: PageProps) {
               <span className="text-sm font-semibold text-ink-900">{district.name}</span>
             </div>
             <span className="text-xs text-ink-400">
-              {district.branchCount} branch{district.branchCount === 1 ? '' : 'es'}
+              {district.branchCount.toLocaleString('en-IN')} branch{district.branchCount === 1 ? '' : 'es'}
             </span>
           </Link>
         ))}

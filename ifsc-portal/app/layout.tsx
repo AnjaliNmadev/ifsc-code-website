@@ -29,10 +29,8 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true },
   },
-  verification: {
-    // Replace with your real Google Search Console verification token.
-    google: 'REPLACE_WITH_GOOGLE_SITE_VERIFICATION_TOKEN',
-  },
+  // Once you set up Google Search Console, you can add a `verification: { google: '...' }`
+  // field here — it's optional and the site works fully without it.
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

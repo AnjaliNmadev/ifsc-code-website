@@ -5,6 +5,7 @@ import { MapPin } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import AdSlot from '@/components/AdSlot';
+import BankEducationContent from '@/components/BankEducationContent';
 import { getAllBanks, getBank, getStatesForBank } from '@/lib/data';
 import { bankMetadata } from '@/lib/seo';
 import { breadcrumbSchema } from '@/lib/schema';
@@ -13,21 +14,29 @@ interface PageProps {
   params: { bank: string };
 }
 
-export function generateStaticParams() {
-  return getAllBanks().map((bank) => ({ bank: bank.slug }));
+// Pre-build only the most-searched banks at deploy time; every other bank
+// page (there can be 150+) is generated on first visit and then cached —
+// see `dynamicParams` and `revalidate` below. This keeps deploys fast even
+// with the full ~180,000-branch dataset.
+export async function generateStaticParams() {
+  const banks = await getAllBanks();
+  return banks.slice(0, 20).map((bank) => ({ bank: bank.slug }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const bank = getBank(params.bank);
+export const dynamicParams = true;
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const bank = await getBank(params.bank);
   if (!bank) return {};
   return bankMetadata(bank.name, bank.slug, bank.branchCount);
 }
 
-export default function BankPage({ params }: PageProps) {
-  const bank = getBank(params.bank);
+export default async function BankPage({ params }: PageProps) {
+  const bank = await getBank(params.bank);
   if (!bank) notFound();
 
-  const states = getStatesForBank(bank.slug);
+  const states = await getStatesForBank(bank.slug);
   const crumbs = breadcrumbSchema([
     { name: 'Home', path: [] },
     { name: bank.name, path: [bank.slug] },
@@ -42,7 +51,7 @@ export default function BankPage({ params }: PageProps) {
         {bank.name} IFSC Codes
       </h1>
       <p className="mt-2 max-w-2xl text-sm text-ink-500">
-        {bank.branchCount} {bank.name} branch{bank.branchCount === 1 ? '' : 'es'} listed across{' '}
+        {bank.branchCount.toLocaleString('en-IN')} {bank.name} branch{bank.branchCount === 1 ? '' : 'es'} listed across{' '}
         {states.length} state{states.length === 1 ? '' : 's'}. Select a state to narrow down to
         district and branch level.
       </p>
@@ -59,7 +68,7 @@ export default function BankPage({ params }: PageProps) {
               <span className="text-sm font-semibold text-ink-900">{state.name}</span>
             </div>
             <span className="text-xs text-ink-400">
-              {state.branchCount} branch{state.branchCount === 1 ? '' : 'es'}
+              {state.branchCount.toLocaleString('en-IN')} branch{state.branchCount === 1 ? '' : 'es'}
             </span>
           </Link>
         ))}
@@ -68,6 +77,8 @@ export default function BankPage({ params }: PageProps) {
       <div className="mt-10">
         <AdSlot variant="post-result-native" />
       </div>
+
+      <BankEducationContent bankName={bank.name} />
     </div>
   );
 }

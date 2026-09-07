@@ -1,14 +1,15 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronDown, MapPinned } from 'lucide-react';
+import { ChevronDown, MapPinned, Loader2 } from 'lucide-react';
 import {
   getAllBanks,
   getStatesForBank,
   getDistrictsForState,
   getBranchesForDistrict,
 } from '@/lib/data';
+import type { BankSummary, BranchRecord, DistrictSummary, StateSummary } from '@/lib/types';
 
 interface SelectFieldProps {
   label: string;
@@ -16,10 +17,11 @@ interface SelectFieldProps {
   onChange: (value: string) => void;
   options: { value: string; label: string }[];
   disabled?: boolean;
+  loading?: boolean;
   placeholder: string;
 }
 
-function SelectField({ label, value, onChange, options, disabled, placeholder }: SelectFieldProps) {
+function SelectField({ label, value, onChange, options, disabled, loading, placeholder }: SelectFieldProps) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="text-xs font-semibold uppercase tracking-wide text-ink-500">{label}</span>
@@ -30,17 +32,18 @@ function SelectField({ label, value, onChange, options, disabled, placeholder }:
           onChange={(e) => onChange(e.target.value)}
           className="w-full appearance-none rounded-xl border border-ink-200 bg-ink-50 py-3 pl-4 pr-10 text-sm font-medium text-ink-900 outline-none transition focus:border-trust-500 focus:bg-white focus:ring-2 focus:ring-trust-100 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <option value="">{placeholder}</option>
+          <option value="">{loading ? 'Loading…' : placeholder}</option>
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
-        <ChevronDown
-          size={16}
-          className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-400"
-        />
+        {loading ? (
+          <Loader2 size={16} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 animate-spin text-ink-400" />
+        ) : (
+          <ChevronDown size={16} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
+        )}
       </div>
     </label>
   );
@@ -53,18 +56,103 @@ export default function CascadingBrowser() {
   const [districtSlug, setDistrictSlug] = useState('');
   const [branchSlug, setBranchSlug] = useState('');
 
-  const banks = useMemo(() => getAllBanks(), []);
-  const states = useMemo(() => (bankSlug ? getStatesForBank(bankSlug) : []), [bankSlug]);
-  const districts = useMemo(
-    () => (bankSlug && stateSlug ? getDistrictsForState(bankSlug, stateSlug) : []),
-    [bankSlug, stateSlug]
+  const [banks, setBanks] = useState<BankSummary[]>([]);
+  const [states, setStates] = useState<StateSummary[]>([]);
+  const [districts, setDistricts] = useState<DistrictSummary[]>([]);
+  const [branchesList, setBranchesList] = useState<BranchRecord[]>([]);
+
+  const [loadingBanks, setLoadingBanks] = useState(true);
+  const [loadingStates, setLoadingStates] = useState(false);
+  const [loadingDistricts, setLoadingDistricts] = useState(false);
+  const [loadingBranches, setLoadingBranches] = useState(false);
+
+  // Load the bank list once, on mount.
+  useEffect(() => {
+    let cancelled = false;
+    setLoadingBanks(true);
+    getAllBanks().then((result) => {
+      if (!cancelled) {
+        setBanks(result);
+        setLoadingBanks(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Load states whenever the selected bank changes.
+  useEffect(() => {
+    if (!bankSlug) {
+      setStates([]);
+      return;
+    }
+    let cancelled = false;
+    setLoadingStates(true);
+    getStatesForBank(bankSlug).then((result) => {
+      if (!cancelled) {
+        setStates(result);
+        setLoadingStates(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [bankSlug]);
+
+  // Load districts whenever the selected state changes.
+  useEffect(() => {
+    if (!bankSlug || !stateSlug) {
+      setDistricts([]);
+      return;
+    }
+    let cancelled = false;
+    setLoadingDistricts(true);
+    getDistrictsForState(bankSlug, stateSlug).then((result) => {
+      if (!cancelled) {
+        setDistricts(result);
+        setLoadingDistricts(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [bankSlug, stateSlug]);
+
+  // Load branches whenever the selected district changes.
+  useEffect(() => {
+    if (!bankSlug || !stateSlug || !districtSlug) {
+      setBranchesList([]);
+      return;
+    }
+    let cancelled = false;
+    setLoadingBranches(true);
+    getBranchesForDistrict(bankSlug, stateSlug, districtSlug).then((result) => {
+      if (!cancelled) {
+        setBranchesList(result);
+        setLoadingBranches(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [bankSlug, stateSlug, districtSlug]);
+
+  const bankOptions = useMemo(
+    () => banks.map((b) => ({ value: b.slug, label: b.name })),
+    [banks]
   );
-  const branchesList = useMemo(
-    () =>
-      bankSlug && stateSlug && districtSlug
-        ? getBranchesForDistrict(bankSlug, stateSlug, districtSlug)
-        : [],
-    [bankSlug, stateSlug, districtSlug]
+  const stateOptions = useMemo(
+    () => states.map((s) => ({ value: s.slug, label: s.name })),
+    [states]
+  );
+  const districtOptions = useMemo(
+    () => districts.map((d) => ({ value: d.slug, label: d.name })),
+    [districts]
+  );
+  const branchOptions = useMemo(
+    () => branchesList.map((b) => ({ value: b.branchSlug, label: b.branch })),
+    [branchesList]
   );
 
   function handleBankChange(value: string) {
@@ -104,7 +192,8 @@ export default function CascadingBrowser() {
           placeholder="Select a bank"
           value={bankSlug}
           onChange={handleBankChange}
-          options={banks.map((b) => ({ value: b.slug, label: b.name }))}
+          options={bankOptions}
+          loading={loadingBanks}
         />
         <SelectField
           label="Step 2 — State"
@@ -112,7 +201,8 @@ export default function CascadingBrowser() {
           value={stateSlug}
           onChange={handleStateChange}
           disabled={!bankSlug}
-          options={states.map((s) => ({ value: s.slug, label: s.name }))}
+          loading={loadingStates}
+          options={stateOptions}
         />
         <SelectField
           label="Step 3 — District"
@@ -120,7 +210,8 @@ export default function CascadingBrowser() {
           value={districtSlug}
           onChange={handleDistrictChange}
           disabled={!stateSlug}
-          options={districts.map((d) => ({ value: d.slug, label: d.name }))}
+          loading={loadingDistricts}
+          options={districtOptions}
         />
         <SelectField
           label="Step 4 — Branch"
@@ -128,7 +219,8 @@ export default function CascadingBrowser() {
           value={branchSlug}
           onChange={handleBranchChange}
           disabled={!districtSlug}
-          options={branchesList.map((b) => ({ value: b.branchSlug, label: b.branch }))}
+          loading={loadingBranches}
+          options={branchOptions}
         />
       </div>
       <p className="mt-4 text-xs text-ink-400">

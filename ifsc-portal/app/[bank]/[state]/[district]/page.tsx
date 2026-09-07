@@ -5,15 +5,7 @@ import { Landmark } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import AdSlot from '@/components/AdSlot';
-import {
-  getAllBanks,
-  getBank,
-  getStatesForBank,
-  getState,
-  getDistrictsForState,
-  getDistrict,
-  getBranchesForDistrict,
-} from '@/lib/data';
+import { getBank, getState, getDistrict, getBranchesForDistrict } from '@/lib/data';
 import { districtMetadata } from '@/lib/seo';
 import { breadcrumbSchema } from '@/lib/schema';
 
@@ -21,22 +13,17 @@ interface PageProps {
   params: { bank: string; state: string; district: string };
 }
 
-export function generateStaticParams() {
-  return getAllBanks().flatMap((bank) =>
-    getStatesForBank(bank.slug).flatMap((state) =>
-      getDistrictsForState(bank.slug, state.slug).map((district) => ({
-        bank: bank.slug,
-        state: state.slug,
-        district: district.slug,
-      }))
-    )
-  );
+export async function generateStaticParams() {
+  return [];
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const bank = getBank(params.bank);
-  const state = bank ? getState(bank.slug, params.state) : null;
-  const district = bank && state ? getDistrict(bank.slug, state.slug, params.district) : null;
+export const dynamicParams = true;
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const bank = await getBank(params.bank);
+  const state = bank ? await getState(bank.slug, params.state) : null;
+  const district = bank && state ? await getDistrict(bank.slug, state.slug, params.district) : null;
   if (!bank || !state || !district) return {};
   return districtMetadata(
     bank.name,
@@ -49,15 +36,15 @@ export function generateMetadata({ params }: PageProps): Metadata {
   );
 }
 
-export default function DistrictPage({ params }: PageProps) {
-  const bank = getBank(params.bank);
+export default async function DistrictPage({ params }: PageProps) {
+  const bank = await getBank(params.bank);
   if (!bank) notFound();
-  const state = getState(bank.slug, params.state);
+  const state = await getState(bank.slug, params.state);
   if (!state) notFound();
-  const district = getDistrict(bank.slug, state.slug, params.district);
+  const district = await getDistrict(bank.slug, state.slug, params.district);
   if (!district) notFound();
 
-  const branches = getBranchesForDistrict(bank.slug, state.slug, district.slug);
+  const branches = await getBranchesForDistrict(bank.slug, state.slug, district.slug);
   const crumbs = breadcrumbSchema([
     { name: 'Home', path: [] },
     { name: bank.name, path: [bank.slug] },

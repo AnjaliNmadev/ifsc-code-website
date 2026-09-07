@@ -4,13 +4,16 @@ import { ShieldCheck, Zap, ListTree } from 'lucide-react';
 import IfscQuickSearch from '@/components/IfscQuickSearch';
 import CascadingBrowser from '@/components/CascadingBrowser';
 import AdSlot from '@/components/AdSlot';
+import IfscEducationContent from '@/components/IfscEducationContent';
 import { homeMetadata } from '@/lib/seo';
 import { getAllBanks } from '@/lib/data';
 
 export const metadata: Metadata = homeMetadata();
+export const revalidate = 3600; // refresh the bank list at most once an hour
 
-export default function HomePage() {
-  const banks = getAllBanks();
+export default async function HomePage() {
+  const banks = await getAllBanks();
+  const topBanks = banks.slice(0, 12);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -47,7 +50,7 @@ export default function HomePage() {
               Jump straight into a bank&rsquo;s full state-by-state branch directory.
             </p>
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {banks.map((bank) => (
+              {topBanks.map((bank) => (
                 <Link
                   key={bank.slug}
                   href={`/${bank.slug}`}
@@ -55,11 +58,17 @@ export default function HomePage() {
                 >
                   <p className="text-sm font-semibold text-ink-900">{bank.name}</p>
                   <p className="mt-1 text-xs text-ink-400">
-                    {bank.branchCount} branch{bank.branchCount === 1 ? '' : 'es'} listed
+                    {bank.branchCount.toLocaleString('en-IN')} branch{bank.branchCount === 1 ? '' : 'es'} listed
                   </p>
                 </Link>
               ))}
             </div>
+            {banks.length === 0 && (
+              <p className="mt-4 text-sm text-ink-400">
+                Bank list will appear here once the database is connected — see
+                /supabase/schema.sql.
+              </p>
+            )}
           </section>
 
           <section className="mt-14 grid gap-4 sm:grid-cols-3">
@@ -85,6 +94,8 @@ export default function HomePage() {
               </p>
             </div>
           </section>
+
+          <IfscEducationContent />
         </div>
 
         <aside className="hidden lg:block">

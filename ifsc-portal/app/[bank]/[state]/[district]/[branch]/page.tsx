@@ -4,16 +4,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import BranchDetailsCard from '@/components/BranchDetailsCard';
 import JsonLd from '@/components/JsonLd';
 import AdSlot from '@/components/AdSlot';
-import {
-  getAllBanks,
-  getBank,
-  getStatesForBank,
-  getState,
-  getDistrictsForState,
-  getDistrict,
-  getBranchesForDistrict,
-  getBranch,
-} from '@/lib/data';
+import { getBank, getState, getDistrict, getBranch } from '@/lib/data';
 import { branchMetadata } from '@/lib/seo';
 import { breadcrumbSchema, bankOrCreditUnionSchema } from '@/lib/schema';
 
@@ -21,35 +12,30 @@ interface PageProps {
   params: { bank: string; state: string; district: string; branch: string };
 }
 
-export function generateStaticParams() {
-  return getAllBanks().flatMap((bank) =>
-    getStatesForBank(bank.slug).flatMap((state) =>
-      getDistrictsForState(bank.slug, state.slug).flatMap((district) =>
-        getBranchesForDistrict(bank.slug, state.slug, district.slug).map((branch) => ({
-          bank: bank.slug,
-          state: state.slug,
-          district: district.slug,
-          branch: branch.branchSlug,
-        }))
-      )
-    )
-  );
+// Branch ("money") pages number in the hundreds of thousands across the
+// full dataset — always generate on first visit and cache (ISR), never at
+// build time, so deploys stay fast.
+export async function generateStaticParams() {
+  return [];
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const branch = getBranch(params.bank, params.state, params.district, params.branch);
+export const dynamicParams = true;
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const branch = await getBranch(params.bank, params.state, params.district, params.branch);
   if (!branch) return {};
   return branchMetadata(branch);
 }
 
-export default function BranchPage({ params }: PageProps) {
-  const bank = getBank(params.bank);
+export default async function BranchPage({ params }: PageProps) {
+  const bank = await getBank(params.bank);
   if (!bank) notFound();
-  const state = getState(bank.slug, params.state);
+  const state = await getState(bank.slug, params.state);
   if (!state) notFound();
-  const district = getDistrict(bank.slug, state.slug, params.district);
+  const district = await getDistrict(bank.slug, state.slug, params.district);
   if (!district) notFound();
-  const branch = getBranch(bank.slug, state.slug, district.slug, params.branch);
+  const branch = await getBranch(bank.slug, state.slug, district.slug, params.branch);
   if (!branch) notFound();
 
   const crumbs = breadcrumbSchema([
