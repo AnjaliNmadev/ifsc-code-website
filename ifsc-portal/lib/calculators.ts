@@ -1,74 +1,138 @@
+export type CalculatorCategory = 'income-tax' | 'financial-planning' | 'other';
+
 export interface CalculatorMeta {
   slug: string;
   name: string;
   shortDescription: string;
+  category: CalculatorCategory;
 }
 
+export const CALCULATOR_CATEGORIES: { key: CalculatorCategory; label: string }[] = [
+  { key: 'income-tax', label: 'Income Tax Calculators' },
+  { key: 'financial-planning', label: 'Financial Planning Calculators' },
+  { key: 'other', label: 'Other Calculators' },
+];
+
 export const CALCULATORS: CalculatorMeta[] = [
-  {
-    slug: 'emi-calculator',
-    name: 'EMI Calculator',
-    shortDescription: 'Calculate your monthly loan EMI, total interest, and total repayment.',
-  },
-  {
-    slug: 'fd-calculator',
-    name: 'FD Calculator',
-    shortDescription: 'Estimate the maturity value and interest earned on a fixed deposit.',
-  },
-  {
-    slug: 'rd-calculator',
-    name: 'RD Calculator',
-    shortDescription: 'Estimate the maturity value of a monthly recurring deposit.',
-  },
-  {
-    slug: 'simple-interest-calculator',
-    name: 'Simple Interest Calculator',
-    shortDescription: 'Quickly calculate simple interest on any principal amount.',
-  },
-  {
-    slug: 'sip-calculator',
-    name: 'SIP Calculator',
-    shortDescription: 'Estimate the future value of your monthly mutual fund SIP investments.',
-  },
-  {
-    slug: 'step-up-sip-calculator',
-    name: 'Step-Up SIP Calculator',
-    shortDescription: 'Calculate SIP returns when you increase your monthly investment every year.',
-  },
-  {
-    slug: 'savings-calculator',
-    name: 'Savings Calculator',
-    shortDescription: 'Project how a lump sum plus regular monthly savings can grow over time.',
-  },
+  // Income Tax Calculators
   {
     slug: 'income-tax-calculator',
     name: 'Income Tax Calculator',
     shortDescription: 'Estimate your income tax liability under the new and old tax regimes.',
+    category: 'income-tax',
   },
   {
     slug: 'advance-tax-calculator',
     name: 'Advance Tax Calculator',
     shortDescription: 'Get your quarterly advance tax installment schedule and due dates.',
+    category: 'income-tax',
   },
   {
     slug: 'hra-calculator',
     name: 'HRA Calculator',
     shortDescription: 'Calculate how much of your House Rent Allowance is tax-exempt.',
+    category: 'income-tax',
   },
   {
     slug: 'capital-gains-calculator',
     name: 'Capital Gains Calculator',
     shortDescription: 'Estimate short-term and long-term capital gains tax on your investments.',
+    category: 'income-tax',
   },
   {
     slug: 'salary-calculator',
     name: 'Salary Calculator',
     shortDescription: 'Convert your CTC into estimated monthly and annual take-home salary.',
+    category: 'income-tax',
+  },
+  // Financial Planning Calculators
+  {
+    slug: 'sip-calculator',
+    name: 'SIP Calculator',
+    shortDescription: 'Estimate the future value of your monthly mutual fund SIP investments.',
+    category: 'financial-planning',
+  },
+  {
+    slug: 'emi-calculator',
+    name: 'EMI Calculator',
+    shortDescription: 'Calculate your monthly loan EMI, total interest, and total repayment.',
+    category: 'financial-planning',
+  },
+  {
+    slug: 'step-up-sip-calculator',
+    name: 'Step-Up SIP Calculator',
+    shortDescription: 'Calculate SIP returns when you increase your monthly investment every year.',
+    category: 'financial-planning',
+  },
+  {
+    slug: 'fd-calculator',
+    name: 'FD Calculator',
+    shortDescription: 'Estimate the maturity value and interest earned on a fixed deposit.',
+    category: 'financial-planning',
+  },
+  {
+    slug: 'rd-calculator',
+    name: 'RD Calculator',
+    shortDescription: 'Estimate the maturity value of a monthly recurring deposit.',
+    category: 'financial-planning',
+  },
+  {
+    slug: 'savings-calculator',
+    name: 'Savings Calculator',
+    shortDescription: 'Project how a lump sum plus regular monthly savings can grow over time.',
+    category: 'financial-planning',
+  },
+  {
+    slug: 'simple-interest-calculator',
+    name: 'Simple Interest Calculator',
+    shortDescription: 'Quickly calculate simple interest on any principal amount.',
+    category: 'financial-planning',
+  },
+  // Other Calculators
+  {
+    slug: 'retirement-planning-calculator',
+    name: 'Retirement Planning Calculator',
+    shortDescription: 'Estimate the retirement corpus you need and the monthly SIP to get there.',
+    category: 'other',
+  },
+  {
+    slug: 'ppf-calculator',
+    name: 'PPF Calculator',
+    shortDescription: 'Estimate the maturity value of your Public Provident Fund investments.',
+    category: 'other',
+  },
+  {
+    slug: 'gratuity-calculator',
+    name: 'Gratuity Calculator',
+    shortDescription: 'Calculate the gratuity amount payable based on your salary and service.',
+    category: 'other',
+  },
+  {
+    slug: 'epf-calculator',
+    name: 'EPF Calculator',
+    shortDescription: 'Project your Employee Provident Fund corpus at retirement.',
+    category: 'other',
+  },
+  {
+    slug: 'swp-calculator',
+    name: 'SWP Calculator',
+    shortDescription: 'See how long a lump sum lasts with regular systematic withdrawals.',
+    category: 'other',
+  },
+  {
+    slug: 'nps-calculator',
+    name: 'NPS Calculator',
+    shortDescription: 'Estimate your National Pension System corpus, lump sum, and monthly pension.',
+    category: 'other',
   },
 ];
 
 export function getCalculator(slug: string): CalculatorMeta | undefined {
   return CALCULATORS.find((c) => c.slug === slug);
+}
+
+export function getCalculatorsByCategory(category: CalculatorCategory): CalculatorMeta[] {
+  return CALCULATORS.filter((c) => c.category === category);
 }
 
 /**
