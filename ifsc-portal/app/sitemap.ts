@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/utils';
+import { CALCULATORS } from '@/lib/calculators';
 
 // Computed fresh per-request (not during `next build`) so a slow or
 // cold-starting database can never block or fail the production build.
@@ -27,6 +28,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/privacy-policy`, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${SITE_URL}/disclaimer`, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${SITE_URL}/contact`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${SITE_URL}/calculators`, changeFrequency: 'monthly', priority: 0.6 },
+    ...CALCULATORS.map((calc) => ({
+      url: `${SITE_URL}/calculators/${calc.slug}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
   ];
 
   const [{ data: banks }, { data: states }] = await Promise.all([

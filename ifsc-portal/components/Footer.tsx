@@ -1,17 +1,30 @@
 import Link from 'next/link';
+import { CALCULATORS } from '@/lib/calculators';
 
 export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-ink-200 bg-ink-50">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="grid gap-8 sm:grid-cols-3">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="font-display text-lg font-extrabold text-ink-900">IFSC Finder</p>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-ink-500">
               A free directory of Indian bank branch IFSC and MICR codes, built for quick lookups
               and easy sharing.
             </p>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-ink-800">Calculators</p>
+            <ul className="mt-2 space-y-2 text-sm text-ink-500">
+              {CALCULATORS.map((calc) => (
+                <li key={calc.slug}>
+                  <Link href={`/calculators/${calc.slug}`} className="hover:text-trust-700">
+                    {calc.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
           <div>
             <p className="text-sm font-semibold text-ink-800">Site</p>

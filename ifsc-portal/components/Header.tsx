@@ -17,6 +17,9 @@ export default function Header() {
           <Link href="/" className="transition hover:text-trust-700">
             Search
           </Link>
+          <Link href="/calculators" className="transition hover:text-trust-700">
+            Calculators
+          </Link>
           <Link href="/about" className="transition hover:text-trust-700">
             About Us
           </Link>
