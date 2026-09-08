@@ -22,10 +22,10 @@ export default function BankEducationContent({ bankName }: { bankName: string })
       <JsonLd data={faqSchema(faqs)} />
 
       <div>
-        <h2 className="font-display text-xl font-semibold text-ink-900">
+        <h2 className="font-display text-2xl font-extrabold text-ink-900">
           About {bankName} IFSC codes
         </h2>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-600">
+        <p className="mt-2 max-w-3xl text-base leading-relaxed text-ink-600">
           Every {bankName} branch has its own unique 11-character IFSC code, assigned by the
           Reserve Bank of India. The first four characters of the code identify {bankName}, the
           fifth character is always zero, and the last six characters identify the specific
@@ -35,10 +35,10 @@ export default function BankEducationContent({ bankName }: { bankName: string })
       </div>
 
       <div>
-        <h2 className="font-display text-xl font-semibold text-ink-900">
+        <h2 className="font-display text-2xl font-extrabold text-ink-900">
           Steps to open a {bankName} account
         </h2>
-        <ol className="mt-3 max-w-3xl list-decimal space-y-2 pl-5 text-sm leading-relaxed text-ink-600">
+        <ol className="mt-3 max-w-3xl list-decimal space-y-2 pl-5 text-base leading-relaxed text-ink-600">
           <li>Visit your nearest {bankName} branch or start an application on the bank&rsquo;s official website or app.</li>
           <li>Choose the account type that fits your needs (savings, current, salary, etc.).</li>
           <li>Submit proof of identity and address, a PAN card, and recent photographs.</li>
@@ -48,7 +48,7 @@ export default function BankEducationContent({ bankName }: { bankName: string })
       </div>
 
       <div>
-        <h2 className="font-display text-xl font-semibold text-ink-900">
+        <h2 className="font-display text-2xl font-extrabold text-ink-900">
           Frequently asked questions
         </h2>
         <div className="mt-4 space-y-4">
@@ -57,10 +57,10 @@ export default function BankEducationContent({ bankName }: { bankName: string })
               key={faq.question}
               className="group rounded-xl border border-ink-200 bg-white p-4 open:border-trust-300"
             >
-              <summary className="cursor-pointer list-none text-sm font-semibold text-ink-900">
+              <summary className="cursor-pointer list-none text-base font-bold text-ink-900">
                 {faq.question}
               </summary>
-              <p className="mt-2 text-sm leading-relaxed text-ink-600">{faq.answer}</p>
+              <p className="mt-2 text-base leading-relaxed text-ink-600">{faq.answer}</p>
             </details>
           ))}
         </div>

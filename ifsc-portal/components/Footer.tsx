@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
-            <p className="font-display text-base font-semibold text-ink-900">IFSC Finder</p>
+            <p className="font-display text-lg font-extrabold text-ink-900">IFSC Finder</p>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-ink-500">
               A free directory of Indian bank branch IFSC and MICR codes, built for quick lookups
               and easy sharing.

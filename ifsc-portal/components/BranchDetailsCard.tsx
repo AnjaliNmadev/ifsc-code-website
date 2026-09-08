@@ -42,10 +42,10 @@ export default function BranchDetailsCard({ branch }: { branch: BranchRecord }) 
           <p className="text-xs font-semibold uppercase tracking-wide text-trust-700">
             {branch.bankName}
           </p>
-          <h1 className="mt-1 font-display text-2xl font-bold text-ink-900 sm:text-3xl">
+          <h1 className="mt-1 font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">
             {branch.branch} Branch
           </h1>
-          <p className="mt-1 text-sm text-ink-500">
+          <p className="mt-1 text-base font-medium text-ink-500">
             {branch.district}, {branch.state}
           </p>
         </div>

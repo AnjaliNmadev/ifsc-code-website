@@ -47,10 +47,10 @@ export default async function BankPage({ params }: PageProps) {
       <JsonLd data={crumbs} />
       <Breadcrumbs items={[{ name: bank.name, href: `/${bank.slug}` }]} />
 
-      <h1 className="font-display text-2xl font-bold text-ink-900 sm:text-3xl">
+      <h1 className="font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">
         {bank.name} IFSC Codes
       </h1>
-      <p className="mt-2 max-w-2xl text-sm text-ink-500">
+      <p className="mt-2 max-w-2xl text-lg text-ink-600">
         {bank.branchCount.toLocaleString('en-IN')} {bank.name} branch{bank.branchCount === 1 ? '' : 'es'} listed across{' '}
         {states.length} state{states.length === 1 ? '' : 's'}. Select a state to narrow down to
         district and branch level.
@@ -65,7 +65,7 @@ export default async function BankPage({ params }: PageProps) {
           >
             <div className="flex items-center gap-2.5">
               <MapPin size={16} className="text-trust-600" />
-              <span className="text-sm font-semibold text-ink-900">{state.name}</span>
+              <span className="text-base font-bold text-ink-900">{state.name}</span>
             </div>
             <span className="text-xs text-ink-400">
               {state.branchCount.toLocaleString('en-IN')} branch{state.branchCount === 1 ? '' : 'es'}

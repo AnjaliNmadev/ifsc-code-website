@@ -1,6 +1,11 @@
 import type { MetadataRoute } from 'next';
-import { getAllBanks, getStatesForBank } from '@/lib/data';
+import { supabase } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/utils';
+
+// Computed fresh per-request (not during `next build`) so a slow or
+// cold-starting database can never block or fail the production build.
+// Vercel/Netlify still cache the response at the edge, so this stays fast.
+export const dynamic = 'force-dynamic';
 
 /**
  * With 180,000+ branch pages, listing every single URL in one sitemap file
@@ -10,6 +15,10 @@ import { SITE_URL } from '@/lib/utils';
  * already tens of thousands of URLs and gives Google's crawler more than
  * enough entry points to discover every district and branch page by
  * following links from there.
+ *
+ * Both listings below are fetched in ONE query each (not one query per
+ * bank), so this stays fast even with 150+ banks and thousands of
+ * bank+state combinations.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [
@@ -20,19 +29,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/contact`, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
-  const banks = await getAllBanks();
+  const [{ data: banks }, { data: states }] = await Promise.all([
+    supabase.from('bank_summary').select('slug'),
+    supabase.from('state_summary').select('bank_slug, slug'),
+  ]);
 
-  for (const bank of banks) {
+  for (const bank of banks ?? []) {
     entries.push({ url: `${SITE_URL}/${bank.slug}`, changeFrequency: 'weekly', priority: 0.8 });
+  }
 
-    const states = await getStatesForBank(bank.slug);
-    for (const state of states) {
-      entries.push({
-        url: `${SITE_URL}/${bank.slug}/${state.slug}`,
-        changeFrequency: 'weekly',
-        priority: 0.7,
-      });
-    }
+  for (const state of states ?? []) {
+    entries.push({
+      url: `${SITE_URL}/${state.bank_slug}/${state.slug}`,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    });
   }
 
   return entries;

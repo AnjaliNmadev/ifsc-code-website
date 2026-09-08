@@ -41,8 +41,8 @@ export default function IfscEducationContent() {
       <JsonLd data={faqSchema(FAQS)} />
 
       <div>
-        <h2 className="font-display text-xl font-semibold text-ink-900">What is an IFSC code?</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-600">
+        <h2 className="font-display text-2xl font-extrabold text-ink-900">What is an IFSC code?</h2>
+        <p className="mt-2 max-w-3xl text-base leading-relaxed text-ink-600">
           IFSC (Indian Financial System Code) is a unique 11-character alphanumeric code that the
           Reserve Bank of India assigns to every bank branch in the country. The first four
           characters identify the bank, the fifth character is always zero, and the last six
@@ -52,8 +52,8 @@ export default function IfscEducationContent() {
       </div>
 
       <div>
-        <h2 className="font-display text-xl font-semibold text-ink-900">How to find an IFSC code</h2>
-        <ul className="mt-3 max-w-3xl space-y-2 text-sm leading-relaxed text-ink-600">
+        <h2 className="font-display text-2xl font-extrabold text-ink-900">How to find an IFSC code</h2>
+        <ul className="mt-3 max-w-3xl space-y-2 text-base leading-relaxed text-ink-600">
           <li>• Check your bank passbook or any cheque leaf issued by your bank — the IFSC is printed on it.</li>
           <li>• Use the search box at the top of this page if you already know the code, to confirm the branch it belongs to.</li>
           <li>• Use the bank → state → district → branch browser above if you only know the branch name and location.</li>
@@ -62,16 +62,16 @@ export default function IfscEducationContent() {
 
       <div className="grid gap-8 sm:grid-cols-2">
         <div>
-          <h2 className="font-display text-xl font-semibold text-ink-900">Benefits of an IFSC code</h2>
-          <ul className="mt-3 space-y-2 text-sm leading-relaxed text-ink-600">
+          <h2 className="font-display text-2xl font-extrabold text-ink-900">Benefits of an IFSC code</h2>
+          <ul className="mt-3 space-y-2 text-base leading-relaxed text-ink-600">
             <li>• Uniquely identifies a bank and its exact branch anywhere in India.</li>
             <li>• Removes ambiguity and errors from electronic fund transfers.</li>
             <li>• Makes NEFT, RTGS, and IMPS transfers fast and accurate.</li>
           </ul>
         </div>
         <div>
-          <h2 className="font-display text-xl font-semibold text-ink-900">Benefits of a MICR code</h2>
-          <p className="mt-3 text-sm leading-relaxed text-ink-600">
+          <h2 className="font-display text-2xl font-extrabold text-ink-900">Benefits of a MICR code</h2>
+          <p className="mt-3 text-base leading-relaxed text-ink-600">
             MICR (Magnetic Ink Character Recognition) enables banks to process cheques faster and
             with fewer errors, using magnetic-ink printed characters that clearing machines can
             read automatically. It is a 9-digit code: the first 3 digits represent the city, the
@@ -81,15 +81,15 @@ export default function IfscEducationContent() {
       </div>
 
       <div>
-        <h2 className="font-display text-xl font-semibold text-ink-900">
+        <h2 className="font-display text-2xl font-extrabold text-ink-900">
           Typical transfer charges by amount
         </h2>
-        <p className="mt-2 max-w-3xl text-sm text-ink-500">
+        <p className="mt-2 max-w-3xl text-base text-ink-500">
           These are indicative ranges — each bank sets its own charges within RBI limits, and
           NEFT/IMPS are free at most banks today. Always confirm with your bank.
         </p>
         <div className="mt-4 overflow-x-auto rounded-xl border border-ink-200">
-          <table className="w-full min-w-[480px] text-left text-sm">
+          <table className="w-full min-w-[480px] text-left text-base">
             <thead className="bg-ink-50 text-xs font-semibold uppercase tracking-wide text-ink-500">
               <tr>
                 <th className="px-4 py-3">Amount</th>
@@ -116,11 +116,11 @@ export default function IfscEducationContent() {
       </div>
 
       <div>
-        <h2 className="font-display text-xl font-semibold text-ink-900">
+        <h2 className="font-display text-2xl font-extrabold text-ink-900">
           Difference between IFSC and MICR code
         </h2>
         <div className="mt-4 overflow-x-auto rounded-xl border border-ink-200">
-          <table className="w-full min-w-[480px] text-left text-sm">
+          <table className="w-full min-w-[480px] text-left text-base">
             <thead className="bg-ink-50 text-xs font-semibold uppercase tracking-wide text-ink-500">
               <tr>
                 <th className="px-4 py-3">IFSC Code</th>
@@ -150,7 +150,7 @@ export default function IfscEducationContent() {
       </div>
 
       <div>
-        <h2 className="font-display text-xl font-semibold text-ink-900">
+        <h2 className="font-display text-2xl font-extrabold text-ink-900">
           Frequently asked questions
         </h2>
         <div className="mt-4 space-y-4">
@@ -159,10 +159,10 @@ export default function IfscEducationContent() {
               key={faq.question}
               className="group rounded-xl border border-ink-200 bg-white p-4 open:border-trust-300"
             >
-              <summary className="cursor-pointer list-none text-sm font-semibold text-ink-900">
+              <summary className="cursor-pointer list-none text-base font-bold text-ink-900">
                 {faq.question}
               </summary>
-              <p className="mt-2 text-sm leading-relaxed text-ink-600">{faq.answer}</p>
+              <p className="mt-2 text-base leading-relaxed text-ink-600">{faq.answer}</p>
             </details>
           ))}
         </div>

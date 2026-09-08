@@ -63,10 +63,10 @@ export default async function DistrictPage({ params }: PageProps) {
         ]}
       />
 
-      <h1 className="font-display text-2xl font-bold text-ink-900 sm:text-3xl">
+      <h1 className="font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">
         {bank.name} Branches in {district.name}, {state.name}
       </h1>
-      <p className="mt-2 max-w-2xl text-sm text-ink-500">
+      <p className="mt-2 max-w-2xl text-lg text-ink-600">
         {branches.length} {bank.name} branch{branches.length === 1 ? '' : 'es'} found in{' '}
         {district.name}. Select a branch to view its IFSC code, MICR code, and address.
       </p>
@@ -81,7 +81,7 @@ export default async function DistrictPage({ params }: PageProps) {
             <div className="flex items-center gap-2.5">
               <Landmark size={16} className="text-trust-600" />
               <div>
-                <p className="text-sm font-semibold text-ink-900">{branch.branch}</p>
+                <p className="text-base font-bold text-ink-900">{branch.branch}</p>
                 <p className="text-xs text-ink-400">{branch.address}</p>
               </div>
             </div>

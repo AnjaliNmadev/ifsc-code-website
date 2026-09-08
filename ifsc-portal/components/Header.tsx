@@ -9,11 +9,11 @@ export default function Header() {
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-trust-700 text-white">
             <Landmark size={18} strokeWidth={2.25} />
           </span>
-          <span className="font-display text-lg font-semibold tracking-tight text-ink-900">
+          <span className="font-display text-xl font-extrabold tracking-tight text-ink-900">
             IFSC Finder
           </span>
         </Link>
-        <nav className="hidden items-center gap-6 text-sm font-medium text-ink-600 sm:flex">
+        <nav className="hidden items-center gap-6 text-base font-semibold text-ink-600 sm:flex">
           <Link href="/" className="transition hover:text-trust-700">
             Search
           </Link>

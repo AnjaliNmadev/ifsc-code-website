@@ -70,10 +70,10 @@ export default async function BranchPage({ params }: PageProps) {
       </div>
 
       <section className="mt-8 rounded-2xl border border-ink-200 bg-white p-6">
-        <h2 className="font-display text-lg font-semibold text-ink-900">
+        <h2 className="font-display text-2xl font-extrabold text-ink-900">
           About the {branch.bankName} {branch.branch} IFSC code
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-ink-600">
+        <p className="mt-2 text-base leading-relaxed text-ink-600">
           The IFSC code <span className="font-mono font-semibold">{branch.ifsc}</span> identifies
           the {branch.branch} branch of {branch.bankName} located in {branch.district},{' '}
           {branch.state}, for the purpose of electronic fund transfers such as NEFT, RTGS, and

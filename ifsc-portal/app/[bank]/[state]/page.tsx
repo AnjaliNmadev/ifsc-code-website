@@ -52,10 +52,10 @@ export default async function StatePage({ params }: PageProps) {
         ]}
       />
 
-      <h1 className="font-display text-2xl font-bold text-ink-900 sm:text-3xl">
+      <h1 className="font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">
         {bank.name} IFSC Codes in {state.name}
       </h1>
-      <p className="mt-2 max-w-2xl text-sm text-ink-500">
+      <p className="mt-2 max-w-2xl text-lg text-ink-600">
         {state.branchCount.toLocaleString('en-IN')} branch{state.branchCount === 1 ? '' : 'es'} across {districts.length}{' '}
         district{districts.length === 1 ? '' : 's'} in {state.name}.
       </p>
@@ -69,7 +69,7 @@ export default async function StatePage({ params }: PageProps) {
           >
             <div className="flex items-center gap-2.5">
               <Building size={16} className="text-trust-600" />
-              <span className="text-sm font-semibold text-ink-900">{district.name}</span>
+              <span className="text-base font-bold text-ink-900">{district.name}</span>
             </div>
             <span className="text-xs text-ink-400">
               {district.branchCount.toLocaleString('en-IN')} branch{district.branchCount === 1 ? '' : 'es'}
