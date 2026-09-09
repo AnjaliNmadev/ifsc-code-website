@@ -718,24 +718,177 @@ export const GUIDE_CONTENT: Record<string, GuideContent> = {
 
   'pan-card': {
     intro:
-      'A Permanent Account Number (PAN) is a unique 10-character alphanumeric identifier issued by the Income Tax Department to track financial transactions and tax compliance in India.',
+      'A Permanent Account Number (PAN) is a unique 10-character alphanumeric code issued by the Income Tax Department to every taxpayer in India. It works as a primary identifier for almost anything involving money \u2014 filing returns, opening a bank account, buying property, or investing \u2014 and stays valid for the cardholder\u2019s lifetime. This guide covers what a PAN card contains, who needs one, how the number itself is structured, and how to apply, check status, download, or correct one.',
+    keyHighlights: {
+      headers: ['Particulars', 'Details'],
+      rows: [
+        ['Issuing authority', 'Income Tax Department, Government of India'],
+        ['Format', '10-character alphanumeric code'],
+        ['Validity', 'Lifetime (does not need renewal)'],
+        ['Application mode', 'Online (Protean/NSDL, UTIITSL, e-filing portal) or offline'],
+        ['Typical fee', '\u20b966 \u2013 \u20b91,017 depending on mode and delivery'],
+        ['Linked to', 'Aadhaar (linking is mandatory for most holders)'],
+      ],
+    },
     sections: [
       {
-        heading: 'Why PAN is important',
+        heading: 'What a PAN card contains',
         paragraphs: [
-          'PAN is mandatory for filing income tax returns, and is required for a wide range of financial transactions, including opening a bank account, making high-value cash deposits or investments, buying or selling property above specified thresholds, and receiving payments where TDS applies. Without PAN, TDS is deducted at a higher rate.',
+          'A PAN card is a physical or digital card that displays the cardholder\u2019s unique PAN along with a set of identifying details. Since 2017, every new PAN card also carries a QR code that can be scanned to verify the details printed on it.',
+        ],
+        bullets: [
+          'Full name of the cardholder \u2014 the individual, firm, LLP, or company the PAN belongs to.',
+          'Father\u2019s (or mother\u2019s, for a single parent) name, for individual applicants.',
+          'Date of birth for individuals, or date of registration/incorporation for entities.',
+          'The 10-character PAN itself.',
+          'The cardholder\u2019s signature and photograph, for individual applicants (companies and firms do not get a photograph on their card).',
         ],
       },
       {
-        heading: 'How to apply for a PAN card',
+        heading: 'How a PAN number is structured',
         paragraphs: [
-          'You can apply for a new PAN online through the NSDL (Protean) or UTIITSL portals, or the Income Tax Department\u2019s e-filing website. The process requires basic identity, address, and date of birth proof, along with a passport-size photograph, and can typically be completed entirely online using Aadhaar-based e-KYC.',
+          'Each of the 10 characters in a PAN encodes specific information about the holder, rather than being assigned randomly.',
+        ],
+        table: {
+          headers: ['Position', 'What it represents'],
+          rows: [
+            ['First 3 characters', 'A purely alphabetic sequence (AAA to ZZZ)'],
+            ['4th character', 'The category of taxpayer \u2014 see the table below'],
+            ['5th character', 'The first letter of the individual\u2019s (or entity\u2019s) surname/name'],
+            ['Next 4 characters', 'A sequential number from 0001 to 9999'],
+            ['Last character', 'An alphabetic check character'],
+          ],
+        },
+      },
+      {
+        heading: 'What the 4th character of a PAN means',
+        table: {
+          headers: ['Letter', 'Category'],
+          rows: [
+            ['P', 'Individual'],
+            ['C', 'Company'],
+            ['H', 'Hindu Undivided Family (HUF)'],
+            ['F', 'Firm'],
+            ['A', 'Association of Persons (AOP)'],
+            ['T', 'AOP for a Trust'],
+            ['B', 'Body of Individuals (BOI)'],
+            ['L', 'Local Authority'],
+            ['J', 'Artificial Judicial Person'],
+            ['G', 'Government'],
+          ],
+        },
+      },
+      {
+        heading: 'Who can apply for a PAN card',
+        paragraphs: [
+          'Any person or entity that carries out financial transactions in India can apply for a PAN, and several categories are effectively required to hold one.',
+        ],
+        bullets: [
+          'Individuals, including salaried employees, self-employed professionals, minors (applied for by a parent/guardian), and students.',
+          'Hindu Undivided Families (HUFs), applying through the Karta as a separate legal entity.',
+          'Partnership firms and Limited Liability Partnerships (LLPs), required to hold a PAN in the entity\u2019s name for tax filing.',
+          'Companies registered in India, which must quote their PAN on all financial transactions.',
+          'Trusts, Associations of Persons (AOPs), and Bodies of Individuals (BOIs), applying with their registration certificate.',
+          'Foreign citizens and foreign entities carrying out financial transactions in India.',
         ],
       },
       {
-        heading: 'Linking PAN with Aadhaar',
+        heading: 'How to apply for a PAN card online',
         paragraphs: [
-          'It is mandatory for most PAN holders to link their PAN with Aadhaar. A PAN that is not linked to Aadhaar becomes inoperative, which can lead to higher TDS/TCS deduction and difficulty carrying out financial transactions until it is linked.',
+          'A new PAN can be applied for online through the Protean (formerly NSDL) portal, the UTIITSL portal, or the Income Tax Department\u2019s own e-filing website. The broad steps are similar across all three:',
+        ],
+        bullets: [
+          'Select the applicant category (individual, company, LLP, etc.) and fill in your basic personal, contact, and identity details.',
+          'Choose whether to submit documents digitally (paperless, using Aadhaar e-KYC/e-Sign) or physically by post.',
+          'Upload the required identity, address, and date-of-birth proofs along with a photograph and signature.',
+          'Pay the applicable processing fee online and note down the acknowledgement or token number generated.',
+          'If you opted for physical submission, print, sign, and courier the acknowledgement along with your documents to the address specified on the portal.',
+        ],
+      },
+      {
+        heading: 'How to apply for a PAN card offline',
+        paragraphs: [
+          'You can also apply offline by visiting a PAN facilitation centre or downloading and printing the relevant application form from the Protean website.',
+        ],
+        bullets: [
+          'Collect the application form from a PAN centre, or print a downloaded copy.',
+          'Fill in the details by hand, and affix a recent photograph and signature where required.',
+          'Attach self-attested copies of your identity, address, and date-of-birth proof.',
+          'Submit the form and documents at the PAN centre along with the applicable fee.',
+        ],
+      },
+      {
+        heading: 'Documents required for a PAN application',
+        table: {
+          headers: ['Applicant type', 'Typical documents required'],
+          rows: [
+            ['Individual', 'Identity proof (Aadhaar/passport/voter ID/driving licence), address proof (Aadhaar/utility bill/bank passbook), and date-of-birth proof (Aadhaar/birth certificate/matriculation certificate)'],
+            ['HUF', 'An affidavit from the Karta, along with the Karta\u2019s own identity and address proof'],
+            ['Company', 'Certificate of Incorporation issued by the Registrar of Companies'],
+            ['LLP / Partnership firm', 'Certificate of Registration issued by the Registrar of Companies/Firms, or the Partnership Deed'],
+            ['Trust', 'Trust Deed or Registration Certificate issued by a Charity Commissioner'],
+            ['Foreign citizen', 'Passport, PIO/OCI card, or other government-issued identity and address proof, typically attested by the Indian embassy/consulate or apostilled'],
+          ],
+        },
+      },
+      {
+        heading: 'PAN card fees',
+        paragraphs: [
+          'The fee depends on how the application is submitted and whether you want a physical card, an e-PAN only, or delivery outside India.',
+        ],
+        table: {
+          headers: ['Scenario', 'Approximate fee (incl. GST)'],
+          rows: [
+            ['Physical card, dispatched within India', '\u2248 \u20b9101 \u2013 \u20b9107'],
+            ['Physical card, dispatched outside India', '\u2248 \u20b91,011 \u2013 \u20b91,017'],
+            ['e-PAN only, sent by email', '\u2248 \u20b966 \u2013 \u20b972'],
+          ],
+        },
+      },
+      {
+        heading: 'Checking your PAN application status',
+        paragraphs: [
+          'Once submitted, you can track your application on the same portal you applied through (Protean or UTIITSL) by entering your acknowledgement number, or your name and date of birth, along with the captcha shown.',
+        ],
+      },
+      {
+        heading: 'Downloading your e-PAN',
+        paragraphs: [
+          'After your PAN is allotted, you can download a digital copy (e-PAN) from the Protean or UTIITSL website by entering your PAN or acknowledgement number and date of birth, verifying an OTP, and paying a small fee if the request is made more than 30 days after allotment.',
+        ],
+      },
+      {
+        heading: 'Correcting or updating PAN details',
+        paragraphs: [
+          'If any detail on your PAN \u2014 your name, date of birth, address, or photograph \u2014 needs to be corrected, you can apply through the same portals by selecting the "Changes or Correction in existing PAN" option, entering the corrected details, uploading supporting documents, and paying the processing fee. The updated card is typically dispatched within about 15 days.',
+        ],
+      },
+      {
+        heading: 'Applying for a duplicate PAN card',
+        paragraphs: [
+          'If your PAN card is lost, damaged, or misplaced, you do not need a new PAN \u2014 you can request a reprint of the same PAN by submitting your existing PAN number, Aadhaar number, and date of birth on the Protean or UTIITSL website, verifying an OTP, and paying the applicable fee.',
+        ],
+      },
+      {
+        heading: 'Why PAN matters for everyday transactions',
+        bullets: [
+          'Mandatory for filing income tax returns and for TDS/TCS credit to be recorded correctly.',
+          'Required to open a bank account and for most high-value banking transactions.',
+          'Needed for buying or selling property, vehicles, and other high-value assets above prescribed thresholds.',
+          'Used as identity and address proof for a wide range of everyday services.',
+          'A PAN not linked with Aadhaar becomes inoperative, which triggers TDS/TCS at a higher rate and blocks several financial transactions until it is linked again.',
+        ],
+      },
+      {
+        heading: 'High-value transactions that require PAN',
+        paragraphs: [
+          'Certain transactions are specifically required to be reported against a PAN due to their value, so quoting your PAN is compulsory in these cases:',
+        ],
+        bullets: [
+          'Aggregate cash deposits or withdrawals of \u20b910,00,000 or more in a financial year with a bank or post office.',
+          'Purchase or sale of immovable property valued at \u20b920,00,000 or more.',
+          'Payments to a hotel, banquet hall, or restaurant of \u20b91,00,000 or more at one time.',
+          'Purchase of a motor vehicle costing more than \u20b95,00,000.',
         ],
       },
     ],
@@ -754,6 +907,21 @@ export const GUIDE_CONTENT: Record<string, GuideContent> = {
         question: 'How long does it take to get a PAN card?',
         answer:
           'A physical PAN card is usually issued within about 15 days of a correctly submitted application, while an e-PAN (a digital version) can often be generated within 24-48 hours for e-KYC-based applications.',
+      },
+      {
+        question: 'Is Aadhaar mandatory to apply for a PAN?',
+        answer:
+          'Aadhaar makes the process much faster through paperless e-KYC, and PAN-Aadhaar linking is separately mandatory for most existing holders, but you can still apply using other accepted identity, address, and date-of-birth documents if you do not have an Aadhaar number.',
+      },
+      {
+        question: 'What happens if my PAN is not linked to Aadhaar?',
+        answer:
+          'An unlinked PAN becomes inoperative, which can lead to TDS/TCS being deducted at a higher rate and can block several financial transactions until the linking is completed.',
+      },
+      {
+        question: 'Can I apply for a PAN card without visiting any office?',
+        answer:
+          'Yes. The entire process, from application to e-KYC-based document verification to receiving an e-PAN by email, can be completed online without visiting a PAN centre, as long as you use the paperless/Aadhaar-based option.',
       },
     ],
   },
