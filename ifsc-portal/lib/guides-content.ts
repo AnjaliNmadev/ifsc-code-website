@@ -1,7 +1,21 @@
+export interface GuideTable {
+  headers: string[];
+  rows: string[][];
+  note?: string;
+}
+
+export interface GuideSubsection {
+  heading: string;
+  paragraphs?: string[];
+  bullets?: string[];
+}
+
 export interface GuideSection {
   heading: string;
-  paragraphs: string[];
+  paragraphs?: string[];
   bullets?: string[];
+  table?: GuideTable;
+  subsections?: GuideSubsection[];
 }
 
 export interface GuideFaq {
@@ -11,6 +25,7 @@ export interface GuideFaq {
 
 export interface GuideContent {
   intro: string;
+  keyHighlights?: GuideTable;
   sections: GuideSection[];
   faqs: GuideFaq[];
 }
@@ -60,42 +75,182 @@ export const GUIDE_CONTENT: Record<string, GuideContent> = {
 
   'long-term-capital-gains-ltcg-tax': {
     intro:
-      'Long-term capital gains (LTCG) tax applies when you sell a capital asset after holding it beyond the specified minimum period. LTCG generally attracts more favourable tax treatment than short-term gains.',
+      'Long-term capital gains (LTCG) arise when you sell a capital asset — such as listed shares, mutual funds, property, or gold — after holding it beyond a minimum specified period. Under Sections 112 and 112A of the Income Tax Act, most long-term gains are taxed at a flat 12.5%, with an annual exemption of ₹1,25,000 available specifically for listed equity shares, equity mutual funds, and units of a business trust. This guide walks through the holding-period rules, tax rates by asset type, how to actually compute the taxable gain, the grandfathering rule for older equity holdings, and the main exemptions you can use to bring the tax down.',
+    keyHighlights: {
+      headers: ['Particulars', 'Details'],
+      rows: [
+        ['LTCG tax rate', '12.5% (flat, in most cases)'],
+        ['Exemption for equity (Sec 112A)', '₹1,25,000 per financial year'],
+        ['Holding period — listed shares/equity funds', 'More than 12 months'],
+        ['Holding period — property, gold, other assets', 'More than 24 months'],
+        ['Indexation available?', 'Only for property bought before 23 July 2024 (optional)'],
+        ['Common exemptions', 'Sections 54, 54EC, 54F'],
+      ],
+    },
     sections: [
       {
-        heading: 'Holding period for long-term classification',
+        heading: 'What is a long-term capital gain',
         paragraphs: [
-          'An asset qualifies as long-term if held for more than 12 months in the case of listed equity shares and equity mutual funds, and more than 24 months for most other assets, including immovable property, gold, and unlisted shares. Debt mutual funds purchased on or after 1 April 2023 are taxed at slab rates regardless of holding period, and do not get LTCG treatment.',
+          'A capital gain is simply the profit made on selling a capital asset. It is classified as "long-term" once the asset has been held beyond a minimum period set by law — after that point, it usually attracts a lower, more predictable tax rate than a short-term sale would.',
+        ],
+        bullets: [
+          'Most capital assets — property, gold, unlisted shares, debentures — need to be held for more than 24 months to count as long-term.',
+          'Listed equity shares, units of equity-oriented mutual funds, and units of a business trust only need to be held for more than 12 months to qualify.',
+          'If an asset is sold on or before completing the relevant threshold, the resulting gain is treated as short-term instead, and taxed differently.',
         ],
       },
       {
-        heading: 'LTCG tax rates',
+        heading: 'LTCG tax rates by asset type',
         paragraphs: [
-          'For listed equity shares and equity-oriented mutual funds, LTCG above ₹1,25,000 in a financial year is taxed at 12.5%, with no benefit of indexation. For other long-term assets like property and gold sold on or after 23 July 2024, LTCG is taxed at a flat 12.5% without indexation. Resident individuals and HUFs selling immovable property acquired before 23 July 2024 can choose between 12.5% without indexation or 20% with indexation, whichever results in lower tax.',
+          'The table below summarises the holding period and applicable tax rate for the most common categories of assets.',
+        ],
+        table: {
+          headers: ['Asset type', 'Holding period (to qualify as long-term)', 'Tax rate'],
+          rows: [
+            ['Listed equity shares', 'More than 12 months', '12.5%*'],
+            ['Equity-oriented mutual funds', 'More than 12 months', '12.5%*'],
+            ['Property (land/building)', 'More than 24 months', '12.5%**'],
+            ['Gold / Gold ETFs', 'More than 24 months', '12.5%'],
+            ['Debt mutual funds (bought on/after 1 Apr 2023)', 'Any period', 'Taxed at slab rate, no LTCG benefit'],
+          ],
+          note:
+            '* A ₹1,25,000 annual exemption applies to gains covered under Section 112A (listed equity, equity funds, business trust units); only the excess is taxed. ** Resident individuals and HUFs who acquired the property on or before 22 July 2024 can instead opt for 20% with indexation if that works out cheaper — see the worked examples below.',
+        },
+      },
+      {
+        heading: 'How LTCG is calculated, step by step',
+        paragraphs: [
+          'Arriving at the taxable long-term capital gain involves a few sequential steps:',
+        ],
+        bullets: [
+          'Start with the full value of consideration — the amount you actually received on sale, or the fair market value where specifically applicable.',
+          'Deduct expenses incurred wholly for the transfer (brokerage, legal fees, etc.) to arrive at the net sale consideration.',
+          'Subtract the cost of acquisition and cost of improvement. For eligible property held before 23 July 2024, the cost of acquisition can optionally be indexed using: Indexed cost = Cost of acquisition × (CII of year of sale ÷ CII of year of purchase).',
+          'Deduct any exemption claimed under Sections 54, 54B, 54D, 54EC, or 54F, where the conditions are met.',
+          'What remains is the LTCG chargeable to tax, on which the applicable rate (12.5%, or 20% if indexation is chosen for eligible property) is applied.',
         ],
       },
       {
-        heading: 'Why LTCG is usually more tax-efficient',
+        heading: 'Worked example — property eligible for indexation',
         paragraphs: [
-          'Because the LTCG rate is generally flat and lower than short-term rates or slab rates, and because equity LTCG enjoys an annual exemption of ₹1,25,000, holding an appreciating asset longer before selling can meaningfully reduce your tax outgo.',
+          'Priya bought a flat in FY 2005-06 for ₹20,00,000 and sold it in August 2025 for ₹65,00,000. Because she acquired the property before 23 July 2024, she can compare her tax liability under both available options. Assume the Cost Inflation Index (CII) was 117 for FY 2005-06 and 376 for FY 2025-26.',
+        ],
+        table: {
+          headers: ['Particulars', 'Amount (₹)'],
+          rows: [
+            ['Full value of consideration', '65,00,000'],
+            ['Less: Transfer expenses', 'Nil'],
+            ['Net sale consideration', '65,00,000'],
+            ['Less: Indexed cost of acquisition (20,00,000 × 376 ÷ 117)', '64,27,350'],
+            ['Long-term capital gain', '72,650'],
+            ['Tax @ 20% (with indexation)', '14,530'],
+          ],
+        },
+      },
+      {
+        heading: 'Worked example — same sale, without indexation',
+        paragraphs: [
+          'Using the same figures but without applying indexation, the computation looks quite different:',
+          'Comparing the two, Priya\u2019s tax works out to just ₹14,530 with indexation versus ₹5,62,500 without it — so for property held a long time with significant appreciation, the indexed 20% option is usually far more beneficial. This is exactly why the government retained indexation as an option for this specific category rather than removing it altogether.',
+        ],
+        table: {
+          headers: ['Particulars', 'Amount (₹)'],
+          rows: [
+            ['Full value of consideration', '65,00,000'],
+            ['Less: Transfer expenses', 'Nil'],
+            ['Net sale consideration', '65,00,000'],
+            ['Less: Cost of acquisition (unindexed)', '20,00,000'],
+            ['Long-term capital gain', '45,00,000'],
+            ['Tax @ 12.5% (without indexation)', '5,62,500'],
+          ],
+        },
+      },
+      {
+        heading: 'Grandfathering provision for equity shares',
+        paragraphs: [
+          'When LTCG tax on equity was reintroduced with effect from 1 April 2018, a grandfathering rule was built in to protect gains that had already accrued. For listed shares and equity-oriented mutual fund units acquired on or before 31 January 2018, the cost of acquisition is deemed to be the higher of the actual purchase price or the fair market value as on 31 January 2018 — subject to the actual sale price acting as an upper ceiling. In effect, only the appreciation after that date gets taxed.',
+        ],
+      },
+      {
+        heading: 'Popular LTCG exemptions',
+        paragraphs: [
+          'Several sections of the Act let you reduce or eliminate LTCG tax if you reinvest the proceeds in a prescribed manner within the specified time limits.',
+        ],
+        table: {
+          headers: ['Section', 'Asset sold', 'Must reinvest in', 'Maximum exemption'],
+          rows: [
+            ['Section 54', 'Residential property', 'Another residential property', 'Up to ₹10 crore'],
+            ['Section 112A (built-in)', 'Listed shares / equity funds / business trust units', 'Not applicable', '₹1,25,000 per year'],
+            ['Section 54EC', 'Land or building', 'Specified bonds (NHAI, REC, PFC, IRFC)', 'Up to ₹50 lakh'],
+            ['Section 54F', 'Any long-term asset other than a house', 'Residential property', 'Proportionate to the amount reinvested'],
+          ],
+        },
+        bullets: [
+          'Section 54 requires the new house to be bought within 1 year before or 2 years after the sale, or constructed within 3 years.',
+          'Section 54EC bonds must be purchased within 6 months of the sale and come with a mandatory lock-in (currently 5 years).',
+          'If you can\u2019t complete the reinvestment before your return filing due date, the unutilised gain can be parked in a Capital Gains Account Scheme (CGAS) with a bank to keep the exemption alive.',
+        ],
+      },
+      {
+        heading: 'LTCG vs STCG at a glance',
+        table: {
+          headers: ['Basis', 'Long-term capital gains', 'Short-term capital gains'],
+          rows: [
+            ['Holding period', '> 12 months (equity) / > 24 months (other assets)', '\u2264 12 months (equity) / \u2264 24 months (other assets)'],
+            ['Indexation', 'Only for pre-23 Jul 2024 property (resident individuals/HUF)', 'Not available'],
+            ['Grandfathering', 'Applies to equity acquired on/before 31 Jan 2018', 'Not applicable'],
+            ['Tax rate', '12.5% generally', '20% for Section 111A equity; slab rate for other assets'],
+            ['Exemptions', 'Sections 54/54EC/54F, plus ₹1,25,000 equity exemption', 'Very limited'],
+          ],
+        },
+      },
+      {
+        heading: 'Reporting LTCG in your income tax return',
+        paragraphs: [
+          'Long-term capital gains are reported under the Capital Gains schedule of ITR-2 (or ITR-3 if you also have business or professional income). Gains covered under Section 112A must be reported scrip-wise in Schedule 112A, using the consolidated capital gains statement most brokers and depositories provide.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'Is there any exemption on long-term capital gains?',
+        question: 'Is the basic exemption limit available against LTCG?',
         answer:
-          'Yes. Equity LTCG up to ₹1,25,000 in a financial year is fully exempt. Separately, Sections 54, 54F, and 54EC allow exemption on gains from property if reinvested as per the specified conditions.',
+          'For resident individuals and HUFs, yes — if your other income is below the basic exemption limit, the shortfall can be adjusted against your LTCG before the tax rate is applied. This benefit is generally not available to non-residents.',
       },
       {
-        question: 'Has indexation been removed for all assets?',
+        question: 'Is there a surcharge on long-term capital gains?',
         answer:
-          'Indexation was removed for most non-equity long-term assets sold on or after 23 July 2024, except for a specific transitional option available to resident individuals and HUFs on immovable property acquired before that date.',
+          'Surcharge can apply on the tax on LTCG once your total income crosses the relevant thresholds, but for gains taxed under Section 112A, the surcharge is capped at a maximum of 15%, regardless of how high your total income is.',
       },
       {
-        question: 'Do I need to hold an asset for exactly 12 or 24 months?',
+        question: 'How much LTCG on shares is exempt from tax?',
         answer:
-          'The gain is long-term only if the asset is held for more than the threshold period (12 or 24 months, depending on asset type) — selling on or before the threshold date results in a short-term gain instead.',
+          'Up to ₹1,25,000 of long-term capital gains from listed equity shares and equity-oriented mutual funds in a financial year is exempt under Section 112A — only the amount above this threshold is taxed at 12.5%.',
+      },
+      {
+        question: 'How is LTCG on real estate taxed in India?',
+        answer:
+          'Real estate LTCG is taxed at 12.5% without indexation. However, if a resident individual or HUF acquired the property on or before 22 July 2024, they may instead choose to pay 20% with indexation if that works out to a lower tax amount.',
+      },
+      {
+        question: 'Has the LTCG tax rate really changed to 12.5%?',
+        answer:
+          'Yes. Budget 2024 standardised the LTCG rate at 12.5% across most asset classes for transfers made on or after 23 July 2024, replacing the earlier mix of 10% and 20% rates that applied to different assets.',
+      },
+      {
+        question: 'Is there any legitimate way to reduce LTCG tax?',
+        answer:
+          'You cannot avoid LTCG tax outright, but you can legitimately reduce it by using the exemptions under Sections 54, 54EC, or 54F where you qualify, by making full use of the ₹1,25,000 equity exemption each financial year, or by timing sales across financial years to spread out gains.',
+      },
+      {
+        question: 'Is the Section 112A exemption available under the new tax regime?',
+        answer:
+          'Yes. The ₹1,25,000 LTCG exemption on equity under Section 112A is a standalone provision within the capital gains computation itself — it is not one of the Chapter VI-A deductions that the new regime restricts, so it remains available regardless of which regime you choose.',
+      },
+      {
+        question: 'Is the Section 112A exemption available to non-residents?',
+        answer:
+          'Yes, the ₹1,25,000 threshold under Section 112A applies to any taxpayer — resident or non-resident — who holds the specified securities. What non-residents typically cannot do is adjust their basic exemption limit shortfall against LTCG, which is a separate benefit available only to residents.',
       },
     ],
   },
