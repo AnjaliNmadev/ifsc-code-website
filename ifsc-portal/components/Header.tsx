@@ -20,6 +20,9 @@ export default function Header() {
           <Link href="/calculators" className="transition hover:text-trust-700">
             Calculators
           </Link>
+          <Link href="/guides" className="transition hover:text-trust-700">
+            Guides
+          </Link>
           <Link href="/about" className="transition hover:text-trust-700">
             About Us
           </Link>
