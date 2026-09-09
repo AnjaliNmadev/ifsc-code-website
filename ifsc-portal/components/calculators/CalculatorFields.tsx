@@ -70,3 +70,39 @@ export function formatINR(value: number): string {
   if (!Number.isFinite(value)) return '₹0';
   return `₹${Math.round(value).toLocaleString('en-IN')}`;
 }
+
+interface SegmentedControlProps<T extends string> {
+  label: string;
+  value: T;
+  onChange: (value: T) => void;
+  options: { label: string; value: T }[];
+}
+
+export function SegmentedControl<T extends string>({
+  label,
+  value,
+  onChange,
+  options,
+}: SegmentedControlProps<T>) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-sm font-semibold text-ink-700">{label}</span>
+      <div className="inline-flex rounded-xl border border-ink-200 bg-ink-50 p-1">
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition ${
+              value === opt.value
+                ? 'bg-white text-trust-700 shadow-card'
+                : 'text-ink-500 hover:text-ink-700'
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}

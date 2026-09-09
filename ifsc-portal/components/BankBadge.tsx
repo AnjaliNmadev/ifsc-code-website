@@ -1,11 +1,4 @@
-import { Landmark } from 'lucide-react';
-
-interface ColorPair {
-  bg: string;
-  text: string;
-}
-
-const FALLBACK_PALETTE: ColorPair[] = [
+const PALETTE = [
   { bg: 'bg-trust-700', text: 'text-white' },
   { bg: 'bg-teal-600', text: 'text-white' },
   { bg: 'bg-ink-800', text: 'text-white' },
@@ -14,46 +7,41 @@ const FALLBACK_PALETTE: ColorPair[] = [
 ];
 
 /**
- * A fixed, distinct color per well-known bank — so the same bank always
- * shows the same badge color across the site, instead of a color picked
- * randomly from the bank's name. Matched case-insensitively against
- * whatever the database has stored for that bank's name.
+ * Approximate brand colors for well-known Indian banks, keyed by a keyword
+ * that's matched against the bank name (case-insensitive, "includes" match —
+ * same pattern used in lib/utils.ts's pickPopularBanks). These are used as a
+ * solid-color badge background, not a copied logo graphic, so the badge
+ * reads as "that bank's color" at a glance even without a logo image.
+ * Any bank not in this list falls back to the rotating PALETTE above.
  */
-const BANK_COLORS: { keyword: string; color: ColorPair }[] = [
-  { keyword: 'state bank of india', color: { bg: 'bg-blue-700', text: 'text-white' } },
-  { keyword: 'hdfc bank', color: { bg: 'bg-red-700', text: 'text-white' } },
-  { keyword: 'icici bank', color: { bg: 'bg-orange-600', text: 'text-white' } },
-  { keyword: 'punjab national bank', color: { bg: 'bg-rose-800', text: 'text-white' } },
-  { keyword: 'axis bank', color: { bg: 'bg-pink-800', text: 'text-white' } },
-  { keyword: 'bank of baroda', color: { bg: 'bg-orange-700', text: 'text-white' } },
-  { keyword: 'canara bank', color: { bg: 'bg-sky-700', text: 'text-white' } },
-  { keyword: 'kotak mahindra bank', color: { bg: 'bg-red-600', text: 'text-white' } },
-  { keyword: 'union bank of india', color: { bg: 'bg-orange-800', text: 'text-white' } },
-  { keyword: 'idbi bank', color: { bg: 'bg-emerald-800', text: 'text-white' } },
-  { keyword: 'indian bank', color: { bg: 'bg-teal-800', text: 'text-white' } },
-  { keyword: 'yes bank', color: { bg: 'bg-blue-800', text: 'text-white' } },
-  { keyword: 'indusind bank', color: { bg: 'bg-rose-700', text: 'text-white' } },
-  { keyword: 'central bank of india', color: { bg: 'bg-red-800', text: 'text-white' } },
-  { keyword: 'bank of india', color: { bg: 'bg-amber-700', text: 'text-white' } },
-  { keyword: 'uco bank', color: { bg: 'bg-indigo-800', text: 'text-white' } },
-  { keyword: 'bank of maharashtra', color: { bg: 'bg-lime-700', text: 'text-white' } },
-  { keyword: 'idfc first bank', color: { bg: 'bg-purple-700', text: 'text-white' } },
-  { keyword: 'federal bank', color: { bg: 'bg-emerald-700', text: 'text-white' } },
-  { keyword: 'south indian bank', color: { bg: 'bg-green-800', text: 'text-white' } },
-  { keyword: 'karur vysya bank', color: { bg: 'bg-amber-800', text: 'text-white' } },
-  { keyword: 'rbl bank', color: { bg: 'bg-violet-700', text: 'text-white' } },
-  { keyword: 'punjab and sind bank', color: { bg: 'bg-rose-900', text: 'text-white' } },
-  { keyword: 'karnataka bank', color: { bg: 'bg-yellow-700', text: 'text-white' } },
+const BRAND_COLORS: { keyword: string; hex: string }[] = [
+  { keyword: 'state bank of india', hex: '#22409A' },
+  { keyword: 'hdfc bank', hex: '#004C8F' },
+  { keyword: 'icici bank', hex: '#F58220' },
+  { keyword: 'punjab national bank', hex: '#A91B0D' },
+  { keyword: 'axis bank', hex: '#97144D' },
+  { keyword: 'bank of baroda', hex: '#F26522' },
+  { keyword: 'canara bank', hex: '#004990' },
+  { keyword: 'kotak mahindra bank', hex: '#ED1C24' },
+  { keyword: 'union bank of india', hex: '#004C97' },
+  { keyword: 'idbi bank', hex: '#003DA5' },
+  { keyword: 'indian bank', hex: '#00693E' },
+  { keyword: 'yes bank', hex: '#003DA5' },
+  { keyword: 'indusind bank', hex: '#A6192E' },
+  { keyword: 'central bank of india', hex: '#1B3F8B' },
+  { keyword: 'bank of india', hex: '#E4572E' },
+  { keyword: 'uco bank', hex: '#0055A4' },
 ];
 
-function colorFor(name: string): ColorPair {
+function brandColorFor(name: string): string | null {
   const lower = name.toLowerCase();
-  const match = BANK_COLORS.find((entry) => lower.includes(entry.keyword));
-  if (match) return match.color;
-  // Deterministic fallback for any bank not in the curated list above —
-  // same name always maps to the same fallback color.
-  const index = name.charCodeAt(0) % FALLBACK_PALETTE.length;
-  return FALLBACK_PALETTE[index];
+  const match = BRAND_COLORS.find((b) => lower.includes(b.keyword));
+  return match ? match.hex : null;
+}
+
+function colorFor(name: string) {
+  const index = name.charCodeAt(0) % PALETTE.length;
+  return PALETTE[index];
 }
 
 function initialsFor(name: string): string {
@@ -64,24 +52,23 @@ function initialsFor(name: string): string {
 }
 
 export default function BankBadge({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' | 'lg' }) {
-  const color = colorFor(name);
+  const brandHex = brandColorFor(name);
+  const fallback = colorFor(name);
   const sizeClasses =
     size === 'lg'
-      ? 'h-14 w-14'
+      ? 'h-14 w-14 text-lg'
       : size === 'sm'
-      ? 'h-9 w-9'
-      : 'h-11 w-11';
-  const iconSize = size === 'lg' ? 26 : size === 'sm' ? 16 : 20;
+      ? 'h-9 w-9 text-xs'
+      : 'h-11 w-11 text-sm';
 
   return (
     <span
-      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl font-display font-bold ${color.bg} ${color.text} ${sizeClasses}`}
-      title={name}
-      aria-label={name}
+      style={brandHex ? { backgroundColor: brandHex } : undefined}
+      className={`flex shrink-0 items-center justify-center rounded-xl font-display font-bold text-white ${sizeClasses} ${
+        brandHex ? '' : fallback.bg
+      }`}
     >
-      {/* A bank/landmark glyph in the bank's brand color, rather than a plain first letter. */}
-      <Landmark size={iconSize} strokeWidth={2.25} aria-hidden="true" />
-      <span className="sr-only">{initialsFor(name)}</span>
+      {initialsFor(name)}
     </span>
   );
 }

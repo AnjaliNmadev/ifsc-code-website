@@ -1,155 +1,154 @@
+export type GuideCategory = 'capital-gains' | 'other-income' | 'personal-finance' | 'ipo';
+
 export interface GuideMeta {
   slug: string;
   title: string;
   shortDescription: string;
-  category: string;
+  category: GuideCategory;
 }
 
-export const GUIDE_CATEGORIES = [
-  { key: 'tax', label: 'Tax Guides' },
-  { key: 'documents', label: 'PAN, Aadhaar & Documents' },
-  { key: 'payments', label: 'Payment Systems' },
-  { key: 'gold', label: 'Gold Prices' },
-  { key: 'silver', label: 'Silver Prices' },
-  { key: 'ipo', label: 'IPO' },
-] as const;
+export const GUIDE_CATEGORIES: { key: GuideCategory; label: string }[] = [
+  { key: 'capital-gains', label: 'Capital Gains Guide' },
+  { key: 'other-income', label: 'Other Income Guides' },
+  { key: 'personal-finance', label: 'Personal Finance Guides' },
+  { key: 'ipo', label: 'IPO Guides' },
+];
 
 export const GUIDES: GuideMeta[] = [
+  // Capital Gains Guide
   {
-    slug: 'long-term-capital-gains-tax',
-    title: 'Long-Term Capital Gains (LTCG) Tax',
-    shortDescription:
-      'What LTCG tax is, current rates, exemption limits, and how it applies to shares, mutual funds, and property.',
-    category: 'tax',
+    slug: 'capital-gains-income',
+    title: 'Capital Gains Tax',
+    shortDescription: 'What capital gains are, how they are classified, and how they are taxed in India.',
+    category: 'capital-gains',
   },
   {
-    slug: 'short-term-capital-gains-tax',
-    title: 'Short-Term Capital Gains (STCG) Tax',
-    shortDescription: 'How STCG differs from LTCG, applicable holding periods, and current tax rates.',
-    category: 'tax',
+    slug: 'long-term-capital-gains-ltcg-tax',
+    title: 'LTCG Tax',
+    shortDescription: 'Long-term capital gains tax rates, holding periods, and exemptions explained.',
+    category: 'capital-gains',
   },
+  {
+    slug: 'short-term-capital-gains-stcg-tax',
+    title: 'STCG Tax',
+    shortDescription: 'Short-term capital gains tax rates and how they differ across asset types.',
+    category: 'capital-gains',
+  },
+  {
+    slug: 'section-54-capital-gains-exemption',
+    title: 'Capital Gains Exemption',
+    shortDescription: 'How Sections 54, 54F, and 54EC let you save tax on capital gains from property.',
+    category: 'capital-gains',
+  },
+  {
+    slug: 'cost-inflation-index',
+    title: 'Cost Inflation Index',
+    shortDescription: 'What the Cost Inflation Index is and where it still applies after Budget 2024.',
+    category: 'capital-gains',
+  },
+  {
+    slug: 'short-term-capital-gain-on-shares',
+    title: 'STCG Tax on Shares',
+    shortDescription: 'How short-term capital gains on listed shares and equity funds are taxed.',
+    category: 'capital-gains',
+  },
+  {
+    slug: 'long-term-capital-gains-on-shares',
+    title: 'LTCG Tax on Shares',
+    shortDescription: 'How long-term capital gains on listed shares and equity funds are taxed.',
+    category: 'capital-gains',
+  },
+  // Other Income Guides
   {
     slug: 'other-income-sources',
-    title: 'Income from Other Sources',
-    shortDescription:
-      'What counts as "income from other sources" under the Income Tax Act, and how it is taxed.',
-    category: 'tax',
+    title: 'Income From Other Sources',
+    shortDescription: 'What counts as "income from other sources" and how it is taxed.',
+    category: 'other-income',
   },
   {
+    slug: 'salary-income',
+    title: 'Income From Salary',
+    shortDescription: 'How salary income is defined, its components, and applicable deductions.',
+    category: 'other-income',
+  },
+  {
+    slug: 'how-to-save-tax-in-new-tax-regime',
+    title: 'How to Save Tax in New Regime',
+    shortDescription: 'The limited but useful ways to reduce your tax outgo under the new regime.',
+    category: 'other-income',
+  },
+  {
+    slug: 'income-tax-savings',
+    title: 'How to Save Tax in Old Regime',
+    shortDescription: 'Deductions and exemptions available to reduce tax under the old regime.',
+    category: 'other-income',
+  },
+  {
+    slug: 'income-tax-for-nri',
+    title: 'NRI Income Tax',
+    shortDescription: 'How residential status affects which income of an NRI is taxable in India.',
+    category: 'other-income',
+  },
+  {
+    slug: 'how-are-gifts-taxed',
+    title: 'Gift Tax',
+    shortDescription: 'When gifts of money or property are taxable, and when they are fully exempt.',
+    category: 'other-income',
+  },
+  // Personal Finance Guides
+  {
     slug: 'pan-card',
-    title: 'PAN Card: Everything You Need to Know',
-    shortDescription:
-      'What a PAN card is, why it matters for banking, how to apply, and how to link it with Aadhaar.',
-    category: 'documents',
+    title: 'PAN Card',
+    shortDescription: 'What a PAN card is, why it matters, and how to apply for one.',
+    category: 'personal-finance',
   },
   {
     slug: 'aadhaar-card',
-    title: 'Aadhaar Card: Everything You Need to Know',
-    shortDescription:
-      'What Aadhaar is used for, how to update your details, and how it connects to your bank account.',
-    category: 'documents',
+    title: 'Aadhaar Card',
+    shortDescription: 'What Aadhaar is, what it is used for, and how to update your details.',
+    category: 'personal-finance',
   },
   {
-    slug: 'upi-payments-guide',
-    title: 'UPI Payments: A Complete Guide',
-    shortDescription: 'How UPI works, transaction limits, and how it differs from NEFT/IMPS.',
-    category: 'payments',
+    slug: 'ration-card',
+    title: 'Ration Card',
+    shortDescription: 'Types of ration cards in India and how they are used beyond subsidised food.',
+    category: 'personal-finance',
   },
   {
-    slug: 'neft-vs-rtgs-vs-imps',
-    title: 'NEFT vs RTGS vs IMPS: What\u2019s the Difference?',
-    shortDescription:
-      'A side-by-side comparison of India\u2019s three main electronic fund transfer systems.',
-    category: 'payments',
+    slug: 'upi-unified-payments-interface',
+    title: 'UPI',
+    shortDescription: 'How UPI works, its transaction limits, and how it differs from NEFT and IMPS.',
+    category: 'personal-finance',
   },
   {
-    slug: 'gold-rate-bangalore',
-    title: 'Gold Rate in Bangalore',
-    shortDescription: 'What drives the gold rate in Bangalore, how 22K and 24K prices differ, and how making charges and GST affect what you pay.',
-    category: 'gold',
+    slug: 'neft-national-electronic-funds-transfer',
+    title: 'NEFT',
+    shortDescription: 'How NEFT transfers work, settlement timing, and applicable limits.',
+    category: 'personal-finance',
   },
   {
-    slug: 'gold-rate-chennai',
-    title: 'Gold Rate in Chennai',
-    shortDescription: 'How gold is priced in Chennai, why Tamil Nadu rates often differ from other cities, and what to check before buying.',
-    category: 'gold',
+    slug: 'imps-immediate-payment-service',
+    title: 'IMPS',
+    shortDescription: 'How IMPS enables instant, 24x7 fund transfers and how it compares to NEFT/RTGS.',
+    category: 'personal-finance',
   },
-  {
-    slug: 'gold-rate-delhi',
-    title: 'Gold Rate in Delhi',
-    shortDescription: 'How the Delhi gold rate is set, the difference between 22K and 24K gold, and how to verify hallmark purity.',
-    category: 'gold',
-  },
-  {
-    slug: 'gold-rate-hyderabad',
-    title: 'Gold Rate in Hyderabad',
-    shortDescription: 'What determines Hyderabad\u2019s daily gold price, festival-season demand, and how to compare jeweller quotes.',
-    category: 'gold',
-  },
-  {
-    slug: 'gold-rate-kolkata',
-    title: 'Gold Rate in Kolkata',
-    shortDescription: 'How gold rates move in Kolkata, the role of import duty and rupee movement, and tips before you buy.',
-    category: 'gold',
-  },
-  {
-    slug: 'gold-rate-mumbai',
-    title: 'Gold Rate in Mumbai',
-    shortDescription: 'How Mumbai\u2019s gold rate is benchmarked, association-quoted prices, and what making charges and GST add to the bill.',
-    category: 'gold',
-  },
-  {
-    slug: 'silver-rate-bangalore',
-    title: 'Silver Rate in Bangalore',
-    shortDescription: 'What moves the silver rate in Bangalore, how it is priced per gram and per kg, and what to know before buying.',
-    category: 'silver',
-  },
-  {
-    slug: 'silver-rate-chennai',
-    title: 'Silver Rate in Chennai',
-    shortDescription: 'How silver is priced in Chennai, seasonal demand from jewellery and utensils, and how purity is verified.',
-    category: 'silver',
-  },
-  {
-    slug: 'silver-rate-delhi',
-    title: 'Silver Rate in Delhi',
-    shortDescription: 'How Delhi\u2019s silver rate is determined, the difference between silver bars, coins, and jewellery pricing.',
-    category: 'silver',
-  },
-  {
-    slug: 'silver-rate-hyderabad',
-    title: 'Silver Rate in Hyderabad',
-    shortDescription: 'What drives silver prices in Hyderabad, GST and making charges, and how to compare rates across sellers.',
-    category: 'silver',
-  },
-  {
-    slug: 'silver-rate-kolkata',
-    title: 'Silver Rate in Kolkata',
-    shortDescription: 'How silver is priced in Kolkata, factors that move the rate day to day, and buying tips.',
-    category: 'silver',
-  },
-  {
-    slug: 'silver-rate-mumbai',
-    title: 'Silver Rate in Mumbai',
-    shortDescription: 'How Mumbai\u2019s silver rate is benchmarked, global silver price linkage, and what affects your final bill.',
-    category: 'silver',
-  },
+  // IPO Guides
   {
     slug: 'what-is-grey-market-premium-gmp-ipo',
-    title: 'What is Grey Market Premium (GMP) in an IPO?',
-    shortDescription: 'What GMP means, how it is estimated, and why it is an unofficial and sometimes unreliable listing-day indicator.',
+    title: 'What is Grey Market Premium (GMP)',
+    shortDescription: 'What IPO grey market premium means, how it is quoted, and how reliable it is.',
     category: 'ipo',
   },
   {
     slug: 'types-of-ipo',
     title: 'Types of IPO',
-    shortDescription: 'Fixed price issues vs book-built issues, and how mainboard IPOs differ from SME IPOs.',
+    shortDescription: 'Fixed price issues vs book-built issues, and the different investor categories.',
     category: 'ipo',
   },
   {
     slug: 'how-to-check-ipo-allotment-status',
     title: 'How to Check IPO Allotment Status',
-    shortDescription: 'Step-by-step ways to check your IPO allotment via the registrar, exchange, or your broker.',
+    shortDescription: 'Ways to check whether you got IPO allotment, via the registrar, exchange, or broker.',
     category: 'ipo',
   },
 ];
@@ -158,6 +157,6 @@ export function getGuide(slug: string): GuideMeta | undefined {
   return GUIDES.find((g) => g.slug === slug);
 }
 
-export function getGuidesByCategory(categoryKey: string): GuideMeta[] {
-  return GUIDES.filter((g) => g.category === categoryKey);
+export function getGuidesByCategory(category: GuideCategory): GuideMeta[] {
+  return GUIDES.filter((g) => g.category === category);
 }

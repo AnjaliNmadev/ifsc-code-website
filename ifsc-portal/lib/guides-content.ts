@@ -4,11 +4,18 @@ export interface GuideTable {
   note?: string;
 }
 
+export interface GuideSubsection {
+  heading: string;
+  paragraphs?: string[];
+  bullets?: string[];
+}
+
 export interface GuideSection {
   heading: string;
   paragraphs?: string[];
-  table?: GuideTable;
   bullets?: string[];
+  table?: GuideTable;
+  subsections?: GuideSubsection[];
 }
 
 export interface GuideFaq {
@@ -18,1438 +25,1196 @@ export interface GuideFaq {
 
 export interface GuideContent {
   intro: string;
-  keyHighlights?: { rows: [string, string][] };
+  keyHighlights?: GuideTable;
   sections: GuideSection[];
   faqs: GuideFaq[];
 }
 
 export const GUIDE_CONTENT: Record<string, GuideContent> = {
-  'long-term-capital-gains-tax': {
+  'capital-gains-income': {
     intro:
-      'Long-Term Capital Gains (LTCG) tax applies when you sell a capital asset — such as shares, mutual fund units, or property — that you have held beyond a minimum period, at a profit. Following changes announced in the July 2024 Union Budget, the rules and rates differ from what applied in earlier years.',
+      'Capital gains tax is charged on the profit you make when you sell a capital asset — such as property, shares, mutual funds, or gold — for more than what you paid for it. Understanding how it works helps you plan the timing and structure of a sale.',
+    sections: [
+      {
+        heading: 'What counts as a capital asset',
+        paragraphs: [
+          'A capital asset broadly includes property of any kind held by you, whether or not connected with your business — land, buildings, shares, mutual fund units, jewellery, and vehicles all qualify. Certain items, like stock-in-trade of a business and personal effects such as clothing and furniture, are specifically excluded.',
+        ],
+      },
+      {
+        heading: 'Short-term vs long-term gains',
+        paragraphs: [
+          'Whether a gain is short-term or long-term depends on how long you held the asset before selling it. The threshold differs by asset type: 12 months for listed shares and equity mutual funds, and 24 months for most other assets like property, gold, and unlisted shares.',
+        ],
+      },
+      {
+        heading: 'How a capital gain is calculated',
+        paragraphs: [
+          'In simple terms, capital gain = full value of consideration received on sale, minus the cost of acquisition, cost of any improvements, and expenses directly related to the transfer (like brokerage). For long-term gains on certain assets, indexation may adjust the cost of acquisition for inflation, though this benefit was removed for most non-equity assets from 23 July 2024 onward.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Do I have to pay capital gains tax on every sale?',
+        answer:
+          'Only if there is a gain. If you sell an asset for less than its cost, you make a capital loss instead, which can often be set off against other capital gains or carried forward.',
+      },
+      {
+        question: 'Does capital gains tax apply to inherited property?',
+        answer:
+          'Inheritance itself is not taxed, but when you eventually sell the inherited asset, capital gains tax applies based on the original owner\u2019s holding period and cost of acquisition.',
+      },
+      {
+        question: 'Is there a separate capital gains tax return?',
+        answer:
+          'No separate return is needed — capital gains are reported under the "Capital Gains" schedule of your regular income tax return (ITR) for the relevant financial year.',
+      },
+    ],
+  },
+
+  'long-term-capital-gains-ltcg-tax': {
+    intro:
+      'Long-term capital gains (LTCG) arise when you sell a capital asset — such as listed shares, mutual funds, property, or gold — after holding it beyond a minimum specified period. Under Sections 112 and 112A of the Income Tax Act, most long-term gains are taxed at a flat 12.5%, with an annual exemption of ₹1,25,000 available specifically for listed equity shares, equity mutual funds, and units of a business trust. This guide walks through the holding-period rules, tax rates by asset type, how to actually compute the taxable gain, the grandfathering rule for older equity holdings, and the main exemptions you can use to bring the tax down.',
     keyHighlights: {
+      headers: ['Particulars', 'Details'],
       rows: [
-        ['Equity shares & equity mutual funds', '12.5% above ₹1.25 lakh/year, no indexation'],
-        ['Holding period for listed equity', 'More than 12 months'],
-        ['Other assets (property, unlisted shares, gold)', '12.5% without indexation'],
-        ['Holding period for immovable property', 'More than 24 months'],
+        ['LTCG tax rate', '12.5% (flat, in most cases)'],
+        ['Exemption for equity (Sec 112A)', '₹1,25,000 per financial year'],
+        ['Holding period — listed shares/equity funds', 'More than 12 months'],
+        ['Holding period — property, gold, other assets', 'More than 24 months'],
+        ['Indexation available?', 'Only for property bought before 23 July 2024 (optional)'],
+        ['Common exemptions', 'Sections 54, 54EC, 54F'],
       ],
     },
     sections: [
       {
-        heading: 'What counts as a long-term capital gain',
+        heading: 'What is a long-term capital gain',
         paragraphs: [
-          'Whether a gain is "long-term" depends entirely on how long you held the asset before selling it — not on the amount of profit. For listed equity shares and equity-oriented mutual fund units, holding the asset for more than 12 months qualifies the gain as long-term. For most other assets, including immovable property, unlisted shares, and gold, the holding period threshold is 24 months.',
+          'A capital gain is simply the profit made on selling a capital asset. It is classified as "long-term" once the asset has been held beyond a minimum period set by law — after that point, it usually attracts a lower, more predictable tax rate than a short-term sale would.',
         ],
-      },
-      {
-        heading: 'Current LTCG tax rates',
-        paragraphs: [
-          'Effective from 23 July 2024, long-term capital gains on listed equity shares and equity-oriented mutual funds are taxed at a flat 12.5%, but only on the portion of gains that exceeds ₹1.25 lakh in a financial year. This annual exemption applies once across all your qualifying equity gains put together, not separately for each investment.',
-          'For most other long-term capital assets — such as real estate, gold, and unlisted shares — the rate is also 12.5%, but without the benefit of indexation (adjusting the purchase price for inflation), which used to reduce the taxable gain under the older rules.',
-        ],
-        table: {
-          headers: ['Asset type', 'Holding period for LTCG', 'Tax rate'],
-          rows: [
-            ['Listed equity shares', 'More than 12 months', '12.5% above ₹1.25 lakh/year'],
-            ['Equity mutual funds', 'More than 12 months', '12.5% above ₹1.25 lakh/year'],
-            ['Immovable property', 'More than 24 months', '12.5%, no indexation'],
-            ['Gold, unlisted shares', 'More than 24 months', '12.5%, no indexation'],
-          ],
-          note: 'Rates exclude applicable surcharge and 4% health & education cess.',
-        },
-      },
-      {
-        heading: 'A worked example',
-        paragraphs: [
-          'Say you bought equity mutual fund units for ₹4,00,000 and sold them after 14 months for ₹6,00,000, with no other qualifying long-term gains that year. Your gain is ₹2,00,000. After applying the ₹1.25 lakh annual exemption, only ₹75,000 is taxable, at 12.5% — working out to roughly ₹9,375 in tax, before cess.',
-        ],
-      },
-      {
-        heading: 'Special rule for property bought before July 2024',
-        paragraphs: [
-          'If you acquired land or a building before 23 July 2024, and you are a resident individual or HUF, you can choose whichever is lower: 12.5% without indexation, or 20% with indexation on the old cost-inflation-adjusted basis. This grandfathering provision protects taxpayers who may otherwise have paid more tax under the new flat rate.',
-        ],
-      },
-      {
-        heading: 'How to calculate LTCG step by step',
         bullets: [
-          'Start with the full value of consideration — the total sale price you received for the asset.',
-          'Deduct expenses incurred wholly for the transfer, such as brokerage or commission, to arrive at net consideration.',
-          'Deduct the cost of acquisition (and cost of improvement, if any). For land and building bought before 23 July 2024 by a resident individual or HUF, this cost can optionally be indexed using the Cost Inflation Index.',
-          'Deduct any exemption you are claiming under sections such as 54, 54B, 54EC, or 54F.',
-          'What remains is the LTCG chargeable to tax, on which the applicable rate (12.5%, or 20% with indexation for the grandfathered property case) is applied.',
+          'Most capital assets — property, gold, unlisted shares, debentures — need to be held for more than 24 months to count as long-term.',
+          'Listed equity shares, units of equity-oriented mutual funds, and units of a business trust only need to be held for more than 12 months to qualify.',
+          'If an asset is sold on or before completing the relevant threshold, the resulting gain is treated as short-term instead, and taxed differently.',
         ],
       },
       {
-        heading: 'Common exemptions that reduce LTCG',
+        heading: 'LTCG tax rates by asset type',
+        paragraphs: [
+          'The table below summarises the holding period and applicable tax rate for the most common categories of assets.',
+        ],
         table: {
-          headers: ['Section', 'Asset sold', 'Reinvest in', 'Typical cap'],
+          headers: ['Asset type', 'Holding period (to qualify as long-term)', 'Tax rate'],
           rows: [
-            ['Section 54', 'Residential house property', 'Another residential house', 'Up to ₹10 crore'],
-            ['Section 54EC', 'Land or building', 'Specified bonds (NHAI, REC, PFC, IRFC)', 'Up to ₹50 lakh'],
-            ['Section 54F', 'Any asset other than a house', 'A residential house', 'Proportionate to net consideration reinvested'],
+            ['Listed equity shares', 'More than 12 months', '12.5%*'],
+            ['Equity-oriented mutual funds', 'More than 12 months', '12.5%*'],
+            ['Property (land/building)', 'More than 24 months', '12.5%**'],
+            ['Gold / Gold ETFs', 'More than 24 months', '12.5%'],
+            ['Debt mutual funds (bought on/after 1 Apr 2023)', 'Any period', 'Taxed at slab rate, no LTCG benefit'],
           ],
-          note: 'Each section has its own conditions on timelines and lock-in periods; consult a tax professional before relying on an exemption.',
+          note:
+            '* A ₹1,25,000 annual exemption applies to gains covered under Section 112A (listed equity, equity funds, business trust units); only the excess is taxed. ** Resident individuals and HUFs who acquired the property on or before 22 July 2024 can instead opt for 20% with indexation if that works out cheaper — see the worked examples below.',
         },
       },
       {
-        heading: 'Capital Gains Account Scheme',
+        heading: 'How LTCG is calculated, step by step',
         paragraphs: [
-          'If you plan to claim an exemption but cannot complete the reinvestment before your income tax return is due, you can deposit the gain in a Capital Gains Account Scheme (CGAS) account with an authorised bank before the return filing deadline. The exemption can then still be claimed, provided the amount is later utilised for the specified reinvestment within the allowed time.',
+          'Arriving at the taxable long-term capital gain involves a few sequential steps:',
+        ],
+        bullets: [
+          'Start with the full value of consideration — the amount you actually received on sale, or the fair market value where specifically applicable.',
+          'Deduct expenses incurred wholly for the transfer (brokerage, legal fees, etc.) to arrive at the net sale consideration.',
+          'Subtract the cost of acquisition and cost of improvement. For eligible property held before 23 July 2024, the cost of acquisition can optionally be indexed using: Indexed cost = Cost of acquisition × (CII of year of sale ÷ CII of year of purchase).',
+          'Deduct any exemption claimed under Sections 54, 54B, 54D, 54EC, or 54F, where the conditions are met.',
+          'What remains is the LTCG chargeable to tax, on which the applicable rate (12.5%, or 20% if indexation is chosen for eligible property) is applied.',
+        ],
+      },
+      {
+        heading: 'Worked example — property eligible for indexation',
+        paragraphs: [
+          'Priya bought a flat in FY 2005-06 for ₹20,00,000 and sold it in August 2025 for ₹65,00,000. Because she acquired the property before 23 July 2024, she can compare her tax liability under both available options. Assume the Cost Inflation Index (CII) was 117 for FY 2005-06 and 376 for FY 2025-26.',
+        ],
+        table: {
+          headers: ['Particulars', 'Amount (₹)'],
+          rows: [
+            ['Full value of consideration', '65,00,000'],
+            ['Less: Transfer expenses', 'Nil'],
+            ['Net sale consideration', '65,00,000'],
+            ['Less: Indexed cost of acquisition (20,00,000 × 376 ÷ 117)', '64,27,350'],
+            ['Long-term capital gain', '72,650'],
+            ['Tax @ 20% (with indexation)', '14,530'],
+          ],
+        },
+      },
+      {
+        heading: 'Worked example — same sale, without indexation',
+        paragraphs: [
+          'Using the same figures but without applying indexation, the computation looks quite different:',
+          'Comparing the two, Priya\u2019s tax works out to just ₹14,530 with indexation versus ₹5,62,500 without it — so for property held a long time with significant appreciation, the indexed 20% option is usually far more beneficial. This is exactly why the government retained indexation as an option for this specific category rather than removing it altogether.',
+        ],
+        table: {
+          headers: ['Particulars', 'Amount (₹)'],
+          rows: [
+            ['Full value of consideration', '65,00,000'],
+            ['Less: Transfer expenses', 'Nil'],
+            ['Net sale consideration', '65,00,000'],
+            ['Less: Cost of acquisition (unindexed)', '20,00,000'],
+            ['Long-term capital gain', '45,00,000'],
+            ['Tax @ 12.5% (without indexation)', '5,62,500'],
+          ],
+        },
+      },
+      {
+        heading: 'Grandfathering provision for equity shares',
+        paragraphs: [
+          'When LTCG tax on equity was reintroduced with effect from 1 April 2018, a grandfathering rule was built in to protect gains that had already accrued. For listed shares and equity-oriented mutual fund units acquired on or before 31 January 2018, the cost of acquisition is deemed to be the higher of the actual purchase price or the fair market value as on 31 January 2018 — subject to the actual sale price acting as an upper ceiling. In effect, only the appreciation after that date gets taxed.',
+        ],
+      },
+      {
+        heading: 'Popular LTCG exemptions',
+        paragraphs: [
+          'Several sections of the Act let you reduce or eliminate LTCG tax if you reinvest the proceeds in a prescribed manner within the specified time limits.',
+        ],
+        table: {
+          headers: ['Section', 'Asset sold', 'Must reinvest in', 'Maximum exemption'],
+          rows: [
+            ['Section 54', 'Residential property', 'Another residential property', 'Up to ₹10 crore'],
+            ['Section 112A (built-in)', 'Listed shares / equity funds / business trust units', 'Not applicable', '₹1,25,000 per year'],
+            ['Section 54EC', 'Land or building', 'Specified bonds (NHAI, REC, PFC, IRFC)', 'Up to ₹50 lakh'],
+            ['Section 54F', 'Any long-term asset other than a house', 'Residential property', 'Proportionate to the amount reinvested'],
+          ],
+        },
+        bullets: [
+          'Section 54 requires the new house to be bought within 1 year before or 2 years after the sale, or constructed within 3 years.',
+          'Section 54EC bonds must be purchased within 6 months of the sale and come with a mandatory lock-in (currently 5 years).',
+          'If you can\u2019t complete the reinvestment before your return filing due date, the unutilised gain can be parked in a Capital Gains Account Scheme (CGAS) with a bank to keep the exemption alive.',
         ],
       },
       {
         heading: 'LTCG vs STCG at a glance',
         table: {
-          headers: ['Aspect', 'Long-term (LTCG)', 'Short-term (STCG)'],
+          headers: ['Basis', 'Long-term capital gains', 'Short-term capital gains'],
           rows: [
-            ['Listed equity holding period', 'More than 12 months', '12 months or less'],
-            ['Other assets holding period', 'More than 24 months', '24 months or less'],
-            ['Tax rate (equity)', '12.5% above ₹1.25 lakh/year', '20% flat, no exemption'],
-            ['Indexation', 'Only for grandfathered property', 'Not available'],
+            ['Holding period', '> 12 months (equity) / > 24 months (other assets)', '\u2264 12 months (equity) / \u2264 24 months (other assets)'],
+            ['Indexation', 'Only for pre-23 Jul 2024 property (resident individuals/HUF)', 'Not available'],
+            ['Grandfathering', 'Applies to equity acquired on/before 31 Jan 2018', 'Not applicable'],
+            ['Tax rate', '12.5% generally', '20% for Section 111A equity; slab rate for other assets'],
+            ['Exemptions', 'Sections 54/54EC/54F, plus ₹1,25,000 equity exemption', 'Very limited'],
           ],
         },
+      },
+      {
+        heading: 'Reporting LTCG in your income tax return',
+        paragraphs: [
+          'Long-term capital gains are reported under the Capital Gains schedule of ITR-2 (or ITR-3 if you also have business or professional income). Gains covered under Section 112A must be reported scrip-wise in Schedule 112A, using the consolidated capital gains statement most brokers and depositories provide.',
+        ],
       },
     ],
     faqs: [
       {
-        question: 'Did the LTCG tax rate change recently?',
+        question: 'Is the basic exemption limit available against LTCG?',
         answer:
-          'Yes. The July 2024 Union Budget raised the LTCG rate on most assets from 10% (for equity) or 20% with indexation (for other assets) to a uniform 12.5%, and raised the annual exemption on equity LTCG from ₹1 lakh to ₹1.25 lakh.',
+          'For resident individuals and HUFs, yes — if your other income is below the basic exemption limit, the shortfall can be adjusted against your LTCG before the tax rate is applied. This benefit is generally not available to non-residents.',
       },
       {
-        question: 'Is there an exemption limit for LTCG on property?',
+        question: 'Is there a surcharge on long-term capital gains?',
         answer:
-          'There is no separate ₹1.25 lakh-style exemption for property LTCG the way there is for equity. However, you may be able to reduce or defer the tax by reinvesting the gains under sections such as 54, 54F, or 54EC, subject to conditions.',
+          'Surcharge can apply on the tax on LTCG once your total income crosses the relevant thresholds, but for gains taxed under Section 112A, the surcharge is capped at a maximum of 15%, regardless of how high your total income is.',
       },
       {
-        question: 'Does indexation still apply to any asset?',
+        question: 'How much LTCG on shares is exempt from tax?',
         answer:
-          'Indexation was removed for most long-term capital assets from 23 July 2024 onward. The main exception is the grandfathering option for land and buildings acquired before that date, where indexation-based calculation can still be used if it results in lower tax.',
+          'Up to ₹1,25,000 of long-term capital gains from listed equity shares and equity-oriented mutual funds in a financial year is exempt under Section 112A — only the amount above this threshold is taxed at 12.5%.',
       },
       {
-        question: 'Which ITR form is used to report LTCG?',
+        question: 'How is LTCG on real estate taxed in India?',
         answer:
-          'Capital gains, including LTCG, are reported in Schedule CG of ITR-2 (or ITR-3 if you also have business/professional income). The total then flows into the total income computation of the form.',
+          'Real estate LTCG is taxed at 12.5% without indexation. However, if a resident individual or HUF acquired the property on or before 22 July 2024, they may instead choose to pay 20% with indexation if that works out to a lower tax amount.',
       },
       {
-        question: 'Can I set off a long-term capital loss against LTCG?',
+        question: 'Has the LTCG tax rate really changed to 12.5%?',
         answer:
-          'Yes. Long-term capital losses can be set off only against long-term capital gains (not short-term gains) in the same year, and any unabsorbed loss can be carried forward for up to 8 assessment years if the return is filed on time.',
+          'Yes. Budget 2024 standardised the LTCG rate at 12.5% across most asset classes for transfers made on or after 23 July 2024, replacing the earlier mix of 10% and 20% rates that applied to different assets.',
+      },
+      {
+        question: 'Is there any legitimate way to reduce LTCG tax?',
+        answer:
+          'You cannot avoid LTCG tax outright, but you can legitimately reduce it by using the exemptions under Sections 54, 54EC, or 54F where you qualify, by making full use of the ₹1,25,000 equity exemption each financial year, or by timing sales across financial years to spread out gains.',
+      },
+      {
+        question: 'Is the Section 112A exemption available under the new tax regime?',
+        answer:
+          'Yes. The ₹1,25,000 LTCG exemption on equity under Section 112A is a standalone provision within the capital gains computation itself — it is not one of the Chapter VI-A deductions that the new regime restricts, so it remains available regardless of which regime you choose.',
+      },
+      {
+        question: 'Is the Section 112A exemption available to non-residents?',
+        answer:
+          'Yes, the ₹1,25,000 threshold under Section 112A applies to any taxpayer — resident or non-resident — who holds the specified securities. What non-residents typically cannot do is adjust their basic exemption limit shortfall against LTCG, which is a separate benefit available only to residents.',
       },
     ],
   },
 
-  'short-term-capital-gains-tax': {
+  'short-term-capital-gains-stcg-tax': {
     intro:
-      'Short-Term Capital Gains (STCG) tax applies when you sell a capital asset within a short holding period, defined differently depending on the asset type. Since July 2024, STCG on listed equity is taxed at a higher flat rate than before.',
-    keyHighlights: {
-      rows: [
-        ['Equity shares & equity mutual funds', '20% flat, no exemption threshold'],
-        ['Holding period for listed equity', '12 months or less'],
-        ['Other assets', 'Taxed at your income slab rate'],
-      ],
-    },
+      'Short-term capital gains (STCG) tax applies when you sell a capital asset before it completes the minimum holding period required to qualify as long-term. STCG is generally taxed at a higher rate than LTCG.',
     sections: [
       {
-        heading: 'What counts as a short-term capital gain',
+        heading: 'What qualifies as short-term',
         paragraphs: [
-          'For listed equity shares and equity-oriented mutual fund units, a gain is short-term if you held the asset for 12 months or less before selling. For most other assets — including debt mutual funds, unlisted shares, and property — the short-term threshold is 24 months for property and effectively immediate (no LTCG concept) for debt funds under current rules.',
+          'An asset is treated as short-term if sold within 12 months of purchase for listed equity shares and equity mutual funds, or within 24 months for most other assets like property, gold, and unlisted shares.',
         ],
       },
       {
-        heading: 'Current STCG tax rates',
+        heading: 'STCG tax rates',
         paragraphs: [
-          'From 23 July 2024, short-term capital gains on listed equity shares and equity-oriented mutual funds are taxed at a flat 20%, up from 15% previously. Unlike LTCG, there is no annual exemption threshold for STCG — the entire gain is taxable from the first rupee, regardless of your income tax slab.',
-          'Short-term gains on most other assets (such as property sold within 24 months, or debt mutual fund gains) are added to your total income and taxed at your applicable income tax slab rate, not at a special flat rate.',
+          'Short-term gains on listed equity shares and equity-oriented mutual funds (where securities transaction tax has been paid) are taxed at a flat 20% under Section 111A. Short-term gains on other assets — such as property, gold, and unlisted shares — are added to your total income and taxed at your applicable income tax slab rate.',
         ],
-        table: {
-          headers: ['Asset type', 'Holding period for STCG', 'Tax rate'],
-          rows: [
-            ['Listed equity shares', '12 months or less', '20% flat'],
-            ['Equity mutual funds', '12 months or less', '20% flat'],
-            ['Immovable property', '24 months or less', 'Your income tax slab rate'],
-            ['Debt mutual funds', 'Any holding period', 'Your income tax slab rate'],
-          ],
-          note: 'Rates exclude applicable surcharge and 4% health & education cess.',
-        },
       },
       {
-        heading: 'A worked example',
+        heading: 'No fixed exemption limit on STCG',
         paragraphs: [
-          'If you invest ₹5,00,000 in an equity mutual fund and redeem it after 10 months for ₹6,50,000, your gain of ₹1,50,000 is short-term. Since there is no exemption for STCG, the entire amount is taxed at 20%, working out to ₹30,000 before cess — noticeably more than if you had waited past the 12-month mark for long-term treatment.',
+          'Unlike LTCG on equity, there is no separate annual exemption threshold for STCG. However, resident individuals whose total income (including STCG) falls below the basic exemption limit can adjust the shortfall against the STCG amount before tax is calculated.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'Why does holding period matter so much?',
+        question: 'Can I set off short-term capital losses?',
         answer:
-          'Because it decides whether your gain is taxed at the flat, often-lower LTCG rate with an annual exemption, or the flat, higher STCG rate with no exemption at all. For equity, waiting past the 12-month mark can meaningfully reduce your tax.',
+          'Yes. Short-term capital losses can be set off against both short-term and long-term capital gains in the same year, and unabsorbed losses can be carried forward for up to 8 assessment years.',
       },
       {
-        question: 'Is STCG the same for every investor regardless of income?',
+        question: 'Why is STCG on equity taxed at a flat rate?',
         answer:
-          'For listed equity, yes — the 20% STCG rate is flat and does not depend on which income tax slab you fall into. For other assets taxed at slab rates, your personal tax bracket does determine the rate.',
+          'Section 111A specifically taxes STCG on STT-paid listed equity shares and equity funds at a flat rate, separate from the regular slab system, to keep the tax treatment simple and consistent for market-linked short-term trades.',
       },
       {
-        question: 'Can I set off short-term capital losses against gains?',
+        question: 'Does STCG apply to intraday trading?',
         answer:
-          'Yes, short-term capital losses can generally be set off against both short-term and long-term capital gains in the same year, and unused losses can be carried forward for up to 8 assessment years, subject to timely filing of your return.',
+          'No. Profits from intraday equity trading are treated as speculative business income, not capital gains, and are taxed differently under the "profits and gains from business or profession" head.',
+      },
+    ],
+  },
+
+  'section-54-capital-gains-exemption': {
+    intro:
+      'The Income Tax Act offers several exemptions that let you avoid or reduce capital gains tax on property and other long-term assets, provided you reinvest the proceeds in specified ways within set timelines.',
+    sections: [
+      {
+        heading: 'Section 54 — sale of residential property',
+        paragraphs: [
+          'If you sell a long-term residential house property and reinvest the capital gain in another residential house in India, within 1 year before or 2 years after the sale (or 3 years if constructing a new house), the gain is exempt up to the amount reinvested. From certain thresholds, this exemption is generally available for investment in one residential house, with an option for two houses available once in a lifetime if the gain does not exceed ₹2 crore.',
+        ],
+      },
+      {
+        heading: 'Section 54F — sale of any other long-term asset',
+        paragraphs: [
+          'If you sell a long-term capital asset other than a residential house (like shares, gold, or land) and invest the entire net sale consideration in a new residential house within the specified timelines, the gain is proportionately exempt. You should not own more than one other residential house on the date of sale to claim this exemption fully.',
+        ],
+      },
+      {
+        heading: 'Section 54EC — investment in specified bonds',
+        paragraphs: [
+          'Instead of buying property, you can invest long-term capital gains from land or building into specified bonds (such as those issued by NHAI or REC) within 6 months of the sale, up to a maximum of ₹50 lakh in a financial year. These bonds come with a mandatory lock-in period, currently 5 years, during which they cannot be sold or transferred.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'What happens if I sell the new property early?',
+        answer:
+          'If you sell the new residential property acquired under Section 54 or 54F within 3 years of its purchase or construction, the exemption you claimed earlier is reversed and added back to your taxable capital gains in the year of the subsequent sale.',
+      },
+      {
+        question: 'Can I claim more than one exemption on the same capital gain?',
+        answer:
+          'Generally no — each exemption section applies to specific reinvestment routes, and you claim the one that matches how you actually reinvested the proceeds, up to the eligible amount.',
+      },
+      {
+        question: 'What if I cannot reinvest before filing my tax return?',
+        answer:
+          'You can deposit the unutilised gain in a Capital Gains Account Scheme (CGAS) with a bank before the tax return due date, and use it later for the qualifying investment within the overall time limit.',
+      },
+    ],
+  },
+
+  'cost-inflation-index': {
+    intro:
+      'The Cost Inflation Index (CII) is a figure published annually by the Income Tax Department to account for inflation when calculating long-term capital gains on certain assets.',
+    sections: [
+      {
+        heading: 'What CII does',
+        paragraphs: [
+          'When indexation applies, the CII is used to inflate the original cost of acquisition (and cost of improvement) of an asset to a value comparable to prices in the year of sale, using the formula: Indexed cost = Original cost × (CII of year of sale ÷ CII of year of purchase). This reduces the taxable gain by accounting for the eroding value of money over time.',
+        ],
+      },
+      {
+        heading: 'Where CII still applies after Budget 2024',
+        paragraphs: [
+          'From 23 July 2024, indexation was removed for long-term capital gains on most assets, which are now taxed at a flat 12.5% without indexation. An exception exists for resident individuals and HUFs selling immovable property (land or building) acquired before 23 July 2024 — they can choose between paying 12.5% without indexation or 20% with indexation, whichever works out cheaper.',
+        ],
+      },
+      {
+        heading: 'Why it still matters for older property',
+        paragraphs: [
+          'For property bought many years ago, indexation could substantially reduce the taxable gain because the CII figures rise meaningfully year over year. This is why the government retained the indexation option specifically for this category, rather than removing it universally.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Where can I find the CII values for past years?',
+        answer:
+          'The Central Board of Direct Taxes (CBDT) notifies the CII for each financial year through an official notification, which is publicly available on the Income Tax Department\u2019s website.',
+      },
+      {
+        question: 'Does CII apply to short-term capital gains?',
+        answer:
+          'No. Indexation, and therefore CII, is only relevant for long-term capital gains where indexation is permitted — it has no application to short-term gains.',
+      },
+      {
+        question: 'Does indexation apply to equity shares and mutual funds?',
+        answer:
+          'No. Long-term capital gains on listed equity shares and equity-oriented mutual funds under Section 112A have never been eligible for indexation; they are taxed on the actual (non-indexed) gain.',
+      },
+    ],
+  },
+
+  'short-term-capital-gain-on-shares': {
+    intro:
+      'Selling listed shares or equity mutual fund units within 12 months of purchase results in a short-term capital gain, which has its own specific tax treatment separate from other short-term assets.',
+    sections: [
+      {
+        heading: 'Tax rate on STCG from shares',
+        paragraphs: [
+          'Under Section 111A, short-term capital gains on the sale of listed equity shares and equity-oriented mutual funds, where securities transaction tax (STT) has been paid on the transaction, are taxed at a flat 20%. This applies regardless of your income tax slab.',
+        ],
+      },
+      {
+        heading: 'Unlisted shares are treated differently',
+        paragraphs: [
+          'STCG on unlisted shares (where STT is not applicable) does not get the flat Section 111A rate. Instead, such gains are added to your total income and taxed at your regular slab rate.',
+        ],
+      },
+      {
+        heading: 'Set-off and carry forward of losses',
+        paragraphs: [
+          'A short-term capital loss on shares can be set off against both short-term and long-term capital gains in the same financial year. Any loss that remains can be carried forward for up to 8 assessment years, but can only be set off against capital gains in those future years, and only if the loss return is filed on time.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is STCG on shares eligible for any exemption?',
+        answer:
+          'There is no specific annual exemption for STCG on shares like there is for equity LTCG. However, resident individuals can adjust any shortfall in the basic exemption limit against STCG before tax is computed.',
+      },
+      {
+        question: 'What is the holding period cutoff for shares to be short-term?',
+        answer:
+          'Listed shares and equity mutual fund units held for 12 months or less are classified as short-term; holding for more than 12 months qualifies for long-term treatment instead.',
+      },
+      {
+        question: 'Does STT apply to all share transactions?',
+        answer:
+          'STT applies to transactions on recognised stock exchanges in India. If STT is not paid — for instance, off-market transfers — the flat 20% rate under Section 111A does not apply, and slab rates apply instead.',
+      },
+    ],
+  },
+
+  'long-term-capital-gains-on-shares': {
+    intro:
+      'Gains from listed shares and equity mutual funds held for more than 12 months are treated as long-term capital gains, taxed under a dedicated provision with its own exemption and grandfathering rules.',
+    sections: [
+      {
+        heading: 'Tax rate and exemption limit',
+        paragraphs: [
+          'Under Section 112A, long-term capital gains on listed equity shares and equity-oriented mutual funds are taxed at 12.5% on the amount exceeding ₹1,25,000 in a financial year. Gains up to this threshold in a year are fully exempt, and no indexation benefit is available on the taxable portion.',
+        ],
+      },
+      {
+        heading: 'The grandfathering clause',
+        paragraphs: [
+          'When LTCG tax on equity was reintroduced from 1 April 2018, a grandfathering provision was included: for shares purchased before 1 February 2018, the cost of acquisition is deemed to be the higher of the actual cost or the fair market value as on 31 January 2018 (subject to the actual sale price as a ceiling). This ensures gains accrued before that date are not retrospectively taxed.',
+        ],
+      },
+      {
+        heading: 'Reporting LTCG on shares',
+        paragraphs: [
+          'LTCG from listed shares must be reported scrip-wise in Schedule 112A of your income tax return, using details typically available in the capital gains statement provided by your broker or depository.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does the ₹1,25,000 exemption apply per share or in total?',
+        answer:
+          'It applies to your total long-term capital gains from all eligible listed equity shares and equity mutual funds put together in a financial year, not separately for each holding.',
+      },
+      {
+        question: 'What if I have both LTCG and STCG from shares in the same year?',
+        answer:
+          'They are computed and taxed separately — LTCG under Section 112A at 12.5% above the exemption, and STCG under Section 111A at a flat 20% — and both are reported in their respective schedules of your return.',
+      },
+      {
+        question: 'Does the grandfathering rule apply to mutual funds too?',
+        answer:
+          'Yes, the same 31 January 2018 fair market value grandfathering principle applies to equity-oriented mutual fund units acquired before that date.',
       },
     ],
   },
 
   'other-income-sources': {
     intro:
-      'Under the Income Tax Act, any income that does not fit into the four other heads — salary, house property, business/profession, or capital gains — is taxed under "Income from Other Sources." It is a broad, catch-all category that covers everything from bank interest to lottery winnings.',
+      '"Income from Other Sources" is the residual head of income under the Income Tax Act — it captures any taxable income that does not fall under salary, house property, business/profession, or capital gains.',
     sections: [
       {
-        heading: 'What typically falls under this head',
-        bullets: [
-          'Interest earned on savings accounts, fixed deposits, and recurring deposits',
-          'Interest on bonds and government securities',
-          'Dividends received from shares and mutual funds',
-          'Family pension received by a legal heir',
-          'Winnings from lotteries, game shows, crossword puzzles, and gambling',
-          'Gifts received in cash or kind above specified thresholds, from persons other than close relatives',
-          'Interest on income tax refunds',
+        heading: 'Common examples',
+        paragraphs: [
+          'This head typically includes interest earned on savings accounts and fixed deposits, dividends from shares and mutual funds, family pension received by a deceased employee\u2019s dependents, winnings from lotteries, game shows, or betting, and any gifts that are taxable under the gift tax provisions.',
         ],
       },
       {
-        heading: 'How this income is taxed',
+        heading: 'Special tax treatment for certain items',
         paragraphs: [
-          'Most income under this head is added to your total income and taxed at your applicable income tax slab rate. There are important exceptions: lottery winnings, game show prizes, and similar windfall income are taxed at a flat 30% (plus surcharge and cess), regardless of your slab, and no deductions or exemptions are allowed against this specific income.',
+          'Winnings from lotteries, crossword puzzles, card games, and similar activities are taxed at a flat 30% under Section 115BB, without any basic exemption or deduction being allowed against this income. Family pension, on the other hand, is eligible for a standard deduction (the lower of ₹15,000 or one-third of the pension amount under the old regime, or ₹25,000 under the new regime).',
         ],
       },
       {
-        heading: 'Deduction available on family pension',
+        heading: 'Deductions available',
         paragraphs: [
-          'If you receive a family pension after the death of a family member who was a government or other employee, you can claim a standard deduction — the lower of ₹15,000 or one-third of the pension received — before the balance is taxed.',
-        ],
-      },
-      {
-        heading: 'Interest income and TDS',
-        paragraphs: [
-          'Banks deduct TDS (Tax Deducted at Source) on interest income once it crosses a specified annual threshold, which is higher for senior citizens than for other taxpayers. Even if TDS is deducted, you must still report the full interest income in your return — TDS is only an advance payment of your total tax liability, not the final tax.',
-        ],
-      },
-      {
-        heading: 'Deduction on savings account interest — Section 80TTA/80TTB',
-        paragraphs: [
-          'Under the old tax regime, individuals below 60 can claim a deduction of up to ₹10,000 on savings account interest under Section 80TTA. Senior citizens can instead claim a larger deduction of up to ₹50,000 on interest from savings accounts, fixed deposits, and recurring deposits under Section 80TTB. Neither deduction is available if you opt for the new tax regime.',
-        ],
-      },
-      {
-        heading: 'Unexplained income and cash credits',
-        paragraphs: [
-          'Sections 68 to 69C of the Income Tax Act deal with unexplained cash credits, investments, money, or expenditure that a taxpayer cannot satisfactorily explain the source of. Such amounts can be taxed at a steep flat rate under Section 115BBE, with no deduction, exemption, or set-off against other losses allowed — one reason it is important to be able to substantiate large, unusual credits in your bank account.',
-        ],
-      },
-      {
-        heading: 'How to report this income in your ITR',
-        paragraphs: [
-          'Income from other sources is reported in Schedule OS of your income tax return (ITR-1 for simple cases, or ITR-2/ITR-3 depending on your other income). Interest, dividends, family pension, and other items are entered under their respective heads within this schedule, and any TDS already deducted (as shown in your Form 26AS/AIS) is claimed as a credit against your total tax liability.',
+          'While most income under this head is taxed on the amount received, specific deductions are allowed in limited cases — such as the family pension deduction mentioned above, or expenses incurred wholly for earning the income (for example, collection charges on interest income), where applicable.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'Do I need to report bank interest even if it is below the TDS threshold?',
+        question: 'Is interest from a savings account fully taxable?',
         answer:
-          'Yes. TDS thresholds only determine when the bank must deduct tax at source — they do not exempt the income itself. All interest income must be reported in your return, regardless of whether TDS was deducted.',
+          'Yes, it is taxable under this head, though Section 80TTA allows a deduction of up to ₹10,000 on savings account interest for individuals below 60 (₹50,000 under Section 80TTB for senior citizens) — but only under the old tax regime.',
       },
       {
-        question: 'Are gifts from relatives taxable under this head?',
+        question: 'Do I need to report exempt income like PPF interest here?',
         answer:
-          'Generally no. Gifts received from specified close relatives (such as parents, spouse, siblings) are exempt regardless of amount. Gifts from non-relatives are taxable under this head if their aggregate value exceeds ₹50,000 in a financial year.',
+          'Exempt income is generally reported separately in the "Exempt Income" schedule of your return for disclosure purposes, even though it does not add to your taxable income.',
       },
       {
-        question: 'Can I claim any deductions against lottery or game show winnings?',
+        question: 'How are dividends from shares taxed?',
         answer:
-          'No. Winnings from lotteries, game shows, and similar sources are taxed at a flat 30% on the gross amount, and no deductions, exemptions, or set-offs against this specific income are permitted.',
+          'Dividends are fully taxable in the hands of the recipient at their applicable slab rate, and companies deduct TDS at 10% if the dividend paid exceeds ₹5,000 in a financial year.',
+      },
+    ],
+  },
+
+  'salary-income': {
+    intro:
+      'Income from salary covers any payment received from an employer under an employer-employee relationship, and is one of the most common heads of income for taxpayers.',
+    sections: [
+      {
+        heading: 'What makes up salary income',
+        paragraphs: [
+          'Salary typically includes basic pay, dearness allowance, various other allowances (like HRA and LTA), bonuses, commission, and the value of certain perquisites (such as rent-free accommodation or a company car) provided by the employer.',
+        ],
       },
       {
-        question: 'Can I claim 80TTA and 80TTB together?',
-        answer:
-          'No. Section 80TTB is meant for senior citizens and, where it applies, replaces 80TTA for that taxpayer rather than adding to it. A senior citizen claims the higher 80TTB limit instead of 80TTA, not both together.',
+        heading: 'Standard deduction and exemptions',
+        paragraphs: [
+          'Every salaried individual can claim a standard deduction against salary income — ₹75,000 under the new tax regime and ₹50,000 under the old regime for FY 2024-25 — without needing to submit any bills or proof. Certain allowances, like House Rent Allowance and Leave Travel Allowance, may also be partly or fully exempt, but only under the old tax regime and subject to specific conditions.',
+        ],
       },
       {
-        question: 'Is interest on an income tax refund taxable?',
+        heading: 'Taxable vs exempt components',
+        paragraphs: [
+          'Not every rupee shown on your payslip is taxable. Reimbursements of actual expenses (like a documented medical bill under certain limits), and allowances that qualify for exemption under sections like 10(13A) for HRA, reduce your taxable salary — but only to the extent permitted, and generally only if you opt for the old regime.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is the standard deduction available under both tax regimes?',
         answer:
-          'Yes. Any interest paid to you by the Income Tax Department on a refund is taxable under income from other sources in the year you receive it, even though the underlying refund itself is not taxable.',
+          'Yes, but at different amounts — ₹75,000 under the new regime and ₹50,000 under the old regime for FY 2024-25 — and it applies automatically without requiring any investment or expense proof.',
+      },
+      {
+        question: 'Can I claim HRA exemption under the new tax regime?',
+        answer:
+          'No. HRA exemption is only available under the old tax regime; the new regime does not permit this or most other salary-related exemptions.',
+      },
+      {
+        question: 'How is a joining bonus or notice pay taxed?',
+        answer:
+          'A joining bonus is taxed as part of salary income in the year received. If you later have to repay it (for example, on leaving early), you may be able to claim relief, though the exact tax treatment can be nuanced and depends on your specific facts.',
+      },
+    ],
+  },
+  'how-to-save-tax-in-new-tax-regime': {
+    intro:
+      'The new tax regime offers lower slab rates in exchange for giving up most exemptions and deductions. Even so, there are a handful of legitimate ways to reduce your tax liability within it.',
+    sections: [
+      {
+        heading: 'Deductions still allowed under the new regime',
+        paragraphs: [
+          'While most Chapter VI-A deductions (like 80C and 80D) are not available, a few remain: the standard deduction of ₹75,000 on salary income, employer\u2019s contribution to NPS under Section 80CCD(2) (up to 14% of salary for government employees, 10% for others), the family pension deduction, and the deduction for contributions to the Agniveer Corpus Fund under Section 80CCH.',
+        ],
+      },
+      {
+        heading: 'Use the Section 87A rebate fully',
+        paragraphs: [
+          'If your taxable income is ₹7,00,000 or less under the new regime, the Section 87A rebate brings your tax liability down to zero. If your income is just above this threshold, marginal relief provisions can reduce the tax further so it does not exceed the amount by which your income crosses ₹7,00,000.',
+        ],
+      },
+      {
+        heading: 'Ask your employer to structure salary efficiently',
+        paragraphs: [
+          'Since most exemptions on allowances (like HRA) are not available in the new regime, focus instead on components that remain tax-efficient, such as employer NPS contributions, which reduce your taxable salary even under the new regime.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can I claim 80C deductions under the new regime?',
+        answer:
+          'No. Section 80C deductions (for PPF, ELSS, life insurance premiums, and similar investments) are not available if you opt for the new tax regime.',
+      },
+      {
+        question: 'Is switching between regimes allowed every year?',
+        answer:
+          'Salaried individuals without business income can choose between the old and new regime every financial year when filing their return. Those with business income have more restricted switching options.',
+      },
+      {
+        question: 'Which regime is better for me?',
+        answer:
+          'It depends on how much you can claim in deductions under the old regime. If your eligible deductions and exemptions are relatively small, the new regime\u2019s lower slab rates often work out better; if they are large (e.g., high HRA, home loan interest, 80C investments), the old regime may still save more tax.',
+      },
+    ],
+  },
+
+  'income-tax-savings': {
+    intro:
+      'The old tax regime allows a wide range of deductions and exemptions that can significantly lower your taxable income, provided you make the qualifying investments or incur the relevant expenses.',
+    sections: [
+      {
+        heading: 'Section 80C and related investments',
+        paragraphs: [
+          'Section 80C allows a deduction of up to ₹1,50,000 for investments and payments such as PPF, EPF, ELSS mutual funds, life insurance premiums, principal repayment of a home loan, five-year tax-saving fixed deposits, and children\u2019s tuition fees.',
+        ],
+      },
+      {
+        heading: 'Health insurance and other targeted deductions',
+        paragraphs: [
+          'Section 80D allows a deduction of up to ₹25,000 for health insurance premiums for yourself and family (₹50,000 if you or your spouse is a senior citizen), with an additional deduction for parents\u2019 premiums. Section 80CCD(1B) allows an extra ₹50,000 deduction for NPS contributions, over and above the 80C limit. Section 80TTA/80TTB cover savings account and deposit interest for non-seniors and seniors respectively.',
+        ],
+      },
+      {
+        heading: 'HRA and home loan interest',
+        paragraphs: [
+          'If you live in rented accommodation, HRA exemption under Section 10(13A) can reduce your taxable salary substantially, especially in metro cities. If you have a home loan, interest paid on a self-occupied property is deductible up to ₹2,00,000 per year under Section 24(b).',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Do I need to submit proof for these deductions?',
+        answer:
+          'Yes, typically you need to submit investment proofs, rent receipts, or premium payment receipts to your employer during the financial year, or retain them to support your claim if the return is scrutinised.',
+      },
+      {
+        question: 'Can I claim both 80C and 80CCD(1B) for NPS?',
+        answer:
+          'Yes — your own NPS contribution can be claimed up to ₹1,50,000 within the overall 80C limit, and an additional ₹50,000 is available exclusively for NPS under Section 80CCD(1B), over and above 80C.',
+      },
+      {
+        question: 'Is the old regime still available for FY 2024-25?',
+        answer:
+          'Yes, taxpayers can still choose the old regime for FY 2024-25, though the new regime is now the default option unless you actively opt for the old one while filing.',
+      },
+    ],
+  },
+
+  'income-tax-for-nri': {
+    intro:
+      'Non-Resident Indians (NRIs) are taxed differently from resident Indians — their Indian tax liability depends heavily on their residential status and where their income is earned or received.',
+    sections: [
+      {
+        heading: 'Determining residential status',
+        paragraphs: [
+          'You are generally treated as a resident of India for tax purposes if you stay in India for 182 days or more in a financial year, or 60 days or more in the year combined with 365 days or more over the preceding 4 years (with some relaxations for Indian citizens/PIOs visiting India, and special provisions for those with very high Indian income who might otherwise not qualify as resident anywhere).',
+        ],
+      },
+      {
+        heading: 'What income is taxable for an NRI',
+        paragraphs: [
+          'An NRI is taxed in India only on income that is earned or accrues in India, or is received in India. This typically includes rental income from Indian property, capital gains on Indian assets, interest on NRO accounts, and salary for services rendered in India. Income earned and received entirely outside India is not taxable in India for an NRI.',
+        ],
+      },
+      {
+        heading: 'TDS and DTAA relief',
+        paragraphs: [
+          'Payments to NRIs, such as rent or interest, usually attract a higher rate of TDS deduction at source compared to residents. Where India has a Double Taxation Avoidance Agreement (DTAA) with the NRI\u2019s country of residence, they may be able to claim a lower TDS rate or credit for taxes paid, to avoid being taxed twice on the same income.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Do NRIs need to file an income tax return in India?',
+        answer:
+          'An NRI must file a return in India if their taxable Indian income exceeds the basic exemption limit, or in certain other specified circumstances, such as claiming a refund of excess TDS deducted.',
+      },
+      {
+        question: 'Are NRE account interest and FCNR deposits taxable in India?',
+        answer:
+          'No, interest earned on NRE (Non-Resident External) savings and fixed deposit accounts, and on FCNR deposits, is exempt from Indian income tax as long as the account holder maintains NRI status.',
+      },
+      {
+        question: 'Can an NRI claim deductions like 80C?',
+        answer:
+          'Yes, most Section 80C and other Chapter VI-A deductions remain available to NRIs on the same basis as residents, for investments and payments made in India that qualify.',
+      },
+    ],
+  },
+
+  'how-are-gifts-taxed': {
+    intro:
+      'Gifts of money or property are generally taxable in the hands of the recipient in India, unless they fall under one of the specific exemptions carved out by the Income Tax Act.',
+    sections: [
+      {
+        heading: 'When gifts become taxable',
+        paragraphs: [
+          'If the aggregate value of monetary gifts received by an individual from non-relatives in a financial year exceeds ₹50,000, the entire amount becomes taxable as "Income from Other Sources" — not just the excess over ₹50,000. Similar rules apply to gifts of immovable property received for no consideration or for consideration below the stamp duty value, and to gifts of other movable property (like shares, jewellery, or artwork) above the ₹50,000 threshold.',
+        ],
+      },
+      {
+        heading: 'Exempt categories of gifts',
+        paragraphs: [
+          'Gifts are fully exempt from tax when received from a "relative" as defined under the Act (which includes spouse, siblings, parents, and certain other specified relations), on the occasion of marriage, under a will or by way of inheritance, or from a local authority, registered trust, or certain specified institutions.',
+        ],
+      },
+      {
+        heading: 'Gifts between family members',
+        paragraphs: [
+          'Because gifts from defined relatives are exempt, transfers of money or property between spouses, parents and children, or siblings, for example, do not attract gift tax — though income earned later from gifted assets may still be clubbed with the giver\u2019s income in certain cases under clubbing provisions.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is a gift from my spouse taxable?',
+        answer:
+          'No, a gift received from your spouse is exempt since a spouse is included in the definition of "relative" — however, income generated from that gifted amount may be clubbed back into the giver\u2019s taxable income under clubbing rules.',
+      },
+      {
+        question: 'Are wedding gifts always exempt?',
+        answer:
+          'Gifts received by the bride or groom on the occasion of their own marriage are exempt, regardless of who gives them — relative or not. This exemption does not extend to gifts given at other family members\u2019 weddings.',
+      },
+      {
+        question: 'What about gifts received from friends?',
+        answer:
+          'Gifts from friends are treated as gifts from a non-relative, so they are only exempt if the total value from all non-relatives in the year stays at or below ₹50,000; beyond that, the full amount is taxable.',
       },
     ],
   },
 
   'pan-card': {
     intro:
-      'PAN (Permanent Account Number) is a 10-character alphanumeric identifier issued by the Income Tax Department to every taxpayer and many other individuals and entities in India. It is central to almost every meaningful financial transaction, from opening a bank account to filing your income tax return.',
+      'A Permanent Account Number (PAN) is a unique 10-character alphanumeric identifier issued by the Income Tax Department to track financial transactions and tax compliance in India.',
     sections: [
       {
-        heading: 'Why PAN matters for banking',
-        bullets: [
-          'Required to open a savings, current, or fixed deposit account at most banks',
-          'Mandatory for cash deposits or withdrawals above specified limits',
-          'Needed for transactions in shares, mutual funds, and other securities above certain thresholds',
-          'Required for high-value purchases such as property and vehicles',
-          'Used by banks to report interest income to the Income Tax Department',
-        ],
-      },
-      {
-        heading: 'Structure of a PAN number',
+        heading: 'Why PAN is important',
         paragraphs: [
-          'A PAN follows the format AAAAA9999A — five letters, followed by four digits, followed by one letter. The fourth letter indicates the holder\u2019s status (for example, "P" for an individual, "C" for a company), and the fifth letter is typically derived from the holder\u2019s name.',
+          'PAN is mandatory for filing income tax returns, and is required for a wide range of financial transactions, including opening a bank account, making high-value cash deposits or investments, buying or selling property above specified thresholds, and receiving payments where TDS applies. Without PAN, TDS is deducted at a higher rate.',
         ],
       },
       {
         heading: 'How to apply for a PAN card',
-        bullets: [
-          'Apply online through the official NSDL (Protean) or UTIITSL portals',
-          'Fill in Form 49A (for Indian citizens) or Form 49AA (for foreign citizens)',
-          'Upload proof of identity, proof of address, and a passport-size photograph',
-          'Pay the applicable fee and submit the application',
-          'Track your application status using the acknowledgment number provided',
+        paragraphs: [
+          'You can apply for a new PAN online through the NSDL (Protean) or UTIITSL portals, or the Income Tax Department\u2019s e-filing website. The process requires basic identity, address, and date of birth proof, along with a passport-size photograph, and can typically be completed entirely online using Aadhaar-based e-KYC.',
         ],
       },
       {
         heading: 'Linking PAN with Aadhaar',
         paragraphs: [
-          'The Income Tax Department requires most PAN holders to link their PAN with their Aadhaar number. An unlinked PAN can become inoperative, which can block banking transactions, TDS credit, and filing of income tax returns until the linking is completed.',
-        ],
-      },
-      {
-        heading: 'Types of PAN card and who needs one',
-        bullets: [
-          'Individuals (resident and non-resident) — the most common category, used for personal banking and tax filing',
-          'Hindu Undivided Families (HUF) — a separate PAN in the name of the HUF, distinct from the karta\u2019s personal PAN',
-          'Companies, LLPs, firms, and trusts — a separate PAN is mandatory for every registered entity',
-          'Minors — a PAN can be applied for on behalf of a minor, typically used by a parent/guardian for investments made in the minor\u2019s name',
-          'Foreign nationals and NRIs — apply using Form 49AA, with proof of foreign address and identity',
-        ],
-      },
-      {
-        heading: 'e-PAN and instant PAN',
-        paragraphs: [
-          'The Income Tax Department offers an instant e-PAN facility for individuals who already have a valid Aadhaar with an up-to-date mobile number. The e-PAN is generated within minutes as a digitally signed PDF and is legally valid, though a physical PAN card can still be requested separately if needed.',
-        ],
-      },
-      {
-        heading: 'Correcting or updating PAN details',
-        bullets: [
-          'Use the "Changes or Correction in PAN Data" request form on the NSDL/UTIITSL portal for changes to name, date of birth, address, or photo',
-          'Attach supporting documents proving the corrected detail (such as a marriage certificate for a name change)',
-          'Pay the applicable correction fee, which differs for communication addresses within and outside India',
-          'A reprinted PAN card is issued with the same PAN number — the PAN number itself never changes once allotted',
-        ],
-      },
-      {
-        heading: 'Lost or damaged PAN card',
-        paragraphs: [
-          'If your physical PAN card is lost, stolen, or damaged, you do not need a new PAN — you can request a reprint of a duplicate card carrying your existing PAN number through the NSDL/UTIITSL "reprint PAN card" service, after verifying your identity.',
+          'It is mandatory for most PAN holders to link their PAN with Aadhaar. A PAN that is not linked to Aadhaar becomes inoperative, which can lead to higher TDS/TCS deduction and difficulty carrying out financial transactions until it is linked.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'Is PAN mandatory to open a bank account?',
+        question: 'Can I hold more than one PAN card?',
         answer:
-          'For most account types, yes. Banks are required to collect PAN (or Form 60, in limited cases where PAN is not yet available) as part of their KYC process before opening an account.',
+          'No, holding more than one PAN is illegal and attracts a penalty. If you have been issued duplicate PANs by mistake, you should surrender the extra one to the Income Tax Department.',
       },
       {
-        question: 'What happens if my PAN is not linked to Aadhaar?',
+        question: 'Is PAN mandatory for minors?',
         answer:
-          'An unlinked PAN can be treated as inoperative, which may result in higher TDS deduction, inability to file income tax returns, and disruptions to banking and investment transactions until you complete the linking (usually with a late fee).',
-      },
-      {
-        question: 'Can I have more than one PAN?',
-        answer:
-          'No. Holding more than one PAN is against the law and can attract a penalty. If you have been issued a duplicate PAN by mistake, you should surrender the extra one through the official portal.',
-      },
-      {
-        question: 'Can I get a PAN card for my child?',
-        answer:
-          'Yes. A PAN can be issued to a minor, applied for by a parent or guardian on the minor\u2019s behalf, typically to hold investments or bank deposits made in the minor\u2019s name.',
+          'A minor can obtain a PAN, typically applied for by a parent or guardian, especially if the minor holds investments or is a nominee/co-owner in transactions that require PAN.',
       },
       {
         question: 'How long does it take to get a PAN card?',
         answer:
-          'An instant e-PAN linked to Aadhaar can be issued within minutes online. A regular PAN application processed through NSDL/UTIITSL typically takes about one to two weeks for the physical card to be dispatched, depending on document verification.',
+          'A physical PAN card is usually issued within about 15 days of a correctly submitted application, while an e-PAN (a digital version) can often be generated within 24-48 hours for e-KYC-based applications.',
       },
     ],
   },
 
   'aadhaar-card': {
     intro:
-      'Aadhaar is a 12-digit unique identity number issued by the Unique Identification Authority of India (UIDAI) to residents of India, based on their biometric and demographic data. It has become one of the most widely used identity documents for banking and government services.',
+      'Aadhaar is a 12-digit unique identification number issued by the Unique Identification Authority of India (UIDAI) to residents of India, based on their biometric and demographic data.',
     sections: [
       {
-        heading: 'Why Aadhaar matters for banking',
-        bullets: [
-          'Commonly used as both proof of identity and proof of address when opening a bank account',
-          'Required for linking with PAN for most taxpayers',
-          'Used for Aadhaar-enabled payment systems (AePS) at banking correspondents and micro-ATMs',
-          'Needed to receive direct benefit transfers (DBT) and government subsidies into your account',
-          'Used for e-KYC, allowing some accounts to be opened or verified remotely',
+        heading: 'What Aadhaar is used for',
+        paragraphs: [
+          'Aadhaar serves as a widely accepted proof of identity and address for opening bank accounts, obtaining a SIM card, applying for a PAN card, receiving government subsidies and benefits through Direct Benefit Transfer (DBT), and completing KYC for various financial services.',
         ],
       },
       {
-        heading: 'Updating your Aadhaar details',
+        heading: 'How Aadhaar is generated',
         paragraphs: [
-          'You can update your name, address, date of birth, mobile number, and other demographic details through UIDAI\u2019s official portal or at an Aadhaar Seva Kendra. Keeping your mobile number and address current is important, since many banking and government services rely on OTP verification tied to your registered Aadhaar mobile number.',
+          'To enrol for Aadhaar, a resident visits an Aadhaar enrolment centre with basic identity and address proof, where their photograph, fingerprints, and iris scan are captured along with demographic details. UIDAI then verifies and issues the unique Aadhaar number.',
         ],
       },
       {
-        heading: 'Aadhaar and privacy',
+        heading: 'Updating and downloading Aadhaar',
         paragraphs: [
-          'UIDAI provides a masked Aadhaar option, which displays only the last four digits of your Aadhaar number on downloaded copies, and a Virtual ID (VID) that can be used instead of sharing your full Aadhaar number for certain verifications.',
+          'You can update your address, mobile number, or other demographic details through an Aadhaar Seva Kendra or online via the myAadhaar portal for certain fields. Your Aadhaar letter can also be downloaded as an e-Aadhaar PDF, or accessed via the mAadhaar mobile app.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'Is Aadhaar mandatory to open a bank account?',
+        question: 'Is Aadhaar mandatory for everyone in India?',
         answer:
-          'While Aadhaar is widely accepted and commonly used, banks are generally required to accept any valid officially recognized identity document for KYC. That said, Aadhaar is by far the most commonly used document in practice, especially for e-KYC.',
+          'While Aadhaar is not universally mandatory by law for every purpose, it has become a practical necessity for most financial and government services, as it is widely required or strongly preferred for KYC and benefit disbursal.',
       },
       {
-        question: 'What should I do if my Aadhaar has incorrect details?',
+        question: 'Can I have more than one Aadhaar number?',
         answer:
-          'You can raise an update request online through UIDAI\u2019s self-service portal for minor corrections, or visit an Aadhaar Seva Kendra with supporting documents for changes like date of birth or biometric updates.',
+          'No, each resident is entitled to only one Aadhaar number. Attempting to obtain multiple Aadhaar numbers is not permitted and can result in the duplicate being deactivated.',
       },
       {
-        question: 'Is it safe to share my Aadhaar number?',
+        question: 'Is my Aadhaar information secure?',
         answer:
-          'Share your Aadhaar only with legitimate, verified institutions when required for KYC. Where possible, use a masked Aadhaar copy or Virtual ID instead of your full Aadhaar number to reduce exposure.',
+          'UIDAI maintains Aadhaar data under strict security protocols, and offers features like Aadhaar locking and virtual ID (VID) generation, which let you share a temporary reference number instead of your actual Aadhaar number for added privacy.',
       },
     ],
   },
 
-  'upi-payments-guide': {
+  'ration-card': {
     intro:
-      'UPI (Unified Payments Interface) is a real-time payment system developed by NPCI that lets you instantly transfer money between bank accounts using just a mobile number, UPI ID, or QR code — without needing to know the recipient\u2019s IFSC code or account number.',
+      'A ration card is an official document issued by state governments that entitles eligible households to purchase subsidised food grains and other essential commodities through the Public Distribution System (PDS).',
+    sections: [
+      {
+        heading: 'Types of ration cards',
+        paragraphs: [
+          'Common categories include Above Poverty Line (APL) cards for relatively better-off households, Below Poverty Line (BPL) cards for economically weaker households eligible for higher subsidies, and Antyodaya Anna Yojana (AAY) cards for the poorest of the poor families, who receive food grains at the most subsidised rates. Exact categories and names can vary somewhat by state.',
+        ],
+      },
+      {
+        heading: 'Uses beyond subsidised food',
+        paragraphs: [
+          'Besides accessing PDS shops, a ration card is commonly accepted as a proof of identity and address for various government schemes, school admissions, and, in some states, as supporting documentation for other benefit programs.',
+        ],
+      },
+      {
+        heading: 'One Nation One Ration Card',
+        paragraphs: [
+          'Under the "One Nation, One Ration Card" scheme, ration card holders can access their entitled food grains from any Fair Price Shop across India, not just in their home state — a significant benefit for migrant workers and families who relocate for work.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'How do I apply for a ration card?',
+        answer:
+          'You typically apply through your state\u2019s food and civil supplies department, either online via the state portal or offline at the local ration office, submitting identity, address, and income proof along with the application form.',
+      },
+      {
+        question: 'Is Aadhaar linking mandatory for ration cards?',
+        answer:
+          'Most states require Aadhaar linking for ration cards to prevent duplication and ensure benefits reach the intended beneficiary, and it is also required to avail the One Nation One Ration Card portability feature.',
+      },
+      {
+        question: 'What if my ration card details need to be updated?',
+        answer:
+          'You can apply for corrections or updates (such as adding a new family member or updating an address) through the same state food department portal or office where you originally applied.',
+      },
+    ],
+  },
+
+  'upi-unified-payments-interface': {
+    intro:
+      'UPI (Unified Payments Interface) is a real-time payment system developed by the National Payments Corporation of India (NPCI) that allows instant money transfers between bank accounts using a mobile phone.',
     sections: [
       {
         heading: 'How UPI works',
         paragraphs: [
-          'UPI links your bank account to a UPI ID (like yourname@bank) through a UPI app. When you pay someone, the app routes the request through NPCI\u2019s UPI switch, which instructs your bank to debit your account and the recipient\u2019s bank to credit theirs — usually within seconds.',
+          'UPI links your bank account to a UPI ID (also called a Virtual Payment Address, like yourname@bank) through a UPI app. Payments are authorised using a UPI PIN, and transfers happen instantly, 24 hours a day, 7 days a week, including bank holidays.',
         ],
       },
       {
-        heading: 'UPI vs NEFT vs IMPS',
-        table: {
-          headers: ['Feature', 'UPI', 'NEFT', 'IMPS'],
-          rows: [
-            ['Speed', 'Instant', 'Batch-processed, minutes to hours', 'Instant, 24×7'],
-            ['Details needed', 'UPI ID / QR / mobile number', 'Account number + IFSC', 'Account number + IFSC, or UPI ID'],
-            ['Typical use', 'Everyday small payments', 'Salary, bulk payments', 'Urgent transfers, any amount'],
-            ['Availability', '24×7, including holidays', '24×7 (as of current RBI rules)', '24×7, including holidays'],
-          ],
-        },
+        heading: 'Key features',
+        paragraphs: [
+          'UPI supports peer-to-peer transfers, QR-code based merchant payments, bill payments, and even recurring payments via UPI Autopay. Because it works off a UPI ID rather than requiring account and IFSC details, it has become the preferred method for everyday digital payments in India.',
+        ],
       },
       {
-        heading: 'UPI transaction limits',
+        heading: 'Transaction limits',
         paragraphs: [
-          'Per-transaction and daily limits on UPI vary by bank and by the specific use case (such as person-to-person payments versus certain categories like capital markets or insurance, which may have higher caps). Most banks set a default limit for regular UPI transfers, and you can usually check your specific limit inside your UPI app.',
+          'Most banks set a default UPI transaction limit of ₹1,00,000 per transaction for regular person-to-person and merchant payments, though this can vary by bank. Certain categories, such as payments for capital markets, insurance, and some tax payments, are permitted at higher limits under specific NPCI guidelines. Always check your bank\u2019s app for the exact limit that applies to your account.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'Do I need the receiver\u2019s IFSC code to pay via UPI?',
+        question: 'Is UPI different from NEFT and IMPS?',
         answer:
-          'No. UPI only needs the receiver\u2019s UPI ID, registered mobile number, or a QR code — the underlying bank account and IFSC mapping is handled behind the scenes.',
+          'Yes. UPI is an app-based system built on top of bank accounts, designed for quick, everyday payments using a UPI ID or QR code, whereas NEFT and IMPS are underlying interbank transfer mechanisms usually initiated using account number and IFSC through net banking or a banking app.',
       },
       {
-        question: 'Is UPI available on bank holidays?',
+        question: 'What happens if a UPI payment fails but money is deducted?',
         answer:
-          'Yes, UPI operates 24 hours a day, 7 days a week, including weekends and bank holidays, unlike some older transfer methods that used to be limited to banking hours.',
+          'In most cases, failed UPI transactions are automatically reversed to your account within a few hours to a few working days. If not, you can raise a complaint through your UPI app or bank\u2019s customer support.',
       },
       {
-        question: 'What should I do if a UPI payment fails but money is deducted?',
+        question: 'Can I use UPI without a smartphone?',
         answer:
-          'In most cases, failed UPI payments are automatically reversed to your account within a few hours to a few working days. If it isn\u2019t reversed, you can raise a complaint through your UPI app, your bank, or the NPCI dispute redressal portal.',
+          'Yes, UPI 123Pay allows feature phone users to make UPI payments using IVR calls, missed calls, or an app for feature phones, without needing a smartphone or internet connection.',
       },
     ],
   },
 
-  'neft-vs-rtgs-vs-imps': {
+  'neft-national-electronic-funds-transfer': {
     intro:
-      'NEFT, RTGS, and IMPS are the three main electronic fund transfer systems in India, each suited to slightly different needs based on amount, urgency, and processing time.',
+      'NEFT (National Electronic Funds Transfer) is an electronic payment system regulated by the Reserve Bank of India that allows funds transfer between bank accounts across India.',
     sections: [
       {
-        heading: 'Key differences at a glance',
-        table: {
-          headers: ['Feature', 'NEFT', 'RTGS', 'IMPS'],
-          rows: [
-            ['Minimum amount', 'No minimum', '₹2 lakh', 'No minimum'],
-            ['Maximum amount', 'No cap (bank-dependent)', 'No cap', 'Bank-defined cap, typically high'],
-            ['Processing', 'Batch settlement, half-hourly', 'Real-time, one-to-one', 'Real-time, instant'],
-            ['Availability', '24×7 (as of current RBI rules)', '24×7 (as of current RBI rules)', '24×7, including holidays'],
-            ['Best for', 'Regular transfers, salary', 'Large, urgent transfers', 'Urgent transfers of any size'],
-          ],
-        },
-      },
-      {
-        heading: 'When to use which',
-        bullets: [
-          'Use NEFT for routine transfers where a short delay is acceptable',
-          'Use RTGS for large-value, time-critical transfers of ₹2 lakh or more',
-          'Use IMPS when you need the money to reach the recipient instantly, at any time, regardless of amount',
+        heading: 'How NEFT settlement works',
+        paragraphs: [
+          'Since December 2019, NEFT operates on a 24x7x365 basis, settling transactions in half-hourly batches throughout the day and night, including weekends and holidays. This means a NEFT transfer, while not instantaneous like IMPS or UPI, is usually completed within 30 minutes to a couple of hours.',
         ],
       },
       {
-        heading: 'Charges',
+        heading: 'Transaction limits and requirements',
         paragraphs: [
-          'Most banks now offer NEFT and RTGS free of charge for online (net banking/mobile banking) transactions, following an RBI directive. IMPS charges vary by bank and are usually a small flat fee or slab-based charge depending on the transfer amount.',
+          'The Reserve Bank of India does not prescribe a minimum or maximum amount for NEFT transactions, though individual banks may set their own limits, particularly for transactions initiated through internet or mobile banking. To make an NEFT transfer, you need the beneficiary\u2019s account number, name, bank, and the branch\u2019s IFSC code.',
+        ],
+      },
+      {
+        heading: 'When NEFT is a good choice',
+        paragraphs: [
+          'NEFT is commonly used for both retail transfers and bulk or business payments where instant settlement is not critical, since it typically does not carry the per-transaction charges that some IMPS transfers do, and most banks do not charge for NEFT done via net banking.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'Which is faster, NEFT or IMPS?',
+        question: 'Is NEFT available on bank holidays?',
         answer:
-          'IMPS is faster — it settles in real time, any time of day. NEFT is processed in batches at half-hourly intervals, so there can be a short delay even though it now also operates 24×7.',
+          'Yes, since the move to 24x7 processing in December 2019, NEFT is available every day of the year, including Sundays and bank holidays.',
       },
       {
-        question: 'Is there a minimum amount for RTGS?',
+        question: 'How long does an NEFT transfer take to reflect in the beneficiary account?',
         answer:
-          'Yes, RTGS is meant for high-value transfers and has a minimum transaction amount of ₹2 lakh. For anything below that, NEFT or IMPS is used instead.',
+          'Since transactions are processed in half-hourly batches, an NEFT transfer typically reflects in the beneficiary\u2019s account within 30 minutes to 2 hours, depending on when it was initiated relative to the batch cycle.',
       },
       {
-        question: 'Do I need the IFSC code for all three?',
+        question: 'Can I use NEFT for international transfers?',
         answer:
-          'Yes, NEFT, RTGS, and IMPS (when done via account number, rather than UPI ID) all require the correct IFSC code of the receiving branch to route the transfer correctly.',
-      },
-    ],
-  },
-  'gold-rate-bangalore': {
-    intro:
-      'The gold rate in Bangalore changes daily based on international bullion prices, the rupee-dollar exchange rate, import duty, and local demand. This guide explains how the Bangalore gold rate is arrived at, the difference between 22K and 24K pricing, and what to check before you buy.',
-    sections: [
-      {
-        heading: 'What determines the gold rate in Bangalore',
-        paragraphs: [
-          'Karnataka’s jewellery market, centred around areas like Jayanagar and Commercial Street, sets its own local rate based on the national bullion benchmark.',
-          'Like every Indian city, Bangalore\u2019s gold price tracks the international spot price of gold (usually quoted in US dollars per ounce), converted to rupees, plus import duty, GST, and a local premium that reflects transport and dealer margins. Because gold is priced continuously in international markets, the rate can change more than once within a single trading day.',
-        ],
-      },
-      {
-        heading: '22K vs 24K gold: what is the difference',
-        table: {
-          headers: ['Purity', 'Gold content', 'Common use'],
-          rows: [
-            ['24 Karat (24K)', '99.9% pure gold', 'Coins, bars, investment gold'],
-            ['22 Karat (22K)', 'About 91.6% pure gold, alloyed with metals like copper/silver', 'Most gold jewellery'],
-            ['18 Karat (18K)', 'About 75% pure gold', 'Lightweight or diamond-studded jewellery'],
-          ],
-          note: '24K gold is the softest and rarely used for jewellery on its own, since it does not hold intricate designs well.',
-        },
-      },
-      {
-        heading: 'Making charges, GST, and your final bill',
-        paragraphs: [
-          'The rate you see quoted for gold is only the metal price. When you buy jewellery, the jeweller adds making charges (a percentage of the value, or a flat per-gram charge, depending on the design and the store) and 3% GST is applied on the total of the gold value plus making charges. Wastage charges may also apply for handcrafted designs.',
-          'When comparing jewellers in Bangalore, ask for a bill breakup showing the gold rate used, the making charge percentage, and GST separately — this makes it much easier to compare two quotes fairly.',
-        ],
-      },
-      {
-        heading: 'Checking gold purity — hallmarking',
-        paragraphs: [
-          'BIS hallmarking is the official purity certification system in India. A hallmarked piece carries the BIS mark, a purity grade (such as 916 for 22K), an assaying centre\u2019s mark, and a unique HUID (Hallmark Unique Identification) number that can be verified online through the BIS CARE app. Buying hallmarked gold in Bangalore protects you from being sold under-carated jewellery at a higher-karat price.',
-        ],
-      },
-      {
-        heading: 'Tips before buying gold in Bangalore',
-        bullets: [
-          'Check the live rate for 22K and 24K separately before negotiating — jewellers sometimes quote only one to make comparison harder',
-          'Ask for the BIS hallmark and verify the HUID number if the purchase is significant',
-          'Get making charges and GST itemised separately on the bill, not bundled into a single figure',
-          'Keep the original bill safely — it is needed for resale, exchange, insurance claims, and as proof for high-value purchases',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why does the gold rate in Bangalore change during the day?',
-        answer:
-          'Gold is traded continuously on international markets, so its rupee-converted price can shift multiple times a day as the international spot price and the rupee-dollar exchange rate move. Local jewellers typically update their quoted rate once or twice a day based on this.',
-      },
-      {
-        question: 'Is the 24K gold rate the price I would pay for jewellery?',
-        answer:
-          'No. Most jewellery is made in 22K or lower purity, and the price also includes making charges and GST on top of the metal value. The 24K rate is mainly relevant for coins, bars, and as a reference price.',
-      },
-      {
-        question: 'Does the gold rate differ between cities in India?',
-        answer:
-          'Yes, slightly. While all cities track the same international gold price, local associations add their own margin reflecting local transport, demand, and dealer costs, so quoted rates can vary a little between cities like Bangalore and others on the same day.',
+          'No, NEFT is designed only for domestic fund transfers within India between banks that are part of the NEFT network.',
       },
     ],
   },
 
-  'gold-rate-chennai': {
+  'imps-immediate-payment-service': {
     intro:
-      'The gold rate in Chennai changes daily based on international bullion prices, the rupee-dollar exchange rate, import duty, and local demand. This guide explains how the Chennai gold rate is arrived at, the difference between 22K and 24K pricing, and what to check before you buy.',
+      'IMPS (Immediate Payment Service) is an instant interbank electronic fund transfer service developed by NPCI, allowing money transfers 24x7, including on weekends and holidays.',
     sections: [
       {
-        heading: 'What determines the gold rate in Chennai',
+        heading: 'How IMPS works',
         paragraphs: [
-          'Tamil Nadu has one of India’s largest gold and silver consumer markets, and Chennai’s jewellers’ association typically publishes its own daily rate.',
-          'Like every Indian city, Chennai\u2019s gold price tracks the international spot price of gold (usually quoted in US dollars per ounce), converted to rupees, plus import duty, GST, and a local premium that reflects transport and dealer margins. Because gold is priced continuously in international markets, the rate can change more than once within a single trading day.',
+          'IMPS transfers can be initiated using the beneficiary\u2019s account number and IFSC code, similar to NEFT, or in some cases using a Mobile Money Identifier (MMID) along with the recipient\u2019s mobile number. Unlike NEFT, IMPS settles the transaction almost instantly, making it useful for urgent transfers.',
         ],
       },
       {
-        heading: '22K vs 24K gold: what is the difference',
-        table: {
-          headers: ['Purity', 'Gold content', 'Common use'],
-          rows: [
-            ['24 Karat (24K)', '99.9% pure gold', 'Coins, bars, investment gold'],
-            ['22 Karat (22K)', 'About 91.6% pure gold, alloyed with metals like copper/silver', 'Most gold jewellery'],
-            ['18 Karat (18K)', 'About 75% pure gold', 'Lightweight or diamond-studded jewellery'],
-          ],
-          note: '24K gold is the softest and rarely used for jewellery on its own, since it does not hold intricate designs well.',
-        },
-      },
-      {
-        heading: 'Making charges, GST, and your final bill',
+        heading: 'Transaction limits',
         paragraphs: [
-          'The rate you see quoted for gold is only the metal price. When you buy jewellery, the jeweller adds making charges (a percentage of the value, or a flat per-gram charge, depending on the design and the store) and 3% GST is applied on the total of the gold value plus making charges. Wastage charges may also apply for handcrafted designs.',
-          'When comparing jewellers in Chennai, ask for a bill breakup showing the gold rate used, the making charge percentage, and GST separately — this makes it much easier to compare two quotes fairly.',
+          'Most banks cap IMPS transfers at ₹2,00,000 to ₹5,00,000 per transaction, though the exact limit can vary by bank and by the channel used (mobile banking, net banking, or ATM). This is generally lower than the limits some banks allow for RTGS.',
         ],
       },
       {
-        heading: 'Checking gold purity — hallmarking',
+        heading: 'IMPS vs NEFT vs RTGS',
         paragraphs: [
-          'BIS hallmarking is the official purity certification system in India. A hallmarked piece carries the BIS mark, a purity grade (such as 916 for 22K), an assaying centre\u2019s mark, and a unique HUID (Hallmark Unique Identification) number that can be verified online through the BIS CARE app. Buying hallmarked gold in Chennai protects you from being sold under-carated jewellery at a higher-karat price.',
-        ],
-      },
-      {
-        heading: 'Tips before buying gold in Chennai',
-        bullets: [
-          'Check the live rate for 22K and 24K separately before negotiating — jewellers sometimes quote only one to make comparison harder',
-          'Ask for the BIS hallmark and verify the HUID number if the purchase is significant',
-          'Get making charges and GST itemised separately on the bill, not bundled into a single figure',
-          'Keep the original bill safely — it is needed for resale, exchange, insurance claims, and as proof for high-value purchases',
+          'IMPS is best suited for smaller, urgent transfers that need to reach the recipient immediately. NEFT works well for non-urgent transfers of any size processed in batches. RTGS is meant for high-value transfers (minimum ₹2,00,000) that need real-time, individual settlement rather than batch processing.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'Why does the gold rate in Chennai change during the day?',
+        question: 'Does IMPS work on Sundays and holidays?',
         answer:
-          'Gold is traded continuously on international markets, so its rupee-converted price can shift multiple times a day as the international spot price and the rupee-dollar exchange rate move. Local jewellers typically update their quoted rate once or twice a day based on this.',
+          'Yes, IMPS is available 24 hours a day, 7 days a week, including Sundays, and all bank and public holidays, since it was designed from the outset for round-the-clock instant transfers.',
       },
       {
-        question: 'Is the 24K gold rate the price I would pay for jewellery?',
+        question: 'Is there a charge for IMPS transfers?',
         answer:
-          'No. Most jewellery is made in 22K or lower purity, and the price also includes making charges and GST on top of the metal value. The 24K rate is mainly relevant for coins, bars, and as a reference price.',
+          'Many banks charge a small fee for IMPS transactions, especially for higher amounts, though this varies by bank and by the channel (mobile app, net banking, or ATM) used to initiate the transfer.',
       },
       {
-        question: 'Does the gold rate differ between cities in India?',
+        question: 'What if I enter the wrong IFSC code for an IMPS transfer?',
         answer:
-          'Yes, slightly. While all cities track the same international gold price, local associations add their own margin reflecting local transport, demand, and dealer costs, so quoted rates can vary a little between cities like Chennai and others on the same day.',
+          'An incorrect IFSC code will typically cause the transaction to fail or be routed to the wrong bank, so it is important to double-check the beneficiary\u2019s IFSC code and account number before confirming an IMPS transfer.',
       },
     ],
   },
-
-  'gold-rate-delhi': {
-    intro:
-      'The gold rate in Delhi changes daily based on international bullion prices, the rupee-dollar exchange rate, import duty, and local demand. This guide explains how the Delhi gold rate is arrived at, the difference between 22K and 24K pricing, and what to check before you buy.',
-    sections: [
-      {
-        heading: 'What determines the gold rate in Delhi',
-        paragraphs: [
-          'Delhi’s bullion market, one of the oldest in North India, is closely tracked because its rate often moves in step with the wholesale rate set by the Delhi Sarafa/Bullion associations.',
-          'Like every Indian city, Delhi\u2019s gold price tracks the international spot price of gold (usually quoted in US dollars per ounce), converted to rupees, plus import duty, GST, and a local premium that reflects transport and dealer margins. Because gold is priced continuously in international markets, the rate can change more than once within a single trading day.',
-        ],
-      },
-      {
-        heading: '22K vs 24K gold: what is the difference',
-        table: {
-          headers: ['Purity', 'Gold content', 'Common use'],
-          rows: [
-            ['24 Karat (24K)', '99.9% pure gold', 'Coins, bars, investment gold'],
-            ['22 Karat (22K)', 'About 91.6% pure gold, alloyed with metals like copper/silver', 'Most gold jewellery'],
-            ['18 Karat (18K)', 'About 75% pure gold', 'Lightweight or diamond-studded jewellery'],
-          ],
-          note: '24K gold is the softest and rarely used for jewellery on its own, since it does not hold intricate designs well.',
-        },
-      },
-      {
-        heading: 'Making charges, GST, and your final bill',
-        paragraphs: [
-          'The rate you see quoted for gold is only the metal price. When you buy jewellery, the jeweller adds making charges (a percentage of the value, or a flat per-gram charge, depending on the design and the store) and 3% GST is applied on the total of the gold value plus making charges. Wastage charges may also apply for handcrafted designs.',
-          'When comparing jewellers in Delhi, ask for a bill breakup showing the gold rate used, the making charge percentage, and GST separately — this makes it much easier to compare two quotes fairly.',
-        ],
-      },
-      {
-        heading: 'Checking gold purity — hallmarking',
-        paragraphs: [
-          'BIS hallmarking is the official purity certification system in India. A hallmarked piece carries the BIS mark, a purity grade (such as 916 for 22K), an assaying centre\u2019s mark, and a unique HUID (Hallmark Unique Identification) number that can be verified online through the BIS CARE app. Buying hallmarked gold in Delhi protects you from being sold under-carated jewellery at a higher-karat price.',
-        ],
-      },
-      {
-        heading: 'Tips before buying gold in Delhi',
-        bullets: [
-          'Check the live rate for 22K and 24K separately before negotiating — jewellers sometimes quote only one to make comparison harder',
-          'Ask for the BIS hallmark and verify the HUID number if the purchase is significant',
-          'Get making charges and GST itemised separately on the bill, not bundled into a single figure',
-          'Keep the original bill safely — it is needed for resale, exchange, insurance claims, and as proof for high-value purchases',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why does the gold rate in Delhi change during the day?',
-        answer:
-          'Gold is traded continuously on international markets, so its rupee-converted price can shift multiple times a day as the international spot price and the rupee-dollar exchange rate move. Local jewellers typically update their quoted rate once or twice a day based on this.',
-      },
-      {
-        question: 'Is the 24K gold rate the price I would pay for jewellery?',
-        answer:
-          'No. Most jewellery is made in 22K or lower purity, and the price also includes making charges and GST on top of the metal value. The 24K rate is mainly relevant for coins, bars, and as a reference price.',
-      },
-      {
-        question: 'Does the gold rate differ between cities in India?',
-        answer:
-          'Yes, slightly. While all cities track the same international gold price, local associations add their own margin reflecting local transport, demand, and dealer costs, so quoted rates can vary a little between cities like Delhi and others on the same day.',
-      },
-    ],
-  },
-
-  'gold-rate-hyderabad': {
-    intro:
-      'The gold rate in Hyderabad changes daily based on international bullion prices, the rupee-dollar exchange rate, import duty, and local demand. This guide explains how the Hyderabad gold rate is arrived at, the difference between 22K and 24K pricing, and what to check before you buy.',
-    sections: [
-      {
-        heading: 'What determines the gold rate in Hyderabad',
-        paragraphs: [
-          'Hyderabad has a long-standing tradition of gold and pearl jewellery, and local rates are influenced by both national trends and strong festive/wedding-season demand.',
-          'Like every Indian city, Hyderabad\u2019s gold price tracks the international spot price of gold (usually quoted in US dollars per ounce), converted to rupees, plus import duty, GST, and a local premium that reflects transport and dealer margins. Because gold is priced continuously in international markets, the rate can change more than once within a single trading day.',
-        ],
-      },
-      {
-        heading: '22K vs 24K gold: what is the difference',
-        table: {
-          headers: ['Purity', 'Gold content', 'Common use'],
-          rows: [
-            ['24 Karat (24K)', '99.9% pure gold', 'Coins, bars, investment gold'],
-            ['22 Karat (22K)', 'About 91.6% pure gold, alloyed with metals like copper/silver', 'Most gold jewellery'],
-            ['18 Karat (18K)', 'About 75% pure gold', 'Lightweight or diamond-studded jewellery'],
-          ],
-          note: '24K gold is the softest and rarely used for jewellery on its own, since it does not hold intricate designs well.',
-        },
-      },
-      {
-        heading: 'Making charges, GST, and your final bill',
-        paragraphs: [
-          'The rate you see quoted for gold is only the metal price. When you buy jewellery, the jeweller adds making charges (a percentage of the value, or a flat per-gram charge, depending on the design and the store) and 3% GST is applied on the total of the gold value plus making charges. Wastage charges may also apply for handcrafted designs.',
-          'When comparing jewellers in Hyderabad, ask for a bill breakup showing the gold rate used, the making charge percentage, and GST separately — this makes it much easier to compare two quotes fairly.',
-        ],
-      },
-      {
-        heading: 'Checking gold purity — hallmarking',
-        paragraphs: [
-          'BIS hallmarking is the official purity certification system in India. A hallmarked piece carries the BIS mark, a purity grade (such as 916 for 22K), an assaying centre\u2019s mark, and a unique HUID (Hallmark Unique Identification) number that can be verified online through the BIS CARE app. Buying hallmarked gold in Hyderabad protects you from being sold under-carated jewellery at a higher-karat price.',
-        ],
-      },
-      {
-        heading: 'Tips before buying gold in Hyderabad',
-        bullets: [
-          'Check the live rate for 22K and 24K separately before negotiating — jewellers sometimes quote only one to make comparison harder',
-          'Ask for the BIS hallmark and verify the HUID number if the purchase is significant',
-          'Get making charges and GST itemised separately on the bill, not bundled into a single figure',
-          'Keep the original bill safely — it is needed for resale, exchange, insurance claims, and as proof for high-value purchases',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why does the gold rate in Hyderabad change during the day?',
-        answer:
-          'Gold is traded continuously on international markets, so its rupee-converted price can shift multiple times a day as the international spot price and the rupee-dollar exchange rate move. Local jewellers typically update their quoted rate once or twice a day based on this.',
-      },
-      {
-        question: 'Is the 24K gold rate the price I would pay for jewellery?',
-        answer:
-          'No. Most jewellery is made in 22K or lower purity, and the price also includes making charges and GST on top of the metal value. The 24K rate is mainly relevant for coins, bars, and as a reference price.',
-      },
-      {
-        question: 'Does the gold rate differ between cities in India?',
-        answer:
-          'Yes, slightly. While all cities track the same international gold price, local associations add their own margin reflecting local transport, demand, and dealer costs, so quoted rates can vary a little between cities like Hyderabad and others on the same day.',
-      },
-    ],
-  },
-
-  'gold-rate-kolkata': {
-    intro:
-      'The gold rate in Kolkata changes daily based on international bullion prices, the rupee-dollar exchange rate, import duty, and local demand. This guide explains how the Kolkata gold rate is arrived at, the difference between 22K and 24K pricing, and what to check before you buy.',
-    sections: [
-      {
-        heading: 'What determines the gold rate in Kolkata',
-        paragraphs: [
-          'Kolkata’s bullion traders, represented by local associations, publish a daily rate that reflects both the national trend and regional demand in West Bengal.',
-          'Like every Indian city, Kolkata\u2019s gold price tracks the international spot price of gold (usually quoted in US dollars per ounce), converted to rupees, plus import duty, GST, and a local premium that reflects transport and dealer margins. Because gold is priced continuously in international markets, the rate can change more than once within a single trading day.',
-        ],
-      },
-      {
-        heading: '22K vs 24K gold: what is the difference',
-        table: {
-          headers: ['Purity', 'Gold content', 'Common use'],
-          rows: [
-            ['24 Karat (24K)', '99.9% pure gold', 'Coins, bars, investment gold'],
-            ['22 Karat (22K)', 'About 91.6% pure gold, alloyed with metals like copper/silver', 'Most gold jewellery'],
-            ['18 Karat (18K)', 'About 75% pure gold', 'Lightweight or diamond-studded jewellery'],
-          ],
-          note: '24K gold is the softest and rarely used for jewellery on its own, since it does not hold intricate designs well.',
-        },
-      },
-      {
-        heading: 'Making charges, GST, and your final bill',
-        paragraphs: [
-          'The rate you see quoted for gold is only the metal price. When you buy jewellery, the jeweller adds making charges (a percentage of the value, or a flat per-gram charge, depending on the design and the store) and 3% GST is applied on the total of the gold value plus making charges. Wastage charges may also apply for handcrafted designs.',
-          'When comparing jewellers in Kolkata, ask for a bill breakup showing the gold rate used, the making charge percentage, and GST separately — this makes it much easier to compare two quotes fairly.',
-        ],
-      },
-      {
-        heading: 'Checking gold purity — hallmarking',
-        paragraphs: [
-          'BIS hallmarking is the official purity certification system in India. A hallmarked piece carries the BIS mark, a purity grade (such as 916 for 22K), an assaying centre\u2019s mark, and a unique HUID (Hallmark Unique Identification) number that can be verified online through the BIS CARE app. Buying hallmarked gold in Kolkata protects you from being sold under-carated jewellery at a higher-karat price.',
-        ],
-      },
-      {
-        heading: 'Tips before buying gold in Kolkata',
-        bullets: [
-          'Check the live rate for 22K and 24K separately before negotiating — jewellers sometimes quote only one to make comparison harder',
-          'Ask for the BIS hallmark and verify the HUID number if the purchase is significant',
-          'Get making charges and GST itemised separately on the bill, not bundled into a single figure',
-          'Keep the original bill safely — it is needed for resale, exchange, insurance claims, and as proof for high-value purchases',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why does the gold rate in Kolkata change during the day?',
-        answer:
-          'Gold is traded continuously on international markets, so its rupee-converted price can shift multiple times a day as the international spot price and the rupee-dollar exchange rate move. Local jewellers typically update their quoted rate once or twice a day based on this.',
-      },
-      {
-        question: 'Is the 24K gold rate the price I would pay for jewellery?',
-        answer:
-          'No. Most jewellery is made in 22K or lower purity, and the price also includes making charges and GST on top of the metal value. The 24K rate is mainly relevant for coins, bars, and as a reference price.',
-      },
-      {
-        question: 'Does the gold rate differ between cities in India?',
-        answer:
-          'Yes, slightly. While all cities track the same international gold price, local associations add their own margin reflecting local transport, demand, and dealer costs, so quoted rates can vary a little between cities like Kolkata and others on the same day.',
-      },
-    ],
-  },
-
-  'gold-rate-mumbai': {
-    intro:
-      'The gold rate in Mumbai changes daily based on international bullion prices, the rupee-dollar exchange rate, import duty, and local demand. This guide explains how the Mumbai gold rate is arrived at, the difference between 22K and 24K pricing, and what to check before you buy.',
-    sections: [
-      {
-        heading: 'What determines the gold rate in Mumbai',
-        paragraphs: [
-          'Mumbai is home to India’s bullion trading hub, and rates published by the Mumbai Bullion Association are often used as a broader national reference point.',
-          'Like every Indian city, Mumbai\u2019s gold price tracks the international spot price of gold (usually quoted in US dollars per ounce), converted to rupees, plus import duty, GST, and a local premium that reflects transport and dealer margins. Because gold is priced continuously in international markets, the rate can change more than once within a single trading day.',
-        ],
-      },
-      {
-        heading: '22K vs 24K gold: what is the difference',
-        table: {
-          headers: ['Purity', 'Gold content', 'Common use'],
-          rows: [
-            ['24 Karat (24K)', '99.9% pure gold', 'Coins, bars, investment gold'],
-            ['22 Karat (22K)', 'About 91.6% pure gold, alloyed with metals like copper/silver', 'Most gold jewellery'],
-            ['18 Karat (18K)', 'About 75% pure gold', 'Lightweight or diamond-studded jewellery'],
-          ],
-          note: '24K gold is the softest and rarely used for jewellery on its own, since it does not hold intricate designs well.',
-        },
-      },
-      {
-        heading: 'Making charges, GST, and your final bill',
-        paragraphs: [
-          'The rate you see quoted for gold is only the metal price. When you buy jewellery, the jeweller adds making charges (a percentage of the value, or a flat per-gram charge, depending on the design and the store) and 3% GST is applied on the total of the gold value plus making charges. Wastage charges may also apply for handcrafted designs.',
-          'When comparing jewellers in Mumbai, ask for a bill breakup showing the gold rate used, the making charge percentage, and GST separately — this makes it much easier to compare two quotes fairly.',
-        ],
-      },
-      {
-        heading: 'Checking gold purity — hallmarking',
-        paragraphs: [
-          'BIS hallmarking is the official purity certification system in India. A hallmarked piece carries the BIS mark, a purity grade (such as 916 for 22K), an assaying centre\u2019s mark, and a unique HUID (Hallmark Unique Identification) number that can be verified online through the BIS CARE app. Buying hallmarked gold in Mumbai protects you from being sold under-carated jewellery at a higher-karat price.',
-        ],
-      },
-      {
-        heading: 'Tips before buying gold in Mumbai',
-        bullets: [
-          'Check the live rate for 22K and 24K separately before negotiating — jewellers sometimes quote only one to make comparison harder',
-          'Ask for the BIS hallmark and verify the HUID number if the purchase is significant',
-          'Get making charges and GST itemised separately on the bill, not bundled into a single figure',
-          'Keep the original bill safely — it is needed for resale, exchange, insurance claims, and as proof for high-value purchases',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why does the gold rate in Mumbai change during the day?',
-        answer:
-          'Gold is traded continuously on international markets, so its rupee-converted price can shift multiple times a day as the international spot price and the rupee-dollar exchange rate move. Local jewellers typically update their quoted rate once or twice a day based on this.',
-      },
-      {
-        question: 'Is the 24K gold rate the price I would pay for jewellery?',
-        answer:
-          'No. Most jewellery is made in 22K or lower purity, and the price also includes making charges and GST on top of the metal value. The 24K rate is mainly relevant for coins, bars, and as a reference price.',
-      },
-      {
-        question: 'Does the gold rate differ between cities in India?',
-        answer:
-          'Yes, slightly. While all cities track the same international gold price, local associations add their own margin reflecting local transport, demand, and dealer costs, so quoted rates can vary a little between cities like Mumbai and others on the same day.',
-      },
-    ],
-  },
-
-  'silver-rate-bangalore': {
-    intro:
-      'The silver rate in Bangalore is driven by international silver prices, industrial demand, the rupee-dollar exchange rate, and local jewellers\u2019 margins. This guide covers how silver is priced in Bangalore, the difference between silver bars, coins, and jewellery, and what to verify before buying.',
-    sections: [
-      {
-        heading: 'What determines the silver rate in Bangalore',
-        paragraphs: [
-          'Silver is more volatile than gold because a large share of global demand comes from industrial use (electronics, solar panels, and other manufacturing), in addition to jewellery and investment demand. This means the silver rate in Bangalore can move by a larger percentage on a given day than gold typically does.',
-          'As with gold, the local price is derived from the international spot rate, converted to rupees, with import duty, GST, and a local dealer margin added on top.',
-        ],
-      },
-      {
-        heading: 'Silver bars and coins vs silver jewellery pricing',
-        table: {
-          headers: ['Form', 'Typical purity', 'How it is priced'],
-          rows: [
-            ['Silver bars/coins', '99.9% (fine silver)', 'Close to the day\u2019s bullion rate, plus a small making/minting charge'],
-            ['Silver jewellery', 'Usually 92.5% (sterling) or lower', 'Metal value plus making charges, which can be a larger share of the price than for bars'],
-            ['Silver utensils/articles', 'Varies, often 80\u201392%', 'Priced by weight, with design-based making charges'],
-          ],
-        },
-      },
-      {
-        heading: 'GST and making charges on silver',
-        paragraphs: [
-          'GST of 3% applies on silver purchases in Bangalore, calculated on the value of silver plus any making charges, similar to gold. Making charges on silver jewellery and articles are often a higher percentage of the metal value than on gold, since the per-gram value of silver is much lower.',
-        ],
-      },
-      {
-        heading: 'How silver purity is verified',
-        paragraphs: [
-          'BIS hallmarking also covers silver, with common purity grades such as 999 (fine silver) and 925 (sterling silver) stamped on the item along with the BIS mark and the assaying centre\u2019s identification. Asking for hallmarked silver in Bangalore is the simplest way to confirm you are paying for the purity you are told you are buying.',
-        ],
-      },
-      {
-        heading: 'Tips before buying silver in Bangalore',
-        bullets: [
-          'Compare the day\u2019s silver rate at two or three sources, since silver prices can vary more than gold between sellers',
-          'Ask whether the quoted rate is for fine silver (999) or an alloyed purity, since this changes the effective price per gram',
-          'Factor in making charges separately, especially for utensils and idols, which can carry high making charges relative to metal value',
-          'Preserve purchase bills, particularly for larger quantities, for resale and insurance purposes',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why is the silver rate more volatile than gold?',
-        answer:
-          'A significant portion of global silver demand comes from industrial applications, which makes silver prices more sensitive to changes in industrial activity and manufacturing demand, in addition to the investment and jewellery demand that primarily drives gold.',
-      },
-      {
-        question: 'What purity should I look for when buying silver in Bangalore?',
-        answer:
-          'For bars and coins, look for 999 (fine silver) hallmarking. For jewellery and utensils, 925 (sterling silver) is a common and reasonable standard; always check the BIS hallmark stamped on the item.',
-      },
-      {
-        question: 'Is GST charged on silver the same way as gold?',
-        answer:
-          'Yes, silver purchases attract 3% GST on the value of silver plus making charges, the same structure used for gold.',
-      },
-    ],
-  },
-
-  'silver-rate-chennai': {
-    intro:
-      'The silver rate in Chennai is driven by international silver prices, industrial demand, the rupee-dollar exchange rate, and local jewellers\u2019 margins. This guide covers how silver is priced in Chennai, the difference between silver bars, coins, and jewellery, and what to verify before buying.',
-    sections: [
-      {
-        heading: 'What determines the silver rate in Chennai',
-        paragraphs: [
-          'Silver is more volatile than gold because a large share of global demand comes from industrial use (electronics, solar panels, and other manufacturing), in addition to jewellery and investment demand. This means the silver rate in Chennai can move by a larger percentage on a given day than gold typically does.',
-          'As with gold, the local price is derived from the international spot rate, converted to rupees, with import duty, GST, and a local dealer margin added on top.',
-        ],
-      },
-      {
-        heading: 'Silver bars and coins vs silver jewellery pricing',
-        table: {
-          headers: ['Form', 'Typical purity', 'How it is priced'],
-          rows: [
-            ['Silver bars/coins', '99.9% (fine silver)', 'Close to the day\u2019s bullion rate, plus a small making/minting charge'],
-            ['Silver jewellery', 'Usually 92.5% (sterling) or lower', 'Metal value plus making charges, which can be a larger share of the price than for bars'],
-            ['Silver utensils/articles', 'Varies, often 80\u201392%', 'Priced by weight, with design-based making charges'],
-          ],
-        },
-      },
-      {
-        heading: 'GST and making charges on silver',
-        paragraphs: [
-          'GST of 3% applies on silver purchases in Chennai, calculated on the value of silver plus any making charges, similar to gold. Making charges on silver jewellery and articles are often a higher percentage of the metal value than on gold, since the per-gram value of silver is much lower.',
-        ],
-      },
-      {
-        heading: 'How silver purity is verified',
-        paragraphs: [
-          'BIS hallmarking also covers silver, with common purity grades such as 999 (fine silver) and 925 (sterling silver) stamped on the item along with the BIS mark and the assaying centre\u2019s identification. Asking for hallmarked silver in Chennai is the simplest way to confirm you are paying for the purity you are told you are buying.',
-        ],
-      },
-      {
-        heading: 'Tips before buying silver in Chennai',
-        bullets: [
-          'Compare the day\u2019s silver rate at two or three sources, since silver prices can vary more than gold between sellers',
-          'Ask whether the quoted rate is for fine silver (999) or an alloyed purity, since this changes the effective price per gram',
-          'Factor in making charges separately, especially for utensils and idols, which can carry high making charges relative to metal value',
-          'Preserve purchase bills, particularly for larger quantities, for resale and insurance purposes',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why is the silver rate more volatile than gold?',
-        answer:
-          'A significant portion of global silver demand comes from industrial applications, which makes silver prices more sensitive to changes in industrial activity and manufacturing demand, in addition to the investment and jewellery demand that primarily drives gold.',
-      },
-      {
-        question: 'What purity should I look for when buying silver in Chennai?',
-        answer:
-          'For bars and coins, look for 999 (fine silver) hallmarking. For jewellery and utensils, 925 (sterling silver) is a common and reasonable standard; always check the BIS hallmark stamped on the item.',
-      },
-      {
-        question: 'Is GST charged on silver the same way as gold?',
-        answer:
-          'Yes, silver purchases attract 3% GST on the value of silver plus making charges, the same structure used for gold.',
-      },
-    ],
-  },
-
-  'silver-rate-delhi': {
-    intro:
-      'The silver rate in Delhi is driven by international silver prices, industrial demand, the rupee-dollar exchange rate, and local jewellers\u2019 margins. This guide covers how silver is priced in Delhi, the difference between silver bars, coins, and jewellery, and what to verify before buying.',
-    sections: [
-      {
-        heading: 'What determines the silver rate in Delhi',
-        paragraphs: [
-          'Silver is more volatile than gold because a large share of global demand comes from industrial use (electronics, solar panels, and other manufacturing), in addition to jewellery and investment demand. This means the silver rate in Delhi can move by a larger percentage on a given day than gold typically does.',
-          'As with gold, the local price is derived from the international spot rate, converted to rupees, with import duty, GST, and a local dealer margin added on top.',
-        ],
-      },
-      {
-        heading: 'Silver bars and coins vs silver jewellery pricing',
-        table: {
-          headers: ['Form', 'Typical purity', 'How it is priced'],
-          rows: [
-            ['Silver bars/coins', '99.9% (fine silver)', 'Close to the day\u2019s bullion rate, plus a small making/minting charge'],
-            ['Silver jewellery', 'Usually 92.5% (sterling) or lower', 'Metal value plus making charges, which can be a larger share of the price than for bars'],
-            ['Silver utensils/articles', 'Varies, often 80\u201392%', 'Priced by weight, with design-based making charges'],
-          ],
-        },
-      },
-      {
-        heading: 'GST and making charges on silver',
-        paragraphs: [
-          'GST of 3% applies on silver purchases in Delhi, calculated on the value of silver plus any making charges, similar to gold. Making charges on silver jewellery and articles are often a higher percentage of the metal value than on gold, since the per-gram value of silver is much lower.',
-        ],
-      },
-      {
-        heading: 'How silver purity is verified',
-        paragraphs: [
-          'BIS hallmarking also covers silver, with common purity grades such as 999 (fine silver) and 925 (sterling silver) stamped on the item along with the BIS mark and the assaying centre\u2019s identification. Asking for hallmarked silver in Delhi is the simplest way to confirm you are paying for the purity you are told you are buying.',
-        ],
-      },
-      {
-        heading: 'Tips before buying silver in Delhi',
-        bullets: [
-          'Compare the day\u2019s silver rate at two or three sources, since silver prices can vary more than gold between sellers',
-          'Ask whether the quoted rate is for fine silver (999) or an alloyed purity, since this changes the effective price per gram',
-          'Factor in making charges separately, especially for utensils and idols, which can carry high making charges relative to metal value',
-          'Preserve purchase bills, particularly for larger quantities, for resale and insurance purposes',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why is the silver rate more volatile than gold?',
-        answer:
-          'A significant portion of global silver demand comes from industrial applications, which makes silver prices more sensitive to changes in industrial activity and manufacturing demand, in addition to the investment and jewellery demand that primarily drives gold.',
-      },
-      {
-        question: 'What purity should I look for when buying silver in Delhi?',
-        answer:
-          'For bars and coins, look for 999 (fine silver) hallmarking. For jewellery and utensils, 925 (sterling silver) is a common and reasonable standard; always check the BIS hallmark stamped on the item.',
-      },
-      {
-        question: 'Is GST charged on silver the same way as gold?',
-        answer:
-          'Yes, silver purchases attract 3% GST on the value of silver plus making charges, the same structure used for gold.',
-      },
-    ],
-  },
-
-  'silver-rate-hyderabad': {
-    intro:
-      'The silver rate in Hyderabad is driven by international silver prices, industrial demand, the rupee-dollar exchange rate, and local jewellers\u2019 margins. This guide covers how silver is priced in Hyderabad, the difference between silver bars, coins, and jewellery, and what to verify before buying.',
-    sections: [
-      {
-        heading: 'What determines the silver rate in Hyderabad',
-        paragraphs: [
-          'Silver is more volatile than gold because a large share of global demand comes from industrial use (electronics, solar panels, and other manufacturing), in addition to jewellery and investment demand. This means the silver rate in Hyderabad can move by a larger percentage on a given day than gold typically does.',
-          'As with gold, the local price is derived from the international spot rate, converted to rupees, with import duty, GST, and a local dealer margin added on top.',
-        ],
-      },
-      {
-        heading: 'Silver bars and coins vs silver jewellery pricing',
-        table: {
-          headers: ['Form', 'Typical purity', 'How it is priced'],
-          rows: [
-            ['Silver bars/coins', '99.9% (fine silver)', 'Close to the day\u2019s bullion rate, plus a small making/minting charge'],
-            ['Silver jewellery', 'Usually 92.5% (sterling) or lower', 'Metal value plus making charges, which can be a larger share of the price than for bars'],
-            ['Silver utensils/articles', 'Varies, often 80\u201392%', 'Priced by weight, with design-based making charges'],
-          ],
-        },
-      },
-      {
-        heading: 'GST and making charges on silver',
-        paragraphs: [
-          'GST of 3% applies on silver purchases in Hyderabad, calculated on the value of silver plus any making charges, similar to gold. Making charges on silver jewellery and articles are often a higher percentage of the metal value than on gold, since the per-gram value of silver is much lower.',
-        ],
-      },
-      {
-        heading: 'How silver purity is verified',
-        paragraphs: [
-          'BIS hallmarking also covers silver, with common purity grades such as 999 (fine silver) and 925 (sterling silver) stamped on the item along with the BIS mark and the assaying centre\u2019s identification. Asking for hallmarked silver in Hyderabad is the simplest way to confirm you are paying for the purity you are told you are buying.',
-        ],
-      },
-      {
-        heading: 'Tips before buying silver in Hyderabad',
-        bullets: [
-          'Compare the day\u2019s silver rate at two or three sources, since silver prices can vary more than gold between sellers',
-          'Ask whether the quoted rate is for fine silver (999) or an alloyed purity, since this changes the effective price per gram',
-          'Factor in making charges separately, especially for utensils and idols, which can carry high making charges relative to metal value',
-          'Preserve purchase bills, particularly for larger quantities, for resale and insurance purposes',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why is the silver rate more volatile than gold?',
-        answer:
-          'A significant portion of global silver demand comes from industrial applications, which makes silver prices more sensitive to changes in industrial activity and manufacturing demand, in addition to the investment and jewellery demand that primarily drives gold.',
-      },
-      {
-        question: 'What purity should I look for when buying silver in Hyderabad?',
-        answer:
-          'For bars and coins, look for 999 (fine silver) hallmarking. For jewellery and utensils, 925 (sterling silver) is a common and reasonable standard; always check the BIS hallmark stamped on the item.',
-      },
-      {
-        question: 'Is GST charged on silver the same way as gold?',
-        answer:
-          'Yes, silver purchases attract 3% GST on the value of silver plus making charges, the same structure used for gold.',
-      },
-    ],
-  },
-
-  'silver-rate-kolkata': {
-    intro:
-      'The silver rate in Kolkata is driven by international silver prices, industrial demand, the rupee-dollar exchange rate, and local jewellers\u2019 margins. This guide covers how silver is priced in Kolkata, the difference between silver bars, coins, and jewellery, and what to verify before buying.',
-    sections: [
-      {
-        heading: 'What determines the silver rate in Kolkata',
-        paragraphs: [
-          'Silver is more volatile than gold because a large share of global demand comes from industrial use (electronics, solar panels, and other manufacturing), in addition to jewellery and investment demand. This means the silver rate in Kolkata can move by a larger percentage on a given day than gold typically does.',
-          'As with gold, the local price is derived from the international spot rate, converted to rupees, with import duty, GST, and a local dealer margin added on top.',
-        ],
-      },
-      {
-        heading: 'Silver bars and coins vs silver jewellery pricing',
-        table: {
-          headers: ['Form', 'Typical purity', 'How it is priced'],
-          rows: [
-            ['Silver bars/coins', '99.9% (fine silver)', 'Close to the day\u2019s bullion rate, plus a small making/minting charge'],
-            ['Silver jewellery', 'Usually 92.5% (sterling) or lower', 'Metal value plus making charges, which can be a larger share of the price than for bars'],
-            ['Silver utensils/articles', 'Varies, often 80\u201392%', 'Priced by weight, with design-based making charges'],
-          ],
-        },
-      },
-      {
-        heading: 'GST and making charges on silver',
-        paragraphs: [
-          'GST of 3% applies on silver purchases in Kolkata, calculated on the value of silver plus any making charges, similar to gold. Making charges on silver jewellery and articles are often a higher percentage of the metal value than on gold, since the per-gram value of silver is much lower.',
-        ],
-      },
-      {
-        heading: 'How silver purity is verified',
-        paragraphs: [
-          'BIS hallmarking also covers silver, with common purity grades such as 999 (fine silver) and 925 (sterling silver) stamped on the item along with the BIS mark and the assaying centre\u2019s identification. Asking for hallmarked silver in Kolkata is the simplest way to confirm you are paying for the purity you are told you are buying.',
-        ],
-      },
-      {
-        heading: 'Tips before buying silver in Kolkata',
-        bullets: [
-          'Compare the day\u2019s silver rate at two or three sources, since silver prices can vary more than gold between sellers',
-          'Ask whether the quoted rate is for fine silver (999) or an alloyed purity, since this changes the effective price per gram',
-          'Factor in making charges separately, especially for utensils and idols, which can carry high making charges relative to metal value',
-          'Preserve purchase bills, particularly for larger quantities, for resale and insurance purposes',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why is the silver rate more volatile than gold?',
-        answer:
-          'A significant portion of global silver demand comes from industrial applications, which makes silver prices more sensitive to changes in industrial activity and manufacturing demand, in addition to the investment and jewellery demand that primarily drives gold.',
-      },
-      {
-        question: 'What purity should I look for when buying silver in Kolkata?',
-        answer:
-          'For bars and coins, look for 999 (fine silver) hallmarking. For jewellery and utensils, 925 (sterling silver) is a common and reasonable standard; always check the BIS hallmark stamped on the item.',
-      },
-      {
-        question: 'Is GST charged on silver the same way as gold?',
-        answer:
-          'Yes, silver purchases attract 3% GST on the value of silver plus making charges, the same structure used for gold.',
-      },
-    ],
-  },
-
-  'silver-rate-mumbai': {
-    intro:
-      'The silver rate in Mumbai is driven by international silver prices, industrial demand, the rupee-dollar exchange rate, and local jewellers\u2019 margins. This guide covers how silver is priced in Mumbai, the difference between silver bars, coins, and jewellery, and what to verify before buying.',
-    sections: [
-      {
-        heading: 'What determines the silver rate in Mumbai',
-        paragraphs: [
-          'Silver is more volatile than gold because a large share of global demand comes from industrial use (electronics, solar panels, and other manufacturing), in addition to jewellery and investment demand. This means the silver rate in Mumbai can move by a larger percentage on a given day than gold typically does.',
-          'As with gold, the local price is derived from the international spot rate, converted to rupees, with import duty, GST, and a local dealer margin added on top.',
-        ],
-      },
-      {
-        heading: 'Silver bars and coins vs silver jewellery pricing',
-        table: {
-          headers: ['Form', 'Typical purity', 'How it is priced'],
-          rows: [
-            ['Silver bars/coins', '99.9% (fine silver)', 'Close to the day\u2019s bullion rate, plus a small making/minting charge'],
-            ['Silver jewellery', 'Usually 92.5% (sterling) or lower', 'Metal value plus making charges, which can be a larger share of the price than for bars'],
-            ['Silver utensils/articles', 'Varies, often 80\u201392%', 'Priced by weight, with design-based making charges'],
-          ],
-        },
-      },
-      {
-        heading: 'GST and making charges on silver',
-        paragraphs: [
-          'GST of 3% applies on silver purchases in Mumbai, calculated on the value of silver plus any making charges, similar to gold. Making charges on silver jewellery and articles are often a higher percentage of the metal value than on gold, since the per-gram value of silver is much lower.',
-        ],
-      },
-      {
-        heading: 'How silver purity is verified',
-        paragraphs: [
-          'BIS hallmarking also covers silver, with common purity grades such as 999 (fine silver) and 925 (sterling silver) stamped on the item along with the BIS mark and the assaying centre\u2019s identification. Asking for hallmarked silver in Mumbai is the simplest way to confirm you are paying for the purity you are told you are buying.',
-        ],
-      },
-      {
-        heading: 'Tips before buying silver in Mumbai',
-        bullets: [
-          'Compare the day\u2019s silver rate at two or three sources, since silver prices can vary more than gold between sellers',
-          'Ask whether the quoted rate is for fine silver (999) or an alloyed purity, since this changes the effective price per gram',
-          'Factor in making charges separately, especially for utensils and idols, which can carry high making charges relative to metal value',
-          'Preserve purchase bills, particularly for larger quantities, for resale and insurance purposes',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Why is the silver rate more volatile than gold?',
-        answer:
-          'A significant portion of global silver demand comes from industrial applications, which makes silver prices more sensitive to changes in industrial activity and manufacturing demand, in addition to the investment and jewellery demand that primarily drives gold.',
-      },
-      {
-        question: 'What purity should I look for when buying silver in Mumbai?',
-        answer:
-          'For bars and coins, look for 999 (fine silver) hallmarking. For jewellery and utensils, 925 (sterling silver) is a common and reasonable standard; always check the BIS hallmark stamped on the item.',
-      },
-      {
-        question: 'Is GST charged on silver the same way as gold?',
-        answer:
-          'Yes, silver purchases attract 3% GST on the value of silver plus making charges, the same structure used for gold.',
-      },
-    ],
-  },
-
   'what-is-grey-market-premium-gmp-ipo': {
     intro:
-      'Grey Market Premium (GMP) is the unofficial, informal premium at which an IPO\u2019s shares trade in the "grey market" — outside any recognised stock exchange — before the shares are actually listed. It is widely watched by retail investors as an early, unofficial signal of listing-day demand, but it is not a regulated or guaranteed indicator.',
+      'Grey Market Premium, usually shortened to GMP, is the extra price that traders in an unofficial, unregulated market are willing to pay for IPO shares before they are officially listed on the stock exchange. It is watched closely by retail investors as an informal signal of how strong the demand for an upcoming IPO might be, though it is not published, tracked, or regulated by SEBI or the stock exchanges in any way.',
+    keyHighlights: {
+      headers: ['Particulars', 'Details'],
+      rows: [
+        ['What it measures', 'Premium buyers are willing to pay over the IPO issue price, before listing'],
+        ['Regulated by SEBI?', 'No — it is an unofficial, informal market'],
+        ['Where it is quoted', 'Grey market dealer networks and IPO tracking websites/forums'],
+        ['Reliability', 'Indicative only; can swing sharply and is not a guarantee of listing gains'],
+      ],
+    },
     sections: [
       {
-        heading: 'How grey market premium works',
+        heading: 'What is the grey market for IPOs',
         paragraphs: [
-          'Once an IPO opens for subscription (and sometimes even before), a small, informal network of dealers begins quoting a price at which they are willing to buy or sell the right to an allotment, ahead of the shares being credited to demat accounts. This price, expressed as a premium over the issue price, is the GMP.',
-          'For example, if an IPO is priced at ₹100 and the GMP is quoted at ₹40, market participants are informally estimating the stock could list around ₹140 — but this is sentiment, not a certainty.',
+          'The "grey market" is an informal, off-market space where IPO shares and IPO application forms change hands before the shares are officially allotted and listed on the NSE or BSE. It operates outside the regulatory framework that governs the formal stock exchanges, running mainly on trust between a small network of dealers.',
+          'Because it is unregulated, there is no central exchange, no official record of trades, and no legal recourse if a grey market deal is not honoured. It exists primarily as a way for market participants to gauge and trade on expected listing-day demand ahead of time.',
         ],
-      },
-      {
-        heading: 'Why GMP is unofficial and unregulated',
         bullets: [
-          'The grey market operates outside SEBI and stock exchange oversight — there is no formal exchange, clearing mechanism, or legal enforceability behind a GMP-based trade',
-          'GMP figures are collected informally from a small number of dealers and can vary from source to source on the same day',
-          'GMP can swing sharply based on overall market sentiment, subscription numbers, and news, sometimes with little relationship to the company\u2019s fundamentals',
-          'There is no guarantee that a high GMP will translate into an equivalent listing-day gain, and GMP can even turn negative before listing',
+          'Trades happen informally between dealers, usually over phone or messaging apps, not on any exchange platform.',
+          'Prices quoted are not binding contracts in the way exchange trades are, and settlement relies on the reputation of the dealers involved.',
+          'The grey market is most active in the days between the IPO subscription closing and the shares getting listed.',
         ],
       },
       {
-        heading: 'How investors typically use GMP',
+        heading: 'How Grey Market Premium (GMP) works',
         paragraphs: [
-          'Many retail investors track GMP as one of several inputs when deciding whether to apply for an IPO, alongside the company\u2019s financials, valuation, subscription levels across investor categories, and anchor investor participation. Relying on GMP alone, without looking at the business fundamentals, is generally considered risky.',
+          'GMP is simply the amount above the IPO issue price that someone in the grey market is willing to pay to buy the shares (or the IPO application itself) before listing. If an IPO is priced at ₹500 per share and the GMP is quoted at ₹80, it implies the grey market expects the stock to list somewhere around ₹580, i.e., roughly a 16% listing gain.',
+          'GMP figures change frequently — sometimes multiple times a day — as subscription numbers come in, market sentiment shifts, and the listing date approaches. A GMP can also turn negative, signalling that the grey market expects the stock to list below its issue price.',
+        ],
+        table: {
+          headers: ['Term', 'What it means'],
+          rows: [
+            ['IPO GMP', 'Premium over issue price for the shares themselves'],
+            ['Kostak rate', 'Flat amount paid to buy/sell an entire IPO application, regardless of allotment'],
+            ['Subject to sauda / Subject to sail', 'A deal on the application that is only valid if the applicant actually receives an allotment'],
+          ],
+        },
+      },
+      {
+        heading: 'Is GMP a reliable predictor of listing price',
+        paragraphs: [
+          'GMP is a sentiment indicator, not a guaranteed outcome. It reflects what a small, unregulated set of grey market participants are willing to pay at a given moment, and several IPOs with a strongly positive GMP have gone on to list flat or below their issue price once real market forces, subscription data, and broader market conditions come into play on listing day.',
+        ],
+        bullets: [
+          'GMP figures are not published or verified by SEBI, the exchanges, or the company issuing the IPO.',
+          'Overall market conditions on the actual day of listing can override whatever the grey market predicted in the preceding days.',
+          'Investors relying purely on GMP without looking at the company\u2019s fundamentals, subscription figures, and broader market mood take on additional risk.',
+        ],
+      },
+      {
+        heading: 'Is trading in the grey market legal in India',
+        paragraphs: [
+          'The grey market for IPOs operates in a legal grey zone: it is not explicitly recognised or regulated by SEBI, but it is also not a criminal offence in the way insider trading is. Because it falls outside SEBI\u2019s regulatory oversight, participants have no formal protection, dispute resolution mechanism, or guarantee that a deal will be honoured, which is why most retail investors only use GMP as a reference number rather than actually trading in the grey market themselves.',
         ],
       },
     ],
     faqs: [
-      {
-        question: 'Is trading in the grey market legal in India?',
-        answer:
-          'Grey market trading operates in a legal grey area — it is not officially recognised or regulated by SEBI or the stock exchanges, and settlements rely purely on the mutual trust between the parties involved, with no formal recourse if a party defaults.',
-      },
       {
         question: 'Does a high GMP guarantee listing gains?',
         answer:
-          'No. GMP is an informal sentiment indicator, not a guaranteed outcome. Actual listing price is determined by market demand and supply on listing day and can differ significantly from the grey market estimate.',
+          'No. GMP only reflects informal grey market sentiment at a point in time and can change quickly; it is not a guarantee of how the stock will actually perform on listing day.',
       },
       {
         question: 'Where can I check an IPO\u2019s GMP?',
         answer:
-          'Several financial news and IPO-tracking websites publish daily GMP updates during the subscription period, though figures can differ between sources since there is no single official reporting mechanism.',
+          'GMP figures are shared informally by grey market dealer networks and are aggregated by several IPO tracking websites, but none of these sources are officially sanctioned by SEBI or the stock exchanges.',
+      },
+      {
+        question: 'Can GMP be negative?',
+        answer:
+          'Yes. A negative GMP means the grey market expects the stock to list below its issue price, which can happen when an IPO is seen as expensively priced or market sentiment turns weak.',
+      },
+      {
+        question: 'Is it safe to buy or sell IPO applications in the grey market?',
+        answer:
+          'It carries risk, since grey market deals are informal, unregulated, and not legally enforceable in the way exchange-traded transactions are — settlement depends entirely on trust between the parties involved.',
       },
     ],
   },
-
   'types-of-ipo': {
     intro:
-      'An Initial Public Offering (IPO) is the process through which a private company offers its shares to the public for the first time. In India, IPOs are primarily classified by how the price is determined (fixed price vs book-built) and by the size and exchange segment of the company (mainboard vs SME).',
+      'An Initial Public Offering (IPO) is the process by which a private company offers its shares to the public for the first time to raise capital and get listed on a stock exchange. Not all IPOs are structured the same way — they can differ in how the price is decided and in which categories of investors are allowed to apply. This guide covers the main ways IPOs are classified in India.',
+    keyHighlights: {
+      headers: ['Particulars', 'Details'],
+      rows: [
+        ['By pricing method', 'Fixed price issue or book-built issue'],
+        ['By investor category', 'Retail, NII/HNI, and QIB (Qualified Institutional Buyer)'],
+        ['Regulator', 'Securities and Exchange Board of India (SEBI)'],
+        ['Where listed', 'NSE and/or BSE'],
+      ],
+    },
     sections: [
       {
-        heading: 'Fixed price issue',
+        heading: 'Classification by pricing method',
         paragraphs: [
-          'In a fixed price IPO, the issuing company and its merchant bankers decide a specific price at which shares will be offered, and this price is disclosed in advance in the offer document. Investors know exactly what price they will pay when applying, and demand is only visible once the subscription figures are published after the issue closes.',
+          'The most common way to classify an IPO is by how the final share price is determined — either the company fixes the price upfront, or the price is discovered through investor bidding.',
         ],
-      },
-      {
-        heading: 'Book-built issue',
-        paragraphs: [
-          'In a book-built IPO — the far more common route today — the company announces a price band (a lower and upper price) rather than a single fixed price. Investors bid within this band, and the final issue price is discovered based on the demand received at each price point, typically settling at or near the upper end of the band for well-received issues.',
-        ],
-        bullets: [
-          'Price band: a floor price and cap price are announced, usually with the cap not more than 20% above the floor',
-          'Bidding: investors submit bids at a specific price (or "cut-off", agreeing to pay whatever final price is discovered) within the band',
-          'Price discovery: the final issue price is fixed based on the pattern of bids received across investor categories',
-        ],
-      },
-      {
-        heading: 'Mainboard IPO vs SME IPO',
         table: {
-          headers: ['Aspect', 'Mainboard IPO', 'SME IPO'],
+          headers: ['Type', 'How the price is set', 'Key feature'],
           rows: [
-            ['Company size', 'Larger, established companies', 'Small and medium enterprises'],
-            ['Minimum post-issue capital', 'Higher threshold set by SEBI/exchange', 'Lower threshold, tailored for smaller companies'],
-            ['Exchange platform', 'Main board of NSE/BSE', 'NSE Emerge / BSE SME platform'],
-            ['Minimum application lot value', 'Typically ₹10,000–15,000 range', 'Typically higher, often ₹1 lakh+'],
-            ['Liquidity', 'Generally higher trading volumes', 'Can be comparatively lower and more volatile'],
+            ['Fixed Price Issue', 'Company and merchant bankers decide a single, fixed price in advance', 'Investors know the exact price before applying; demand is revealed only after the issue closes'],
+            ['Book Built Issue', 'Company announces a price band (e.g., ₹95\u2013₹100); final price is discovered via bidding', 'Investors bid within the band; the final "cut-off price" is set based on demand across the book'],
           ],
         },
       },
       {
-        heading: 'Other categories worth knowing',
+        heading: 'Fixed price issue in detail',
+        paragraphs: [
+          'In a fixed price issue, the issuing company, along with its merchant bankers, sets a single price at which all shares will be sold, and this price is stated clearly in the prospectus before the issue opens. Investors know exactly what they will pay if they receive allotment.',
+        ],
         bullets: [
-          'Offer for Sale (OFS) component: existing shareholders (such as promoters or private equity investors) sell part of their holding, with proceeds going to them rather than the company',
-          'Fresh issue component: new shares are issued and proceeds go to the company, often for expansion, debt repayment, or working capital',
-          'Many IPOs combine both a fresh issue and an offer-for-sale component in a single issue',
+          'At least 50% of the shares in a fixed price issue are typically reserved for applications below a specified investment value (small/retail investors).',
+          'Because the price is not discovered through bidding, demand for the issue only becomes clear once the subscription window closes.',
+          'Fixed price issues are less common today than book-built issues, especially among larger companies.',
+        ],
+      },
+      {
+        heading: 'Book built issue in detail',
+        paragraphs: [
+          'A book-built issue is the more common route used by companies going public in India today. Instead of one fixed price, the company announces a price band with a floor price (lower end) and a cap price (upper end), and investors bid for shares at any price within that band, or choose the "cut-off price" option to accept whatever final price is discovered.',
+          'Once bidding closes, the final issue price is set based on the demand received at each price point within the band — this is why book building is described as a price discovery mechanism.',
+        ],
+        bullets: [
+          'The order book showing bids at different price points is publicly visible while the issue is open.',
+          'Retail investors usually bid at the "cut-off price" so their application remains valid regardless of where the final price is fixed within the band.',
+          'Most large IPOs on the NSE and BSE, including nearly all recent mainboard listings, use the book-building method.',
+        ],
+      },
+      {
+        heading: 'Classification by investor category',
+        paragraphs: [
+          'Within any IPO, the total shares on offer are further divided into reserved quotas for different types of investors, each with its own bidding and allotment rules.',
+        ],
+        table: {
+          headers: ['Investor category', 'Typical reservation', 'Who it covers'],
+          rows: [
+            ['Retail Individual Investor (RII)', 'At least 35% in most book-built issues', 'Individuals applying for shares worth up to ₹2 lakh'],
+            ['Non-Institutional Investor (NII / HNI)', 'At least 15%', 'Individuals and entities applying for more than ₹2 lakh'],
+            ['Qualified Institutional Buyer (QIB)', 'Up to 50%', 'Mutual funds, banks, FIIs, insurance companies and other large institutions'],
+          ],
+        },
+      },
+      {
+        heading: 'Mainboard IPO vs SME IPO',
+        paragraphs: [
+          'Another practical distinction is between a mainboard IPO, where the company lists on the main platform of the NSE or BSE and must meet the exchange\u2019s full listing requirements, and an SME IPO, meant for smaller companies that list on the dedicated NSE Emerging or BSE SME platforms under relatively lighter eligibility norms.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'Which is more common in India today, fixed price or book-built issues?',
+        question: 'What is the main difference between a fixed price issue and a book-built issue?',
         answer:
-          'Book-built issues are far more common for mainboard IPOs today, since the price-band and bidding mechanism allows the market to help determine a fair issue price based on actual demand.',
+          'In a fixed price issue the company sets one price upfront, while in a book-built issue investors bid within an announced price band and the final price is discovered based on demand.',
       },
       {
-        question: 'Is an SME IPO riskier than a mainboard IPO?',
+        question: 'Can a retail investor apply in the QIB category?',
         answer:
-          'SME IPOs generally carry higher risk due to the smaller size and shorter track record of the companies involved, along with typically lower trading liquidity after listing, compared with larger, more established mainboard companies.',
+          'No. The QIB category is reserved for institutional investors such as mutual funds, banks, and insurance companies; individual retail investors apply under the RII or NII category depending on their application size.',
       },
       {
-        question: 'What does "Offer for Sale" mean in an IPO?',
+        question: 'What is the retail investor investment limit in an IPO?',
         answer:
-          'An Offer for Sale (OFS) is where existing shareholders sell some of their already-held shares to the public through the IPO. Unlike a fresh issue, the money raised goes to the selling shareholders, not to the company itself.',
+          'An application is classified as a Retail Individual Investor (RII) application as long as its value does not exceed ₹2 lakh; anything above that falls under the NII/HNI category.',
+      },
+      {
+        question: 'What is an SME IPO?',
+        answer:
+          'An SME IPO is an IPO by a smaller company that lists on the dedicated SME platform of the NSE or BSE, which has different (generally lighter) eligibility and disclosure norms compared to a mainboard listing.',
       },
     ],
   },
-
   'how-to-check-ipo-allotment-status': {
     intro:
-      'IPO allotment is the process by which shares applied for are allocated to investors after the subscription period closes, typically through a computerised lottery-style process when an issue is oversubscribed. You can check whether you received an allotment through the registrar\u2019s website, the stock exchange, or your broker.',
+      'After an IPO\u2019s subscription window closes, shares are allotted to applicants through a process overseen by the IPO\u2019s registrar, typically within a few working days. Since most IPOs are oversubscribed, not every applicant receives shares, and allotment for retail investors is usually done through a computerised lottery system. This guide covers the different ways you can check whether you received an allotment.',
+    keyHighlights: {
+      headers: ['Particulars', 'Details'],
+      rows: [
+        ['Who conducts allotment', 'The IPO\u2019s appointed Registrar (e.g., Link Intime, KFin Technologies)'],
+        ['Typical timeline', 'Usually within 3\u20134 working days after the issue closes'],
+        ['Where to check', 'Registrar\u2019s website, NSE/BSE website, or your broker\u2019s app'],
+        ['What you need', 'PAN, application/DP-Client ID, or IPO application number'],
+      ],
+    },
     sections: [
       {
-        heading: 'Check via the registrar\u2019s website',
-        bullets: [
-          'Visit the website of the IPO\u2019s official registrar (commonly Link Intime or KFin Technologies for most Indian IPOs)',
-          'Select the specific company/IPO from the dropdown list',
-          'Enter your PAN, application number, or DP/Client ID as requested',
-          'Submit to view your allotment status — allotted, not allotted, or partially allotted',
-        ],
-      },
-      {
-        heading: 'Check via the stock exchange (NSE/BSE)',
-        bullets: [
-          'Go to the "IPO Allotment Status" section on the NSE or BSE website',
-          'Select the relevant IPO and exchange (equity)',
-          'Enter your PAN and application number',
-          'View your allotment result directly from the exchange\u2019s records',
-        ],
-      },
-      {
-        heading: 'Check via your broker or UPI app',
+        heading: 'Why not everyone gets allotment',
         paragraphs: [
-          'Most brokers and UPI apps used for applying to IPOs (through the ASBA/UPI mandate process) also show your application and allotment status within the app itself, under an "IPO" or "Orders" section, once the registrar finalises the allotment.',
+          'When an IPO receives far more applications than the number of shares on offer, it is said to be oversubscribed. In such cases, especially in the retail category, SEBI rules require allotment to be done through a computerised, proportionate lottery system rather than allotting a few shares to every applicant, which is why many applicants in a heavily oversubscribed IPO end up with no allotment at all.',
         ],
       },
       {
-        heading: 'What happens after allotment',
+        heading: 'Checking allotment status via the registrar\u2019s website',
         paragraphs: [
-          'If shares are allotted, they are credited to your demat account, and the blocked amount for any unallotted shares is released back to your bank account (since IPO applications use the ASBA mechanism, where funds are only blocked, not debited, until allotment). If no shares are allotted, the entire blocked amount is released without any deduction.',
+          'Every IPO has a designated registrar (commonly Link Intime India or KFin Technologies) responsible for processing applications and finalising the allotment list. This is usually the most direct way to check your status.',
+        ],
+        bullets: [
+          'Go to the registrar\u2019s official IPO allotment status page and select the relevant company/IPO from the list.',
+          'Enter your PAN number, or alternatively your application number or DP/Client ID, as requested on the page.',
+          'Submit the form to view whether shares were allotted to you and, if so, how many.',
+        ],
+      },
+      {
+        heading: 'Checking allotment status via NSE or BSE',
+        paragraphs: [
+          'Both the NSE and BSE also let investors check IPO allotment status directly on their own websites, which can be useful if you are unsure which registrar handled a particular issue.',
+        ],
+        bullets: [
+          'Visit the IPO allotment status section on the NSE or BSE website.',
+          'Select the company name from the dropdown list of recent issues.',
+          'Enter your PAN or application number to view the result.',
+        ],
+      },
+      {
+        heading: 'Checking allotment status through your broker',
+        paragraphs: [
+          'Most stockbroking apps and platforms that let you apply for IPOs also show your allotment status directly within the app, usually under an "IPO" or "Orders" section, once the registrar finalises the results. This can be a quicker way to check if you applied through a broker\u2019s UPI-based ASBA flow.',
+        ],
+      },
+      {
+        heading: 'What happens after allotment is finalised',
+        paragraphs: [
+          'If you are allotted shares, they are credited to your demat account before the listing date, and any blocked amount for shares you were not allotted is released back to your bank account. If you receive no allotment at all, the entire blocked amount is unblocked and made available in your account again.',
         ],
       },
     ],
     faqs: [
       {
-        question: 'How soon after the IPO closes can I check allotment status?',
+        question: 'How soon after the IPO closes can I check my allotment status?',
         answer:
-          'Allotment is typically finalised and published within a few working days after the subscription period closes, as specified in the IPO\u2019s official timeline — usually well before the listing date.',
+          'Allotment is typically finalised and made available to check within about 3 to 4 working days after the IPO subscription window closes, though the exact timeline is announced in the IPO\u2019s official schedule.',
       },
       {
-        question: 'Is my money debited immediately when I apply for an IPO?',
+        question: 'What details do I need to check IPO allotment status?',
         answer:
-          'No. Under the ASBA (Applications Supported by Blocked Amount) process, your application amount is only blocked (frozen) in your bank account, not debited. It is debited only if you receive an allotment; otherwise the block is released.',
+          'You generally need your PAN number, and depending on the platform, either your IPO application number or your DP/Client ID.',
       },
       {
-        question: 'What if I applied through multiple applications with the same PAN?',
+        question: 'What happens to my money if I don\u2019t get an allotment?',
         answer:
-          'SEBI rules generally prohibit multiple applications from the same person in the same IPO under the same category, and such applications can be rejected. Each investor should apply only once per IPO per eligible category.',
+          'Since IPO applications are made through ASBA, your money is only blocked, not debited; if you receive no allotment, the blocked amount is released back to your bank account automatically.',
+      },
+      {
+        question: 'Can I check allotment status without knowing the registrar\u2019s name?',
+        answer:
+          'Yes. You can check directly on the NSE or BSE website by selecting the company name, without needing to know which registrar handled that particular IPO.',
       },
     ],
   },
