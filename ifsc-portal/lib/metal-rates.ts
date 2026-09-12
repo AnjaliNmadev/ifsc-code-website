@@ -1,15 +1,53 @@
 export interface CityMeta {
   slug: string;
   name: string;
+  state: string;
 }
 
+/**
+ * Major Indian cities covered by the gold/silver rate trackers. This list can
+ * be extended further — every city here automatically gets its own
+ * gold-rate-<slug> and silver-rate-<slug> page via the dynamic routes in
+ * app/gold-rate-[city] and app/silver-rate-[city], so adding a new city is a
+ * one-line addition rather than a new page file.
+ */
 export const RATE_CITIES: CityMeta[] = [
-  { slug: 'bangalore', name: 'Bangalore' },
-  { slug: 'chennai', name: 'Chennai' },
-  { slug: 'delhi', name: 'Delhi' },
-  { slug: 'hyderabad', name: 'Hyderabad' },
-  { slug: 'kolkata', name: 'Kolkata' },
-  { slug: 'mumbai', name: 'Mumbai' },
+  // Metro cities
+  { slug: 'mumbai', name: 'Mumbai', state: 'Maharashtra' },
+  { slug: 'delhi', name: 'Delhi', state: 'Delhi' },
+  { slug: 'chennai', name: 'Chennai', state: 'Tamil Nadu' },
+  { slug: 'bangalore', name: 'Bangalore', state: 'Karnataka' },
+  { slug: 'hyderabad', name: 'Hyderabad', state: 'Telangana' },
+  { slug: 'kolkata', name: 'Kolkata', state: 'West Bengal' },
+  // Other major cities
+  { slug: 'pune', name: 'Pune', state: 'Maharashtra' },
+  { slug: 'ahmedabad', name: 'Ahmedabad', state: 'Gujarat' },
+  { slug: 'surat', name: 'Surat', state: 'Gujarat' },
+  { slug: 'jaipur', name: 'Jaipur', state: 'Rajasthan' },
+  { slug: 'lucknow', name: 'Lucknow', state: 'Uttar Pradesh' },
+  { slug: 'kanpur', name: 'Kanpur', state: 'Uttar Pradesh' },
+  { slug: 'nagpur', name: 'Nagpur', state: 'Maharashtra' },
+  { slug: 'indore', name: 'Indore', state: 'Madhya Pradesh' },
+  { slug: 'bhopal', name: 'Bhopal', state: 'Madhya Pradesh' },
+  { slug: 'patna', name: 'Patna', state: 'Bihar' },
+  { slug: 'vadodara', name: 'Vadodara', state: 'Gujarat' },
+  { slug: 'coimbatore', name: 'Coimbatore', state: 'Tamil Nadu' },
+  { slug: 'kochi', name: 'Kochi', state: 'Kerala' },
+  { slug: 'thiruvananthapuram', name: 'Thiruvananthapuram', state: 'Kerala' },
+  { slug: 'visakhapatnam', name: 'Visakhapatnam', state: 'Andhra Pradesh' },
+  { slug: 'vijayawada', name: 'Vijayawada', state: 'Andhra Pradesh' },
+  { slug: 'nashik', name: 'Nashik', state: 'Maharashtra' },
+  { slug: 'ludhiana', name: 'Ludhiana', state: 'Punjab' },
+  { slug: 'amritsar', name: 'Amritsar', state: 'Punjab' },
+  { slug: 'chandigarh', name: 'Chandigarh', state: 'Chandigarh' },
+  { slug: 'agra', name: 'Agra', state: 'Uttar Pradesh' },
+  { slug: 'varanasi', name: 'Varanasi', state: 'Uttar Pradesh' },
+  { slug: 'guwahati', name: 'Guwahati', state: 'Assam' },
+  { slug: 'ranchi', name: 'Ranchi', state: 'Jharkhand' },
+  { slug: 'raipur', name: 'Raipur', state: 'Chhattisgarh' },
+  { slug: 'bhubaneswar', name: 'Bhubaneswar', state: 'Odisha' },
+  { slug: 'mysore', name: 'Mysore', state: 'Karnataka' },
+  { slug: 'madurai', name: 'Madurai', state: 'Tamil Nadu' },
 ];
 
 export function getCity(slug: string): CityMeta | undefined {
