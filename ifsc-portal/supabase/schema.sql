@@ -129,3 +129,30 @@ create policy "Public read access" on branches
 -- 7. Once you've confirmed the site works, you can free up space by
 --    clearing the staging table (the real data now lives in `branches`):
 -- truncate raw_ifsc;
+
+-- ============================================================================
+-- 8. Gold/Silver rate history — powers the price chart and day-by-day table
+--    on the gold-rate/silver-rate pages. One row per calendar day, storing
+--    the national spot rate (per gram, INR). Each city page derives its own
+--    figure by applying its small multiplier from lib/live-rates.ts to
+--    these same national values — so this one small table is all the
+--    history storage the whole feature needs, regardless of how many
+--    cities you add.
+-- ============================================================================
+create table if not exists metal_rate_history (
+  rate_date date primary key,
+  gold_24k_per_gram numeric not null,
+  silver_per_gram numeric not null,
+  recorded_at timestamptz not null default now()
+);
+
+alter table metal_rate_history enable row level security;
+
+drop policy if exists "Public read access" on metal_rate_history;
+create policy "Public read access" on metal_rate_history
+  for select using (true);
+
+-- Row insertion happens only via the app's daily cron route using the
+-- service_role key (which bypasses RLS), never from the browser — so no
+-- insert/update policy is defined here on purpose.
+

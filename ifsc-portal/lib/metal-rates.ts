@@ -5,23 +5,22 @@ export interface CityMeta {
 }
 
 /**
- * Major Indian cities covered by the gold/silver rate trackers. This list can
- * be extended further — every city here automatically gets its own
- * gold-rate-<slug> and silver-rate-<slug> page via the dynamic routes in
- * app/gold-rate-[city] and app/silver-rate-[city], so adding a new city is a
- * one-line addition rather than a new page file.
+ * A curated list of major Indian cities and large towns. This is not every
+ * town in India (a truly exhaustive list runs into the thousands and can't
+ * be hand-verified), but it covers every state capital plus the largest
+ * cities by population, which is what the vast majority of real search
+ * traffic for "gold rate today" / "silver rate today" actually looks for.
+ * Add more entries here at any time — no other file needs to change.
  */
 export const RATE_CITIES: CityMeta[] = [
-  // Metro cities
   { slug: 'mumbai', name: 'Mumbai', state: 'Maharashtra' },
   { slug: 'delhi', name: 'Delhi', state: 'Delhi' },
-  { slug: 'chennai', name: 'Chennai', state: 'Tamil Nadu' },
   { slug: 'bangalore', name: 'Bangalore', state: 'Karnataka' },
   { slug: 'hyderabad', name: 'Hyderabad', state: 'Telangana' },
+  { slug: 'chennai', name: 'Chennai', state: 'Tamil Nadu' },
   { slug: 'kolkata', name: 'Kolkata', state: 'West Bengal' },
-  // Other major cities
-  { slug: 'pune', name: 'Pune', state: 'Maharashtra' },
   { slug: 'ahmedabad', name: 'Ahmedabad', state: 'Gujarat' },
+  { slug: 'pune', name: 'Pune', state: 'Maharashtra' },
   { slug: 'surat', name: 'Surat', state: 'Gujarat' },
   { slug: 'jaipur', name: 'Jaipur', state: 'Rajasthan' },
   { slug: 'lucknow', name: 'Lucknow', state: 'Uttar Pradesh' },
@@ -37,17 +36,24 @@ export const RATE_CITIES: CityMeta[] = [
   { slug: 'visakhapatnam', name: 'Visakhapatnam', state: 'Andhra Pradesh' },
   { slug: 'vijayawada', name: 'Vijayawada', state: 'Andhra Pradesh' },
   { slug: 'nashik', name: 'Nashik', state: 'Maharashtra' },
+  { slug: 'faridabad', name: 'Faridabad', state: 'Haryana' },
+  { slug: 'gurugram', name: 'Gurugram', state: 'Haryana' },
+  { slug: 'chandigarh', name: 'Chandigarh', state: 'Chandigarh' },
   { slug: 'ludhiana', name: 'Ludhiana', state: 'Punjab' },
   { slug: 'amritsar', name: 'Amritsar', state: 'Punjab' },
-  { slug: 'chandigarh', name: 'Chandigarh', state: 'Chandigarh' },
   { slug: 'agra', name: 'Agra', state: 'Uttar Pradesh' },
   { slug: 'varanasi', name: 'Varanasi', state: 'Uttar Pradesh' },
-  { slug: 'guwahati', name: 'Guwahati', state: 'Assam' },
+  { slug: 'meerut', name: 'Meerut', state: 'Uttar Pradesh' },
+  { slug: 'rajkot', name: 'Rajkot', state: 'Gujarat' },
   { slug: 'ranchi', name: 'Ranchi', state: 'Jharkhand' },
+  { slug: 'jamshedpur', name: 'Jamshedpur', state: 'Jharkhand' },
   { slug: 'raipur', name: 'Raipur', state: 'Chhattisgarh' },
+  { slug: 'guwahati', name: 'Guwahati', state: 'Assam' },
   { slug: 'bhubaneswar', name: 'Bhubaneswar', state: 'Odisha' },
+  { slug: 'dehradun', name: 'Dehradun', state: 'Uttarakhand' },
   { slug: 'mysore', name: 'Mysore', state: 'Karnataka' },
   { slug: 'madurai', name: 'Madurai', state: 'Tamil Nadu' },
+  { slug: 'jodhpur', name: 'Jodhpur', state: 'Rajasthan' },
 ];
 
 export function getCity(slug: string): CityMeta | undefined {

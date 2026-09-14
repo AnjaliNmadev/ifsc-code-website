@@ -40,19 +40,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...GUIDES.map((guide) => ({
       url: `${SITE_URL}/guides/${guide.slug}`,
       changeFrequency: 'monthly' as const,
-      priority: 0.5,
+      priority: 0.6,
     })),
+    { url: `${SITE_URL}/gold-rate`, changeFrequency: 'daily', priority: 0.7 },
+    { url: `${SITE_URL}/silver-rate`, changeFrequency: 'daily', priority: 0.7 },
     ...RATE_CITIES.flatMap((city) => [
-      {
-        url: `${SITE_URL}/gold-rate-${city.slug}`,
-        changeFrequency: 'daily' as const,
-        priority: 0.6,
-      },
-      {
-        url: `${SITE_URL}/silver-rate-${city.slug}`,
-        changeFrequency: 'daily' as const,
-        priority: 0.6,
-      },
+      { url: `${SITE_URL}/gold-rate/${city.slug}`, changeFrequency: 'daily' as const, priority: 0.8 },
+      { url: `${SITE_URL}/silver-rate/${city.slug}`, changeFrequency: 'daily' as const, priority: 0.8 },
     ]),
   ];
 

@@ -19,3 +19,17 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+/**
+ * Server-only admin client, used exclusively by the daily cron route
+ * (app/api/cron/snapshot-rates) to write a row to metal_rate_history. Uses
+ * the service_role key, which bypasses Row Level Security — this must
+ * NEVER be imported into any client component or exposed to the browser.
+ * SUPABASE_SERVICE_ROLE_KEY (no NEXT_PUBLIC_ prefix) is only available
+ * server-side, which is exactly what keeps it safe.
+ */
+export function getSupabaseAdmin() {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+  if (!supabaseUrl || !serviceKey) return null;
+  return createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+}

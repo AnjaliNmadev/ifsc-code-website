@@ -114,22 +114,32 @@ export default function Footer() {
 
         <FooterGroup label="Market Trackers">
           <FooterColumn title="Gold Prices">
-            {RATE_CITIES.map((city) => (
+            {RATE_CITIES.slice(0, 8).map((city) => (
               <li key={`gold-${city.slug}`}>
-                <Link href={`/gold-rate-${city.slug}`} className="transition hover:text-trust-400">
+                <Link href={`/gold-rate/${city.slug}`} className="transition hover:text-trust-400">
                   Gold Rate {city.name}
                 </Link>
               </li>
             ))}
+            <li>
+              <Link href="/gold-rate" className="font-semibold text-trust-400 hover:text-trust-300">
+                View all {RATE_CITIES.length} cities →
+              </Link>
+            </li>
           </FooterColumn>
           <FooterColumn title="Silver Prices">
-            {RATE_CITIES.map((city) => (
+            {RATE_CITIES.slice(0, 8).map((city) => (
               <li key={`silver-${city.slug}`}>
-                <Link href={`/silver-rate-${city.slug}`} className="transition hover:text-trust-400">
+                <Link href={`/silver-rate/${city.slug}`} className="transition hover:text-trust-400">
                   Silver Rate {city.name}
                 </Link>
               </li>
             ))}
+            <li>
+              <Link href="/silver-rate" className="font-semibold text-trust-400 hover:text-trust-300">
+                View all {RATE_CITIES.length} cities →
+              </Link>
+            </li>
           </FooterColumn>
           <FooterColumn title="IPO">
             {ipoGuides.map((guide) => (
