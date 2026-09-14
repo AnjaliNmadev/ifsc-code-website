@@ -19,10 +19,10 @@ interface DiamondPriceCalculatorProps {
 
 export default function DiamondPriceCalculator({ cityIndex = 1, cityName }: DiamondPriceCalculatorProps) {
   const [carat, setCarat] = useState(1);
-  const [shape, setShape] = useState(DIAMOND_SHAPES[0].shape); // Round Brilliant
-  const [clarity, setClarity] = useState(CLARITY_GRADES[3].grade); // SI1-SI2
-  const [color, setColor] = useState(COLOR_GRADES[1].grade); // G-H
-  const [cut, setCut] = useState(CUT_GRADES[1].grade); // Very Good
+  const [shape, setShape] = useState<string>(DIAMOND_SHAPES[0].shape); // Round Brilliant
+  const [clarity, setClarity] = useState<string>(CLARITY_GRADES[3].grade); // SI1-SI2
+  const [color, setColor] = useState<string>(COLOR_GRADES[1].grade); // G-H
+  const [cut, setCut] = useState<string>(CUT_GRADES[1].grade); // Very Good
 
   const result = useMemo(() => {
     const clarityM = CLARITY_GRADES.find((c) => c.grade === clarity)?.multiplier ?? 1;
