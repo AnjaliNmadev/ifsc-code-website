@@ -218,9 +218,12 @@ export default function SwiftCascadingBrowser() {
 
   function handleShare() {
     if (!result) return;
-    const message = `${result.bankName}, ${result.branch}\nSWIFT: ${
-      result.swift ?? 'Not available'
-    }\nIFSC: ${result.ifsc}`;
+    const swiftLine = result.swift
+      ? `SWIFT: ${result.swift}`
+      : result.swiftFallback
+        ? `SWIFT: ${result.swiftFallback} (bank fallback, not this branch's own — confirm with bank)`
+        : 'SWIFT: Not available';
+    const message = `${result.bankName}, ${result.branch}\n${swiftLine}\nIFSC: ${result.ifsc}`;
     window.open(buildWhatsAppShareUrl(message), '_blank', 'noopener,noreferrer');
   }
 
@@ -307,12 +310,12 @@ export default function SwiftCascadingBrowser() {
                 </dt>
                 <dd className="mt-1 flex items-center justify-between gap-2">
                   <span className="font-mono text-sm font-semibold text-ink-900">
-                    {result.swift ?? 'Not available'}
+                    {result.swift ?? result.swiftFallback ?? 'Not available'}
                   </span>
-                  {result.swift && (
+                  {(result.swift || result.swiftFallback) && (
                     <button
                       type="button"
-                      onClick={() => handleCopy(result.swift as string)}
+                      onClick={() => handleCopy((result.swift ?? result.swiftFallback) as string)}
                       className="text-ink-400 transition hover:text-trust-700"
                       aria-label="Copy SWIFT code"
                     >
@@ -320,6 +323,11 @@ export default function SwiftCascadingBrowser() {
                     </button>
                   )}
                 </dd>
+                {!result.swift && result.swiftFallback && (
+                  <p className="mt-1 text-[11px] font-medium text-amber-700">
+                    Bank-level fallback — not this branch&rsquo;s own code
+                  </p>
+                )}
               </div>
               <div className="rounded-lg bg-white p-3">
                 <dt className="text-xs font-medium text-ink-500">IFSC Code</dt>
@@ -327,13 +335,27 @@ export default function SwiftCascadingBrowser() {
               </div>
             </dl>
 
-            {!result.swift && (
+            {!result.swift && result.swiftFallback && (
               <p className="mt-3 flex items-start gap-1.5 text-xs leading-relaxed text-ink-500">
                 <AlertCircle size={13} className="mt-0.5 shrink-0 text-amber-600" />
-                This branch doesn&rsquo;t have a SWIFT code on file — that usually means it isn&rsquo;t
-                set up to receive international wires directly. Most Indian banks route incoming
-                international payments through a designated head-office branch instead, so confirm
-                the right SWIFT code with {result.bankName} before sharing one.
+                This branch doesn&rsquo;t have its own SWIFT code — the code above belongs to{' '}
+                <span className="font-semibold text-ink-700">
+                  {result.bankName}&rsquo;s {result.swiftFallbackBranch}
+                </span>{' '}
+                branch, which is the closest thing on file to a nodal/head-office code. Most Indian
+                banks route incoming international wires through one such branch. Please confirm
+                with {result.bankName} directly before sharing this code, since it may not be the
+                correct routing branch.
+              </p>
+            )}
+
+            {!result.swift && !result.swiftFallback && (
+              <p className="mt-3 flex items-start gap-1.5 text-xs leading-relaxed text-ink-500">
+                <AlertCircle size={13} className="mt-0.5 shrink-0 text-amber-600" />
+                Neither this branch nor any other {result.bankName} branch in our records has a
+                SWIFT code on file. Most Indian bank branches aren&rsquo;t individually set up for
+                international wires — please confirm the right routing SWIFT code with{' '}
+                {result.bankName} before sharing one.
               </p>
             )}
 

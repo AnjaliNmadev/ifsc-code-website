@@ -64,7 +64,7 @@ export default function BranchDetailsCard({ branch }: { branch: BranchRecord }) 
         <ServiceBadge label="UPI" active={branch.upi} />
       </div>
 
-      <CopyIfscButton ifsc={branch.ifsc} swift={branch.swift} />
+      <CopyIfscButton ifsc={branch.ifsc} swift={branch.swift ?? branch.swiftFallback} />
 
       <div className="mt-2">
         <InfoRow icon={<Building2 size={17} />} label="Bank" value={branch.bankName} />
@@ -81,14 +81,21 @@ export default function BranchDetailsCard({ branch }: { branch: BranchRecord }) 
           label="MICR Code"
           value={branch.micr ?? 'Not available'}
         />
-        <InfoRow
-          icon={<Globe size={17} />}
-          label="SWIFT / BIC Code"
-          value={
-            branch.swift ??
-            'Not available for this branch — SWIFT codes are typically issued only to a bank\u2019s international/forex-authorised branches, not every domestic branch.'
-          }
-        />
+        {branch.swift ? (
+          <InfoRow icon={<Globe size={17} />} label="SWIFT / BIC Code" value={branch.swift} />
+        ) : branch.swiftFallback ? (
+          <InfoRow
+            icon={<Globe size={17} />}
+            label={`SWIFT / BIC Code (${branch.bankName}\u2019s ${branch.swiftFallbackBranch ?? 'head office'} — not this branch\u2019s own code, confirm with the bank)`}
+            value={branch.swiftFallback}
+          />
+        ) : (
+          <InfoRow
+            icon={<Globe size={17} />}
+            label="SWIFT / BIC Code"
+            value="Not available for this branch — SWIFT codes are typically issued only to a bank\u2019s international/forex-authorised branches, not every domestic branch."
+          />
+        )}
       </div>
     </div>
   );
