@@ -57,6 +57,7 @@ create table if not exists branches (
   state text not null,
   contact text,
   micr text,
+  swift text,
   upi boolean default false,
   neft boolean default false,
   rtgs boolean default false,
@@ -67,6 +68,10 @@ create table if not exists branches (
   branch_slug text generated always as (slugify(branch) || '-' || lower(ifsc)) stored
 );
 
+-- If `branches` already existed from an earlier run of this file (before the
+-- `swift` column was added), this adds it without touching existing rows.
+alter table branches add column if not exists swift text;
+
 create index if not exists idx_branches_ifsc on branches (ifsc);
 create index if not exists idx_branches_bank on branches (bank_slug);
 create index if not exists idx_branches_bank_state on branches (bank_slug, state_slug);
@@ -75,7 +80,7 @@ create index if not exists idx_branches_bank_state_district
 
 -- 4. Copy + clean the imported CSV data into the real table.
 --    Safe to re-run: it skips IFSC codes that are already present.
-insert into branches (ifsc, bank_name, branch, address, city, district, state, contact, micr, upi, neft, rtgs, imps)
+insert into branches (ifsc, bank_name, branch, address, city, district, state, contact, micr, swift, upi, neft, rtgs, imps)
 select
   upper(trim(r."IFSC")),
   initcap(trim(r."BANK")),
@@ -86,6 +91,7 @@ select
   initcap(trim(r."STATE")),
   trim(r."CONTACT"),
   nullif(trim(r."MICR"), ''),
+  nullif(upper(trim(r."SWIFT")), ''),
   lower(trim(r."UPI")) in ('true', 't', '1', 'yes'),
   lower(trim(r."NEFT")) in ('true', 't', '1', 'yes'),
   lower(trim(r."RTGS")) in ('true', 't', '1', 'yes'),
@@ -94,6 +100,16 @@ from raw_ifsc r
 where r."IFSC" is not null
   and trim(r."IFSC") <> ''
 on conflict (ifsc) do nothing;
+
+-- If you already ran the import once before the `swift` column existed, this
+-- backfills SWIFT codes for branches already in `branches` without
+-- re-importing anything or duplicating rows.
+update branches b
+set swift = nullif(upper(trim(r."SWIFT")), '')
+from raw_ifsc r
+where upper(trim(r."IFSC")) = b.ifsc
+  and b.swift is null
+  and nullif(upper(trim(r."SWIFT")), '') is not null;
 
 -- 5. Summary views that power the bank/state/district listing pages and the
 --    cascading dropdowns, pre-aggregated so the website never has to count
