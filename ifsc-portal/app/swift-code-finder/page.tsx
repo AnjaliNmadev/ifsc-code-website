@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ShieldCheck, Globe2, ListChecks } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import SwiftQuickSearch from '@/components/SwiftQuickSearch';
+import SwiftCascadingBrowser from '@/components/SwiftCascadingBrowser';
 import AdSlot from '@/components/AdSlot';
 import SwiftEducationContent from '@/components/SwiftEducationContent';
 import { swiftFinderMetadata } from '@/lib/seo';
@@ -24,13 +25,17 @@ export default function SwiftCodeFinderPage() {
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-ink-600 lg:mx-0">
               Enter a SWIFT/BIC code to validate its format and see its bank, country, and branch
-              breakdown — or enter your IFSC code to find your branch&rsquo;s SWIFT code for
-              international transfers.
+              breakdown — or enter your IFSC code, or browse by bank, state and district, to find
+              your branch&rsquo;s SWIFT code for international transfers.
             </p>
           </section>
 
           <section className="mt-9">
             <SwiftQuickSearch />
+          </section>
+
+          <section className="mt-6">
+            <SwiftCascadingBrowser />
           </section>
 
           <section className="mt-8">
