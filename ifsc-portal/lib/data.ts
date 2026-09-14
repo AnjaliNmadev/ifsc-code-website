@@ -30,6 +30,8 @@ function mapRow(row: any): BranchRecord {
     contact: row.contact || 'Not available',
     micr: row.micr,
     swift: row.swift ?? null,
+    swiftFallback: row.swiftFallback ?? null,
+    swiftFallbackBranch: row.swiftFallbackBranch ?? null,
     upi: Boolean(row.upi),
     neft: Boolean(row.neft),
     rtgs: Boolean(row.rtgs),
@@ -132,6 +134,26 @@ export async function getBranchesForDistrict(
   return data.map(mapRow);
 }
 
+/**
+ * If a branch has no SWIFT code of its own, look up the bank's fallback
+ * (its head-office/nodal branch code) from the `bank_swift_fallback` view.
+ * Fails soft — a lookup error here should never break the branch page.
+ */
+async function attachSwiftFallback(row: any): Promise<any> {
+  if (row.swift || !row.bank_slug) return row;
+  const { data, error } = await supabase
+    .from('bank_swift_fallback')
+    .select('*')
+    .eq('bank_slug', row.bank_slug)
+    .maybeSingle();
+  if (error || !data) return row;
+  return {
+    ...row,
+    swiftFallback: data.fallback_swift ?? null,
+    swiftFallbackBranch: data.fallback_branch ?? null,
+  };
+}
+
 export async function getBranch(
   bankSlug: string,
   stateSlug: string,
@@ -147,7 +169,7 @@ export async function getBranch(
     .eq('branch_slug', branchSlug)
     .maybeSingle();
   if (error || !data) return null;
-  return mapRow(data);
+  return mapRow(await attachSwiftFallback(data));
 }
 
 export async function getBranchByIfsc(ifsc: string): Promise<BranchRecord | null> {
@@ -158,5 +180,5 @@ export async function getBranchByIfsc(ifsc: string): Promise<BranchRecord | null
     .eq('ifsc', normalized)
     .maybeSingle();
   if (error || !data) return null;
-  return mapRow(data);
+  return mapRow(await attachSwiftFallback(data));
 }

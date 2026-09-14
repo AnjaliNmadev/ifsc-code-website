@@ -12,7 +12,16 @@ export interface BranchRecord {
   stateSlug: string;
   contact: string;
   micr: string | null;
+  /** This branch's OWN swift code, if it has one on file. Null for most branches. */
   swift: string | null;
+  /**
+   * Bank-level fallback swift code, used ONLY when `swift` above is null.
+   * This is NOT this branch's own code — it's the bank's head-office/nodal
+   * branch code, shown so the user has something to start from. Always
+   * render it with a clear "not this branch's own code" disclaimer.
+   */
+  swiftFallback?: string | null;
+  swiftFallbackBranch?: string | null;
   upi: boolean;
   neft: boolean;
   rtgs: boolean;
