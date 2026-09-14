@@ -88,6 +88,31 @@ export function districtMetadata(
   };
 }
 
+export function swiftFinderMetadata(): Metadata {
+  const title = `SWIFT Code Finder — Check & Decode Any SWIFT/BIC Code | ${SITE_NAME}`;
+  const description =
+    'Check whether a SWIFT/BIC code is valid and see its bank, country, location, and branch breakdown instantly. Or enter your IFSC code to find your bank branch\u2019s SWIFT code for international transfers.';
+  const canonical = buildCanonical(['swift-code-finder']);
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: SITE_NAME,
+      type: 'website',
+      locale: 'en_IN',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
+}
+
 export function branchMetadata(branch: BranchRecord): Metadata {
   const title = `${branch.bankName} ${branch.branch} IFSC Code: ${branch.ifsc} | ${SITE_NAME}`;
   const description = `IFSC code for ${branch.bankName}, ${branch.branch} branch, ${branch.district}, ${branch.state} is ${branch.ifsc}. MICR code, address, and contact details included.`;

@@ -55,6 +55,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/swift-code-finder" className="transition hover:text-trust-400">
+                  SWIFT Code Finder
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="transition hover:text-trust-400">
                   About Us
                 </Link>

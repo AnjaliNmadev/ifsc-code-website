@@ -31,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/disclaimer`, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${SITE_URL}/contact`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${SITE_URL}/calculators`, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${SITE_URL}/swift-code-finder`, changeFrequency: 'monthly', priority: 0.7 },
     ...CALCULATORS.map((calc) => ({
       url: `${SITE_URL}/calculators/${calc.slug}`,
       changeFrequency: 'monthly' as const,

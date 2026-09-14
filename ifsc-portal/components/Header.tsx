@@ -21,6 +21,9 @@ export default function Header() {
           <Link href="/calculators" className="transition hover:text-trust-700">
             Calculators
           </Link>
+          <Link href="/swift-code-finder" className="transition hover:text-trust-700">
+            SWIFT Code
+          </Link>
 
           <div className="group relative">
             <Link
