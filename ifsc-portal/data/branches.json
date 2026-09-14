@@ -12,7 +12,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": "SBININBB104"
   },
   {
     "ifsc": "SBIN0007646",
@@ -27,7 +28,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "SBIN0011710",
@@ -42,7 +44,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "SBIN0004747",
@@ -57,7 +60,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "SBIN0002499",
@@ -72,7 +76,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "HDFC0000123",
@@ -87,7 +92,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "HDFC0000456",
@@ -102,7 +108,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "HDFC0000789",
@@ -117,7 +124,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "HDFC0001122",
@@ -132,7 +140,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "ICIC0000111",
@@ -147,7 +156,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "ICIC0000222",
@@ -162,7 +172,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "ICIC0000333",
@@ -177,7 +188,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "ICIC0000444",
@@ -192,7 +204,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": true
+    "imps": true,
+    "swift": null
   },
   {
     "ifsc": "PUNB0123400",
@@ -207,7 +220,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": false
+    "imps": false,
+    "swift": null
   },
   {
     "ifsc": "PUNB0123500",
@@ -222,7 +236,8 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": false
+    "imps": false,
+    "swift": null
   },
   {
     "ifsc": "PUNB0123600",
@@ -237,6 +252,7 @@
     "upi": true,
     "neft": true,
     "rtgs": true,
-    "imps": false
+    "imps": false,
+    "swift": null
   }
 ]

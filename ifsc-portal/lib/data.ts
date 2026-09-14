@@ -29,6 +29,7 @@ function mapRow(row: any): BranchRecord {
     stateSlug: row.state_slug,
     contact: row.contact || 'Not available',
     micr: row.micr,
+    swift: row.swift ?? null,
     upi: Boolean(row.upi),
     neft: Boolean(row.neft),
     rtgs: Boolean(row.rtgs),

@@ -1,4 +1,4 @@
-import { Building2, MapPin, Phone, Hash, CreditCard } from 'lucide-react';
+import { Building2, MapPin, Phone, Hash, CreditCard, Globe } from 'lucide-react';
 import type { BranchRecord } from '@/lib/types';
 import CopyIfscButton from './CopyIfscButton';
 
@@ -64,7 +64,7 @@ export default function BranchDetailsCard({ branch }: { branch: BranchRecord }) 
         <ServiceBadge label="UPI" active={branch.upi} />
       </div>
 
-      <CopyIfscButton ifsc={branch.ifsc} />
+      <CopyIfscButton ifsc={branch.ifsc} swift={branch.swift} />
 
       <div className="mt-2">
         <InfoRow icon={<Building2 size={17} />} label="Bank" value={branch.bankName} />
@@ -80,6 +80,14 @@ export default function BranchDetailsCard({ branch }: { branch: BranchRecord }) 
           icon={<CreditCard size={17} />}
           label="MICR Code"
           value={branch.micr ?? 'Not available'}
+        />
+        <InfoRow
+          icon={<Globe size={17} />}
+          label="SWIFT / BIC Code"
+          value={
+            branch.swift ??
+            'Not available for this branch — SWIFT codes are typically issued only to a bank\u2019s international/forex-authorised branches, not every domestic branch.'
+          }
         />
       </div>
     </div>

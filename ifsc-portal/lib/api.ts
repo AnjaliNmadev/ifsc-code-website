@@ -47,6 +47,7 @@ function mapRazorpayResponse(data: RazorpayIfscResponse): BranchRecord {
     stateSlug: slugify(data.STATE),
     contact: data.CONTACT || 'Not available',
     micr: data.MICR,
+    swift: data.SWIFT ?? null,
     upi: Boolean(data.UPI),
     neft: Boolean(data.NEFT),
     rtgs: Boolean(data.RTGS),

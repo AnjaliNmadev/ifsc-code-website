@@ -12,6 +12,7 @@ export interface BranchRecord {
   stateSlug: string;
   contact: string;
   micr: string | null;
+  swift: string | null;
   upi: boolean;
   neft: boolean;
   rtgs: boolean;
@@ -47,6 +48,7 @@ export interface RazorpayIfscResponse {
   STATE: string;
   CONTACT: string;
   MICR: string | null;
+  SWIFT?: string | null;
   UPI: boolean;
   NEFT: boolean;
   RTGS: boolean;

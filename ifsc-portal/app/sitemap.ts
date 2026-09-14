@@ -44,9 +44,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     { url: `${SITE_URL}/gold-rate`, changeFrequency: 'daily', priority: 0.7 },
     { url: `${SITE_URL}/silver-rate`, changeFrequency: 'daily', priority: 0.7 },
+    { url: `${SITE_URL}/diamond-price`, changeFrequency: 'monthly', priority: 0.6 },
     ...RATE_CITIES.flatMap((city) => [
       { url: `${SITE_URL}/gold-rate/${city.slug}`, changeFrequency: 'daily' as const, priority: 0.8 },
       { url: `${SITE_URL}/silver-rate/${city.slug}`, changeFrequency: 'daily' as const, priority: 0.8 },
+      { url: `${SITE_URL}/diamond-price/${city.slug}`, changeFrequency: 'monthly' as const, priority: 0.7 },
     ]),
   ];
 

@@ -150,6 +150,20 @@ export default function Footer() {
               </li>
             ))}
           </FooterColumn>
+          <FooterColumn title="Diamond Price Guide">
+            <li>
+              <Link href="/diamond-price" className="transition hover:text-trust-400">
+                Diamond Price Guide (4Cs &amp; Estimator)
+              </Link>
+            </li>
+            {RATE_CITIES.slice(0, 8).map((city) => (
+              <li key={`diamond-${city.slug}`}>
+                <Link href={`/diamond-price/${city.slug}`} className="transition hover:text-trust-400">
+                  Diamond Price {city.name}
+                </Link>
+              </li>
+            ))}
+          </FooterColumn>
         </FooterGroup>
 
         <div className="mt-10 border-t border-white/10 pt-6 text-xs text-gray-500">
