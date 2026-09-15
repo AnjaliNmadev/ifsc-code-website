@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase';
+import { fetchAllPages } from '@/lib/data';
 import { SITE_URL } from '@/lib/utils';
 import { CALCULATORS } from '@/lib/calculators';
 import { GUIDES } from '@/lib/guides';
@@ -19,9 +20,9 @@ export const dynamic = 'force-dynamic';
  * enough entry points to discover every district and branch page by
  * following links from there.
  *
- * Both listings below are fetched in ONE query each (not one query per
- * bank), so this stays fast even with 150+ banks and thousands of
- * bank+state combinations.
+ * Both listings below are paginated past Supabase's 1000-row-per-request
+ * cap (not one query per bank), so this stays fast and complete even with
+ * 1000+ banks and tens of thousands of bank+state combinations.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [
@@ -53,16 +54,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]),
   ];
 
-  const [{ data: banks }, { data: states }] = await Promise.all([
-    supabase.from('bank_summary').select('slug'),
-    supabase.from('state_summary').select('bank_slug, slug'),
+  const [banks, states] = await Promise.all([
+    fetchAllPages<{ slug: string }>((from, to) =>
+      supabase.from('bank_summary').select('slug').range(from, to)
+    ),
+    fetchAllPages<{ bank_slug: string; slug: string }>((from, to) =>
+      supabase.from('state_summary').select('bank_slug, slug').range(from, to)
+    ),
   ]);
 
-  for (const bank of banks ?? []) {
+  for (const bank of banks) {
     entries.push({ url: `${SITE_URL}/${bank.slug}`, changeFrequency: 'weekly', priority: 0.8 });
   }
 
-  for (const state of states ?? []) {
+  for (const state of states) {
     entries.push({
       url: `${SITE_URL}/${state.bank_slug}/${state.slug}`,
       changeFrequency: 'weekly',

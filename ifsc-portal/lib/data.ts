@@ -47,13 +47,41 @@ function warnIfUnconfigured(fn: string) {
   }
 }
 
+/**
+ * Supabase/PostgREST returns at most 1000 rows per request by default, no
+ * matter how many actually match. With ~1000+ distinct banks (SBI, HDFC,
+ * ...plus hundreds of small regional/cooperative banks) and dense districts
+ * that can have 1000+ branches, a single `.select()` silently truncates —
+ * whatever sorts past row #1000 (alphabetically, often banks from "S"
+ * onward) just never comes back. This keeps paging with `.range()` until a
+ * page comes back shorter than the page size, so every function below
+ * always gets the FULL result set, not just the first 1000 rows.
+ */
+export async function fetchAllPages<T>(
+  build: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: any }>
+): Promise<T[]> {
+  const pageSize = 1000;
+  const all: T[] = [];
+  let from = 0;
+  while (true) {
+    const { data, error } = await build(from, from + pageSize - 1);
+    if (error) {
+      console.error('fetchAllPages error:', error.message ?? error);
+      break;
+    }
+    if (!data || data.length === 0) break;
+    all.push(...data);
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+  return all;
+}
+
 export async function getAllBanks(): Promise<BankSummary[]> {
   warnIfUnconfigured('getAllBanks');
-  const { data, error } = await supabase.from('bank_summary').select('*').order('name');
-  if (error || !data) {
-    if (error) console.error('getAllBanks error:', error.message);
-    return [];
-  }
+  const data = await fetchAllPages<any>((from, to) =>
+    supabase.from('bank_summary').select('*').order('name').range(from, to)
+  );
   return data.map((r) => ({ name: r.name, slug: r.slug, branchCount: r.branch_count }));
 }
 
@@ -68,12 +96,14 @@ export async function getBank(bankSlug: string): Promise<BankSummary | null> {
 }
 
 export async function getStatesForBank(bankSlug: string): Promise<StateSummary[]> {
-  const { data, error } = await supabase
-    .from('state_summary')
-    .select('*')
-    .eq('bank_slug', bankSlug)
-    .order('name');
-  if (error || !data) return [];
+  const data = await fetchAllPages<any>((from, to) =>
+    supabase
+      .from('state_summary')
+      .select('*')
+      .eq('bank_slug', bankSlug)
+      .order('name')
+      .range(from, to)
+  );
   return data.map((r) => ({ name: r.name, slug: r.slug, branchCount: r.branch_count }));
 }
 
@@ -92,13 +122,15 @@ export async function getDistrictsForState(
   bankSlug: string,
   stateSlug: string
 ): Promise<DistrictSummary[]> {
-  const { data, error } = await supabase
-    .from('district_summary')
-    .select('*')
-    .eq('bank_slug', bankSlug)
-    .eq('state_slug', stateSlug)
-    .order('name');
-  if (error || !data) return [];
+  const data = await fetchAllPages<any>((from, to) =>
+    supabase
+      .from('district_summary')
+      .select('*')
+      .eq('bank_slug', bankSlug)
+      .eq('state_slug', stateSlug)
+      .order('name')
+      .range(from, to)
+  );
   return data.map((r) => ({ name: r.name, slug: r.slug, branchCount: r.branch_count }));
 }
 
@@ -123,14 +155,16 @@ export async function getBranchesForDistrict(
   stateSlug: string,
   districtSlug: string
 ): Promise<BranchRecord[]> {
-  const { data, error } = await supabase
-    .from('branches')
-    .select('*')
-    .eq('bank_slug', bankSlug)
-    .eq('state_slug', stateSlug)
-    .eq('district_slug', districtSlug)
-    .order('branch');
-  if (error || !data) return [];
+  const data = await fetchAllPages<any>((from, to) =>
+    supabase
+      .from('branches')
+      .select('*')
+      .eq('bank_slug', bankSlug)
+      .eq('state_slug', stateSlug)
+      .eq('district_slug', districtSlug)
+      .order('branch')
+      .range(from, to)
+  );
   return data.map(mapRow);
 }
 
