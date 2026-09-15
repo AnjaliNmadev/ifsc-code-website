@@ -102,9 +102,8 @@ export default function SwiftQuickSearch() {
         'noopener,noreferrer'
       );
     } else if (mode === 'ifsc' && ifscResult) {
-      const message = `${ifscResult.bankName}, ${ifscResult.branch}\nSWIFT: ${
-        ifscResult.swift ?? 'Not available'
-      }\nIFSC: ${ifscResult.ifsc}`;
+      const swiftForShare = ifscResult.swift ?? ifscResult.swiftFallback ?? 'Not available';
+      const message = `${ifscResult.bankName}, ${ifscResult.branch}\nSWIFT: ${swiftForShare}\nIFSC: ${ifscResult.ifsc}`;
       window.open(buildWhatsAppShareUrl(message), '_blank', 'noopener,noreferrer');
     }
   }
@@ -274,12 +273,14 @@ export default function SwiftQuickSearch() {
                 <dt className="text-xs font-medium text-ink-500">SWIFT Code</dt>
                 <dd className="mt-1 flex items-center justify-between gap-2">
                   <span className="font-mono text-sm font-semibold text-ink-900">
-                    {ifscResult.swift ?? 'Not available'}
+                    {ifscResult.swift ?? ifscResult.swiftFallback ?? 'Not available'}
                   </span>
-                  {ifscResult.swift && (
+                  {(ifscResult.swift || ifscResult.swiftFallback) && (
                     <button
                       type="button"
-                      onClick={() => handleCopy(ifscResult.swift as string)}
+                      onClick={() =>
+                        handleCopy((ifscResult.swift ?? ifscResult.swiftFallback) as string)
+                      }
                       className="text-ink-400 transition hover:text-trust-700"
                       aria-label="Copy SWIFT code"
                     >
@@ -287,6 +288,11 @@ export default function SwiftQuickSearch() {
                     </button>
                   )}
                 </dd>
+                {!ifscResult.swift && ifscResult.swiftFallback && (
+                  <p className="mt-1 text-[11px] font-medium text-amber-700">
+                    Bank-level fallback — not this branch&rsquo;s own code
+                  </p>
+                )}
               </div>
               <div className="rounded-lg bg-white p-3">
                 <dt className="text-xs font-medium text-ink-500">IFSC Code</dt>
@@ -296,13 +302,26 @@ export default function SwiftQuickSearch() {
               </div>
             </dl>
 
-            {!ifscResult.swift && (
+            {!ifscResult.swift && ifscResult.swiftFallback && (
+              <p className="mt-3 flex items-start gap-1.5 text-xs leading-relaxed text-ink-500">
+                <AlertCircle size={13} className="mt-0.5 shrink-0 text-amber-600" />
+                This branch doesn&rsquo;t have its own SWIFT code — the code above belongs to{' '}
+                <span className="font-semibold text-ink-700">
+                  {ifscResult.bankName}&rsquo;s {ifscResult.swiftFallbackBranch}
+                </span>{' '}
+                branch, the closest thing on file to a nodal/head-office code. Most Indian banks
+                route incoming international wires through one such branch — please confirm with{' '}
+                {ifscResult.bankName} directly before sharing this code, since it may not be the
+                correct routing branch.
+              </p>
+            )}
+
+            {!ifscResult.swift && !ifscResult.swiftFallback && (
               <p className="mt-3 text-xs leading-relaxed text-ink-500">
-                This branch doesn&rsquo;t have a SWIFT code on file — that usually means it
-                isn&rsquo;t set up to receive international wires directly. Most Indian banks
-                route incoming international payments through a designated head-office branch
-                instead, so confirm the right SWIFT code with {ifscResult.bankName} before
-                sharing one.
+                Neither this branch nor any other {ifscResult.bankName} branch in our records has a
+                SWIFT code on file. Most Indian bank branches aren&rsquo;t individually set up for
+                international wires — please confirm the right routing SWIFT code with{' '}
+                {ifscResult.bankName} before sharing one.
               </p>
             )}
 
