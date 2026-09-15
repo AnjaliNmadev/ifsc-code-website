@@ -142,6 +142,47 @@ create policy "Public read access" on branches
 
 -- Views inherit the security of their underlying table automatically.
 
+-- 7a. SWIFT fallback view — most Indian bank branches don't have their own
+--     SWIFT code (only the bank's head office / forex-authorised branches
+--     do). When a branch has no SWIFT of its own, the website falls back to
+--     showing the bank's head-office SWIFT code instead (clearly labelled
+--     as "bank fallback, not this branch's own" in the UI).
+--     This picks ONE branch per bank that already has a real swift value in
+--     the `swift` column, preferring branches that look like a head/
+--     principal/corporate office. It relies entirely on SWIFT values already
+--     present in `branches.swift` — it never invents a code. If a bank has
+--     zero branches with a real SWIFT value, it simply won't appear here,
+--     and the website will correctly show "Not available" for it.
+create or replace view bank_swift_fallback as
+select distinct on (bank_slug)
+  bank_slug,
+  swift as fallback_swift,
+  branch as fallback_branch
+from branches
+where swift is not null
+order by
+  bank_slug,
+  case
+    when branch ilike '%head office%' then 0
+    when branch ilike '%principal office%' then 0
+    when branch ilike '%corporate office%' then 1
+    when branch ilike '%main branch%' then 1
+    when branch ilike '%regional office%' then 2
+    else 3
+  end,
+  branch;
+
+-- 7b. Quick sanity check — run this after importing data to see how much
+--     real SWIFT coverage you actually have. If `banks_with_swift` is 0,
+--     your imported CSV's SWIFT column was empty and you need a real SWIFT
+--     data source (see the website chat for options) before this feature
+--     will show anything besides "Not available".
+-- select
+--   count(*) filter (where swift is not null) as branches_with_own_swift,
+--   count(distinct bank_slug) filter (where swift is not null) as banks_with_swift,
+--   count(distinct bank_slug) as total_banks
+-- from branches;
+
 -- 7. Once you've confirmed the site works, you can free up space by
 --    clearing the staging table (the real data now lives in `branches`):
 -- truncate raw_ifsc;
