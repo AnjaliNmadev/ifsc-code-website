@@ -12,6 +12,28 @@ language sql immutable as $$
   select trim(both '-' from regexp_replace(lower(coalesce(v, '')), '[^a-z0-9]+', '-', 'g'));
 $$;
 
+-- 1b. Helper function: title-cases a bank/branch name like initcap() does,
+--     but then re-uppercases known bank acronyms. Plain initcap("HDFC BANK")
+--     produces "Hdfc Bank" (it only capitalizes the first letter of each
+--     word, everything else is lowercased) — this fixes that for HDFC,
+--     ICICI, SBI, and the other acronym-named banks in the dataset.
+create or replace function smart_initcap(v text) returns text
+language plpgsql immutable as $$
+declare
+  result text := initcap(trim(coalesce(v, '')));
+  acronyms text[] := array[
+    'HDFC','ICICI','IDBI','SBI','PNB','UCO','RBL','DCB','IDFC','CSB','TMB',
+    'DBS','SVC','NKGSB','TJSB','ESAF','HSBC','SCB','NESFB','KVB','UBI','BOI','BOB','JK'
+  ];
+  a text;
+begin
+  foreach a in array acronyms loop
+    result := regexp_replace(result, '\m' || a || '\M', a, 'gi');
+  end loop;
+  return result;
+end;
+$$;
+
 -- 2. Staging table — this matches the column headers of the official
 --    razorpay/ifsc CSV export (https://github.com/razorpay/ifsc/releases,
 --    look for "IFSC.csv" under the latest release's Assets). Every column is
@@ -83,7 +105,7 @@ create index if not exists idx_branches_bank_state_district
 insert into branches (ifsc, bank_name, branch, address, city, district, state, contact, micr, swift, upi, neft, rtgs, imps)
 select
   upper(trim(r."IFSC")),
-  initcap(trim(r."BANK")),
+  smart_initcap(r."BANK"),
   initcap(trim(r."BRANCH")),
   initcap(trim(r."ADDRESS")),
   initcap(trim(r."CITY")),
@@ -110,6 +132,13 @@ from raw_ifsc r
 where upper(trim(r."IFSC")) = b.ifsc
   and b.swift is null
   and nullif(upper(trim(r."SWIFT")), '') is not null;
+
+-- 4b. One-time fix-up for data already imported before smart_initcap()
+--     existed (e.g. bank_name = "Hdfc Bank" instead of "HDFC Bank"). Safe to
+--     re-run — it's a no-op once every row is already correctly cased.
+update branches
+set bank_name = smart_initcap(bank_name)
+where bank_name <> smart_initcap(bank_name);
 
 -- 5. Summary views that power the bank/state/district listing pages and the
 --    cascading dropdowns, pre-aggregated so the website never has to count

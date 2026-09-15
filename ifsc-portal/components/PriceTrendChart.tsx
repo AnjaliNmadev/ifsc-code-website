@@ -10,7 +10,7 @@ interface PriceTrendChartProps {
  * Next.js version. Good enough for a simple "recent trend" sparkline; swap
  * for a full charting library later if you want zoom/tooltips.
  */
-export default function PriceTrendChart({ points, color = '#059669', height = 160 }: PriceTrendChartProps) {
+export default function PriceTrendChart({ points, color = '#1E4FD1', height = 160 }: PriceTrendChartProps) {
   if (points.length < 2) {
     return (
       <div

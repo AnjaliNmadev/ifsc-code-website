@@ -15,7 +15,7 @@ interface BarDatum {
  */
 export default function MetalRateBarChart({
   data,
-  color = '#0f6e5c',
+  color = '#1E4FD1',
   valuePrefix = '₹',
 }: {
   data: BarDatum[];

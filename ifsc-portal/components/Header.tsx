@@ -16,7 +16,7 @@ export default function Header() {
         </Link>
         <nav className="hidden items-center gap-6 text-base font-semibold text-ink-600 sm:flex">
           <Link href="/" className="transition hover:text-trust-700">
-            Search
+            Home
           </Link>
           <Link href="/calculators" className="transition hover:text-trust-700">
             Calculators

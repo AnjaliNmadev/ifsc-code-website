@@ -9,33 +9,42 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Cool navy-slate neutrals — a step deeper and more saturated than a
+        // default grey scale, to read as "financial ledger" rather than
+        // generic SaaS grey.
         ink: {
-          900: '#0F172A',
-          800: '#1E293B',
-          700: '#334155',
-          600: '#475569',
-          500: '#64748B',
-          400: '#94A3B8',
-          300: '#CBD5E1',
-          200: '#E2E8F0',
-          100: '#F1F5F9',
-          50: '#F8FAFC',
+          900: '#0E1424',
+          800: '#1E273B',
+          700: '#33405A',
+          600: '#4E5A72',
+          500: '#707C94',
+          400: '#98A2B8',
+          300: '#C3CBDC',
+          200: '#DFE4EE',
+          100: '#EEF1F6',
+          50: '#F7F8FB',
+          0: '#FFFFFF',
         },
+        // Primary brand — deep, saturated navy blue (bank-vault blue) in
+        // place of the old generic emerald/teal SaaS green.
         trust: {
-          900: '#043D33',
-          800: '#065F49',
-          700: '#047857',
-          600: '#059669',
-          500: '#10B981',
-          400: '#34D399',
-          300: '#6EE7B7',
-          100: '#D1FAE5',
-          50: '#ECFDF5',
+          900: '#0B1D57',
+          800: '#122C82',
+          700: '#1739A8',
+          600: '#1E4FD1',
+          500: '#2F6BEF',
+          400: '#5A8FFA',
+          300: '#8AB2FF',
+          200: '#B9D2FF',
+          100: '#DCE8FF',
+          50: '#EEF4FF',
         },
+        // Warm gold accent — used sparingly for badges/highlights to give
+        // the navy palette a premium, currency-adjacent counterpoint.
         teal: {
-          700: '#0F766E',
-          600: '#0D9488',
-          500: '#14B8A6',
+          700: '#96691E',
+          600: '#B8842A',
+          500: '#C99A3B',
         },
       },
       fontFamily: {

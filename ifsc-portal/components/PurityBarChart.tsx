@@ -3,7 +3,7 @@ interface PurityChartProps {
   color?: string;
 }
 
-export default function PurityBarChart({ data, color = '#059669' }: PurityChartProps) {
+export default function PurityBarChart({ data, color = '#1E4FD1' }: PurityChartProps) {
   const max = Math.max(...data.map((d) => d.value), 1);
 
   return (
