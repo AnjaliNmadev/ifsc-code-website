@@ -242,3 +242,21 @@ create policy "Public read access" on metal_rate_history
 -- service_role key (which bypasses RLS), never from the browser — so no
 -- insert/update policy is defined here on purpose.
 
+-- Daily snapshot of the OpenFacet Diamond Composite Index (DCX), so the
+-- diamond price pages can show a real weekly / monthly / yearly trend chart
+-- instead of only the upstream feed's 24h number. Same cron + RLS pattern
+-- as metal_rate_history above.
+create table if not exists diamond_rate_history (
+  rate_date date primary key,
+  dcx_usd numeric not null,
+  dcx_inr numeric not null,
+  fx_rate numeric not null,
+  recorded_at timestamptz not null default now()
+);
+
+alter table diamond_rate_history enable row level security;
+
+drop policy if exists "Public read access" on diamond_rate_history;
+create policy "Public read access" on diamond_rate_history
+  for select using (true);
+
