@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSpotRates } from '@/lib/live-rates';
+import { getLiveDiamondIndex } from '@/lib/live-diamond-rates';
 import { getSupabaseAdmin } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
@@ -32,27 +33,53 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const spot = await getSpotRates();
-  if (!spot.isLive) {
-    // Don't write a fallback/stale value into history — better to skip a
-    // day than to record a wrong number.
-    return NextResponse.json({ skipped: true, reason: 'Live feed unavailable' }, { status: 200 });
-  }
-
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD, UTC
 
-  const { error } = await admin.from('metal_rate_history').upsert(
-    {
-      rate_date: today,
-      gold_24k_per_gram: spot.gold24kPerGram,
-      silver_per_gram: spot.silverPerGram,
-    },
-    { onConflict: 'rate_date' }
-  );
+  // Both feeds are snapshotted independently: if gold/silver is down but the
+  // diamond index is up (or vice versa), we still record the one that worked
+  // instead of losing both days of history.
+  const [spot, diamond] = await Promise.all([getSpotRates(), getLiveDiamondIndex()]);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  const metals: { written: boolean; reason?: string } = { written: false };
+  const diamonds: { written: boolean; reason?: string } = { written: false };
+
+  // Don't write a fallback/stale value into history — better to skip a day
+  // than to record a wrong number.
+  if (!spot.isLive) {
+    metals.reason = 'Gold/silver live feed unavailable';
+  } else {
+    const { error } = await admin.from('metal_rate_history').upsert(
+      {
+        rate_date: today,
+        gold_24k_per_gram: spot.gold24kPerGram,
+        silver_per_gram: spot.silverPerGram,
+      },
+      { onConflict: 'rate_date' }
+    );
+    if (error) metals.reason = error.message;
+    else metals.written = true;
   }
 
-  return NextResponse.json({ ok: true, date: today, spot });
+  if (!diamond.isLive) {
+    diamonds.reason = 'Diamond index (DCX) feed unavailable';
+  } else {
+    const { error } = await admin.from('diamond_rate_history').upsert(
+      {
+        rate_date: today,
+        dcx_usd: diamond.dcxUsd,
+        dcx_inr: diamond.dcxInr,
+        fx_rate: diamond.fxRate,
+      },
+      { onConflict: 'rate_date' }
+    );
+    if (error) diamonds.reason = error.message;
+    else diamonds.written = true;
+  }
+
+  return NextResponse.json({
+    ok: metals.written || diamonds.written,
+    date: today,
+    metals,
+    diamonds,
+  });
 }

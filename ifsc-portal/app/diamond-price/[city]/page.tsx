@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import DiamondRatePage from '@/components/DiamondRatePage';
 import { getCity, RATE_CITIES } from '@/lib/metal-rates';
+import { getLiveDiamondIndex } from '@/lib/live-diamond-rates';
+import { getAllDiamondTrendRanges } from '@/lib/diamond-history';
 import { buildCanonical } from '@/lib/seo';
 import { SITE_NAME } from '@/lib/utils';
 
@@ -14,7 +16,7 @@ export async function generateStaticParams() {
 }
 
 export const dynamicParams = true;
-export const revalidate = 86400; // reference data is static day-to-day, unlike the live bullion feed
+export const revalidate = 1800; // 30 minutes, matching the live diamond index feed
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const city = getCity(params.city);
@@ -30,5 +32,10 @@ export default async function Page({ params }: PageProps) {
   const city = getCity(params.city);
   if (!city) notFound();
 
-  return <DiamondRatePage city={city} />;
+  const [liveIndex, history] = await Promise.all([
+    getLiveDiamondIndex(),
+    getAllDiamondTrendRanges(),
+  ]);
+
+  return <DiamondRatePage city={city} liveIndex={liveIndex} history={history} />;
 }

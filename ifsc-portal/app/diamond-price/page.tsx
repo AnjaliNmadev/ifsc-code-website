@@ -6,6 +6,7 @@ import AdSlot from '@/components/AdSlot';
 import PopularCalculatorsSidebar from '@/components/PopularCalculatorsSidebar';
 import DiamondPriceCalculator from '@/components/calculators/DiamondPriceCalculator';
 import MetalRateBarChart from '@/components/MetalRateBarChart';
+import DiamondTrendChart from '@/components/DiamondTrendChart';
 import { faqSchema } from '@/lib/schema';
 import { buildCanonical } from '@/lib/seo';
 import { SITE_NAME } from '@/lib/utils';
@@ -18,6 +19,10 @@ import {
   basePricePerCaratFor,
 } from '@/lib/diamond-price';
 import { RATE_CITIES } from '@/lib/metal-rates';
+import { getLiveDiamondIndex } from '@/lib/live-diamond-rates';
+import { getAllDiamondTrendRanges } from '@/lib/diamond-history';
+
+export const revalidate = 1800; // 30 minutes, matching the live diamond index feed
 
 export const metadata: Metadata = {
   title: `Diamond Price Guide (Indicative) | ${SITE_NAME}`,
@@ -26,10 +31,15 @@ export const metadata: Metadata = {
   alternates: { canonical: buildCanonical(['diamond-price']) },
 };
 
-export default function DiamondPricePage() {
+export default async function DiamondPricePage() {
+  const [liveIndex, history] = await Promise.all([
+    getLiveDiamondIndex(),
+    getAllDiamondTrendRanges(),
+  ]);
+
   const caratChartData = CARAT_WEIGHTS.map((c) => ({
     label: `${c}ct`,
-    value: Math.round(basePricePerCaratFor(c)),
+    value: Math.round(basePricePerCaratFor(c) * liveIndex.scaleFactor),
   }));
 
   return (
@@ -48,17 +58,33 @@ export default function DiamondPricePage() {
             a rough, indicative estimate based on carat weight and the 4Cs.
           </p>
 
-          <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
-            <p className="text-xs font-bold uppercase tracking-wide text-amber-800">
-              Not a live market rate
+          <div className="mt-6 rounded-2xl border border-trust-200 bg-trust-50 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs font-bold uppercase tracking-wide text-trust-700">
+                Diamond Market Index (DCX)
+              </p>
+              <p className="flex items-center gap-1.5 text-xs text-ink-500">
+                <span
+                  className={`inline-block h-1.5 w-1.5 rounded-full ${liveIndex.isLive ? 'bg-green-500' : 'bg-amber-500'}`}
+                />
+                {liveIndex.isLive ? 'Live' : 'Cached'} &middot; Updated {liveIndex.asOf}
+              </p>
+            </div>
+            <p className="mt-2 font-display text-lg font-extrabold text-ink-900">
+              ${liveIndex.dcxUsd.toLocaleString('en-IN', { maximumFractionDigits: 0 })} / ct{' '}
+              <span className="text-sm font-semibold text-ink-500">
+                (₹{Math.round(liveIndex.dcxInr).toLocaleString('en-IN')} / ct)
+              </span>{' '}
+              <span className={liveIndex.trend24h >= 0 ? 'text-green-700' : 'text-red-600'}>
+                {liveIndex.trend24h >= 0 ? '▲' : '▼'} {Math.abs(liveIndex.trend24h).toFixed(2)}% (24h)
+              </span>
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-amber-900">
-              This page is a reference guide, not a live price tracker. Every diamond is
-              individually graded, so there is no equivalent of gold/silver&rsquo;s daily spot
-              price. Figures below are illustrative reference points based on typical, widely
-              documented pricing patterns — they will not exactly match any specific stone&rsquo;s
-              actual price. Always get a jeweller&rsquo;s quote and a certified (GIA/IGI)
-              appraisal before buying or selling.
+            <p className="mt-2 text-xs leading-relaxed text-ink-500">
+              This composite index tracks overall diamond-market movement, not any single stone —
+              the figures below are automatically nudged by its 24h trend. It still won&rsquo;t
+              match a specific stone&rsquo;s actual quote. Every diamond is individually graded, so
+              there is no equivalent of gold/silver&rsquo;s per-stone spot price. Always get a
+              jeweller&rsquo;s quote and a certified (GIA/IGI) appraisal before buying or selling.
             </p>
           </div>
 
@@ -117,6 +143,15 @@ export default function DiamondPricePage() {
             </div>
           </section>
 
+          <section className="mt-6">
+            <DiamondTrendChart
+              series={history}
+              trend24h={liveIndex.trend24h}
+              cityIndex={1}
+              cityName="India"
+            />
+          </section>
+
           <section className="mt-8">
             <h2 className="font-display text-xl font-extrabold text-ink-900">
               Indicative price per carat by carat weight
@@ -131,7 +166,7 @@ export default function DiamondPricePage() {
           </section>
 
           <div className="mt-8">
-            <DiamondPriceCalculator />
+            <DiamondPriceCalculator liveScaleFactor={liveIndex.scaleFactor} />
           </div>
 
           <div className="mt-8">
@@ -298,11 +333,12 @@ export default function DiamondPricePage() {
           </section>
 
           <p className="mt-10 text-xs leading-relaxed text-ink-400">
-            This page is an educational reference guide only. It does not reflect live market
-            pricing, is not sourced from any real-time data feed, and does not constitute a
-            valuation, appraisal, or investment advice. Diamond prices vary significantly by
-            individual stone characteristics, certification, and seller. Please consult a certified
-            gemologist or jeweller for an actual valuation.
+            This page is an educational reference guide only. The DCX figure above is pulled from
+            a live diamond market index and used to nudge the illustrative table below, but
+            neither reflects the price of any specific stone and neither constitutes a valuation,
+            appraisal, or investment advice. Diamond prices vary significantly by individual stone
+            characteristics, certification, and seller. Please consult a certified gemologist or
+            jeweller for an actual valuation.
           </p>
         </div>
 
