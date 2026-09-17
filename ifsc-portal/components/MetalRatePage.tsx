@@ -5,6 +5,7 @@ import AdSlot from '@/components/AdSlot';
 import PriceTrendChart from '@/components/PriceTrendChart';
 import WeightCalculator from '@/components/WeightCalculator';
 import PurityBarChart from '@/components/PurityBarChart';
+import PageWithSidebar from '@/components/PageWithSidebar';
 import { faqSchema } from '@/lib/schema';
 import { RATE_CITIES, type CityMeta } from '@/lib/metal-rates';
 import { GOLD_MARKET_AREAS } from '@/lib/city-market-notes';
@@ -80,19 +81,20 @@ export default function MetalRatePage({
 }: MetalRatePageProps) {
   const goldPath = `/gold-rate/${city.slug}`;
   const silverPath = `/silver-rate/${city.slug}`;
+  const diamondPath = `/diamond-price/${city.slug}`;
   const marketAreas = GOLD_MARKET_AREAS[city.slug];
 
   // Most recent 10 days, most recent first, for the day-by-day table.
   const recentHistory = [...history].reverse().slice(0, 10);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <PageWithSidebar citySlug={city.slug} cityName={city.name} current={metal === 'Gold' ? 'gold' : 'silver'}>
       <JsonLd data={faqSchema(faqs)} />
       <Breadcrumbs items={[{ name: `${metal} Rate in ${city.name}`, href: `/${path}` }]} />
 
-      {/* Gold / Silver tab toggle — both tabs are always real links except
-          the one for the metal you're currently viewing, so switching works
-          in both directions. */}
+      {/* Gold / Silver / Diamond tab toggle — every tab is a real link except
+          the one you're currently viewing, so switching works in any
+          direction between all three trackers. */}
       <div className="flex gap-6 border-b border-ink-200 text-sm font-semibold">
         {metal === 'Gold' ? (
           <span className="-mb-px border-b-2 border-trust-600 pb-2 text-trust-700">Gold Rates</span>
@@ -108,6 +110,9 @@ export default function MetalRatePage({
             Silver Rates
           </Link>
         )}
+        <Link href={diamondPath} className="-mb-px border-b-2 border-transparent pb-2 text-ink-400 hover:text-ink-600">
+          Diamond Prices
+        </Link>
       </div>
 
       <h1 className="mt-6 font-display text-3xl font-extrabold text-ink-900 sm:text-4xl">
@@ -426,6 +431,6 @@ export default function MetalRatePage({
         information only and do not constitute investment advice. Please verify current rates
         with a certified jeweller or bullion dealer before transacting.
       </p>
-    </div>
+    </PageWithSidebar>
   );
 }
